@@ -261,6 +261,9 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 /* goblin + list view */
 .gob { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .gob.on { border-color: var(--more); color: var(--more); background: color-mix(in srgb, var(--more) 10%, transparent); }
+.gl { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--more); margin-top: 4px; }
+.gl input { width: 64px; background: var(--panel-2); border: 1px solid var(--more); border-radius: 6px; color: var(--text); font-family: var(--f-mono); font-size: 12px; padding: 3px 6px; }
+.glnote { font-size: 11px; color: var(--muted); margin-left: 8px; }
 .gob-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--more); border: 1px solid var(--more); border-radius: 4px; padding: 1px 4px; vertical-align: middle; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .toolbar .tabs { margin-bottom: 0; }
@@ -543,7 +546,7 @@ const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 
 /* Board edits: picks hidden, picks changed, picks added. Kept in the artifact's database so they
    survive reloads and Claude in the coding session can read them back. */
-let edits = { removed: [], overrides: {}, added: [], goblins: [] };
+let edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {} };
 let bans = new Set();  // lower-cased player names from the ban list, sent with the live feed
 let editsDoc = null;
 let writeChain = Promise.resolve();
@@ -552,7 +555,7 @@ function board() {
   const base = PICKS.filter(p => !edits.removed.includes(p.id) && !bans.has(String(p.player).toLowerCase())).map(p => edits.overrides[p.id] ? { ...p, ...edits.overrides[p.id], edited: true } : p);
   const extra = edits.added.filter(p => !edits.removed.includes(p.id)).map(p => ({ ...p, ...(edits.overrides[p.id] || {}), mine: true }));
   const gob = new Set(edits.goblins || []);
-  return base.concat(extra).map(p => gob.has(p.id) ? { ...p, goblin: true } : p);
+  return base.concat(extra).map(p => gob.has(p.id) ? goblinize(p) : p);
 }
 const findPick = id => board().find(p => p.id === id);
 
@@ -571,7 +574,7 @@ function setSync(t) { document.getElementById("sync").textContent = t; }
 const selected = new Set();
 let filter = "all";
 try { const saved = JSON.parse(localStorage.getItem("pl-slip") || "[]"); saved.forEach(id => selected.add(id)); } catch (e) {}
-try { const local = JSON.parse(localStorage.getItem("pl-edits") || "null"); if (local) edits = { removed: [], overrides: {}, added: [], goblins: [], ...local }; } catch (e) {}
+try { const local = JSON.parse(localStorage.getItem("pl-edits") || "null"); if (local) edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {}, ...local }; } catch (e) {}
 const save = () => { try { localStorage.setItem("pl-slip", JSON.stringify([...selected])); } catch (e) {} };
 
 function cardHTML(p) {
@@ -591,6 +594,7 @@ function cardHTML(p) {
     </div>
     <div class="meter" style="--be:${(BE4 - 0.4) / 0.3 * 100}%" title="Marker shows the 4-pick Power break-even"><i style="width:${Math.max(0, Math.min(100, (p.p - 0.4) / 0.3 * 100))}%;background:${color}"></i></div>
     ${flag}
+    ${p.goblin ? `<label class="gl">Goblin line <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>${p.line !== p.stdLine ? `<span class="glnote">was ${esc(p.stdLine)} at ${pct(p.stdP)}</span>` : ""}` : ""}
     <p class="note">${esc(p.note)}</p>
     <div class="foot">
       <span class="when">${esc(p.when)}</span>
@@ -614,7 +618,7 @@ function rowHTML(p) {
   const sel = selected.has(p.id);
   return `<div class="prow${sel ? " sel" : ""}" data-row="${esc(p.id)}">
     <span class="sp">${esc(p.sport)}</span>
-    <span class="nm"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${esc(p.game)} · ${esc(p.when)}</span></span>
+    <span class="nm"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${esc(p.game)} · ${esc(p.when)}</span>${p.goblin ? `<label class="gl">Goblin line <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>${p.line !== p.stdLine ? `<span class="glnote">was ${esc(p.stdLine)} at ${pct(p.stdP)}</span>` : ""}` : ""}</span>
     <span class="tag ${cls}">${label}</span>
     <span class="wp">${pct(p.p)}</span>
     <button class="gob${p.goblin ? " on" : ""}" type="button" aria-pressed="${!!p.goblin}" data-goblin="${esc(p.id)}" title="Tap if your app shows this as a Goblin">G</button>
@@ -666,9 +670,8 @@ function renderSlip() {
       <button class="x" type="button" aria-label="Remove ${esc(p.player)}" data-id="${esc(p.id)}">×</button></li>`).join("");
   const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
   const probs = picks.map(p => p.p), n = probs.length;
-  const custom = parseFloat(document.getElementById("payout").value);
-  const powerTable = custom > 1 && n >= 2 ? { ...POWER, [n]: { [n]: custom } } : POWER;
-  for (const [key, table] of [["power", powerTable], ["flex", FLEX]]) {
+  const T = entryTables(picks), powerTable = T.power, flexTable = T.flex;
+  for (const [key, table] of [["power", powerTable], ["flex", flexTable]]) {
     const el = document.getElementById("m-" + key);
     const b = el.querySelector("b"), s = el.querySelector("span");
     el.classList.remove("good", "bad");
@@ -682,15 +685,22 @@ function renderSlip() {
   const money = v => (v >= 0 ? "+" : "−") + "$" + Math.abs(v).toFixed(2);
   const rows = [];
   if (powerTable[n]) rows.push(`<div class="h">Power · ${n} picks</div>`, ...Object.entries(powerTable[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="win">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Any miss</span><b class="lose">${money(-stake)}</b></div>`);
-  if (FLEX[n]) rows.push(`<div class="h">Flex · ${n} picks</div>`, ...Object.entries(FLEX[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="${m >= 1 ? "win" : "lose"}">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Fewer hits</span><b class="lose">${money(-stake)}</b></div>`);
+  if (T.g && POWER[n]) {
+    const stdWin = POWER[n][n] * stake, gobWin = powerTable[n][n] * stake;
+    rows.unshift(`<div class="h">Goblin cut · ${T.g} Goblin${T.g > 1 ? "s" : ""}${T.exact ? "" : " (estimate)"}</div>`,
+      `<div class="row"><span>Power pays ${powerTable[n][n]}x instead of ${POWER[n][n]}x</span><b class="lose">${money(gobWin - stdWin)}</b></div>`,
+      ...(flexTable[n] ? [`<div class="row"><span>Flex top prize ${flexTable[n][n]}x instead of ${FLEX[n][n]}x</span><b class="lose">${money((flexTable[n][n] - FLEX[n][n]) * stake)}</b></div>`] : []),
+      `<div class="row"><span>${T.exact ? "Using the payout you typed for Power." : "Type the app's payout below the stake for the exact number."}</span><b></b></div>`);
+  }
+  if (flexTable[n]) rows.push(`<div class="h">Flex · ${n} picks</div>`, ...Object.entries(flexTable[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="${m >= 1 ? "win" : "lose"}">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Fewer hits</span><b class="lose">${money(-stake)}</b></div>`);
   pay.hidden = rows.length === 0;
   pay.innerHTML = rows.join("");
   document.getElementById("add1").disabled = n >= 6;
   document.getElementById("drop1").disabled = n === 0;
   document.getElementById("played-power").hidden = !powerTable[n];
-  document.getElementById("played-flex").hidden = !FLEX[n];
+  document.getElementById("played-flex").hidden = !flexTable[n];
   const adv = document.getElementById("advice");
-  const options = [["Power", powerTable[n]], ["Flex", FLEX[n]]].filter(o => o[1]).map(([name, row]) => ({ name, row, r: ret(probs, row) }));
+  const options = [["Power", powerTable[n]], ["Flex", flexTable[n]]].filter(o => o[1]).map(([name, row]) => ({ name, row, r: ret(probs, row) }));
   const top = options.sort((a, b) => b.r - a.r)[0];
   const bank = Math.max(0, parseFloat(document.getElementById("bankroll").value) || 0);
   if (!top) adv.hidden = true;
@@ -706,7 +716,7 @@ function renderSlip() {
   if (Object.values(games).some(c => c > 1)) warn.push("Two or more picks share a game, so PrizePicks may cut the payout (you saw 8x instead of 10x on a 4-pick). Enter the payout the app shows, or swap a pick for one from another game.");
   if (picks.filter(p => p.tennis).length > 2) warn.push("More than two tennis \"Over games\" picks stack the same risk.");
   if (picks.length > 6) warn.push("PrizePicks entries max out at 6 picks.");
-  if (picks.some(p => p.goblin)) warn.push("This entry has a Goblin, which lowers the payout. Type the payout the app shows into \"Power payout in app\" so the profit is right. Flex math here assumes the standard table.");
+  if (picks.some(p => p.goblin && !(edits.goblinLines || {})[p.id])) warn.push("Enter the Goblin line for each Goblin pick so its win prob goes up to match the easier line.");
   if (picks.some(p => p.goblin && p.side === "Less")) warn.push("A Goblin pick can only be played More.");
   const w = document.getElementById("warn");
   w.hidden = warn.length === 0;
@@ -714,6 +724,31 @@ function renderSlip() {
 }
 const rerender = () => { save(); renderBoard(); renderSlip(); };
 
+/* Goblins: a lower line (More only) that is easier to hit and pays less. PrizePicks doesn't publish the
+   payout formula; reported examples range from about 8% to 30% less per Goblin, so the estimate uses 25%
+   per Goblin pick until the user types the payout the app shows. */
+const GOBLIN_CUT = 0.75;
+const COUNT_STATS = /rebound|assist|3-pt|three|pass td|reception|games won|shots|ks\b|strikeout|total bases|^hits|goals|blocks|steals/i;
+function goblinize(p) {
+  const std = parseFloat(p.line);
+  const gl = parseFloat((edits.goblinLines || {})[p.id]);
+  const out = { ...p, goblin: true, stdLine: p.line, stdP: p.p };
+  if (!isNaN(std) && !isNaN(gl) && gl < std && p.side === "More") {
+    const per = COUNT_STATS.test(p.stat) ? 0.04 : 0.018;  // win-prob gain per half point, same rule the chat uses
+    out.line = String(gl);
+    out.p = Math.min(0.92, Math.round((p.p + (std - gl) / 0.5 * per) * 1000) / 1000);
+  }
+  return out;
+}
+/* Payout tables for the picks on an entry: standard, scaled down for Goblins, or the app's exact Power payout. */
+function entryTables(picks) {
+  const n = picks.length, g = picks.filter(p => p.goblin).length;
+  const custom = parseFloat(document.getElementById("payout").value);
+  const scale = row => row && Object.fromEntries(Object.entries(row).map(([k, m]) => [k, Math.round(m * GOBLIN_CUT ** g * 100) / 100]));
+  const power = { ...POWER, [n]: custom > 1 ? { [n]: custom } : (g ? scale(POWER[n]) : POWER[n]) };
+  const flex = { ...FLEX, [n]: g ? scale(FLEX[n]) : FLEX[n] };
+  return { power, flex, g, exact: custom > 1 };
+}
 function toggleGoblin(id) {
   const g = new Set(edits.goblins || []);
   g.has(id) ? g.delete(id) : g.add(id);
@@ -742,8 +777,8 @@ document.addEventListener("click", e => {
   }
 });
 function entryReturn(ids) {
-  const probs = board().filter(p => ids.has(p.id)).map(p => p.p), n = probs.length;
-  return Math.max(POWER[n] ? ret(probs, POWER[n]) : 0, FLEX[n] ? ret(probs, FLEX[n]) : 0);
+  const picks = board().filter(p => ids.has(p.id)), probs = picks.map(p => p.p), n = probs.length, T = entryTables(picks);
+  return Math.max(T.power[n] ? ret(probs, T.power[n]) : 0, T.flex[n] ? ret(probs, T.flex[n]) : 0);
 }
 function stepNote(text) { const el = document.getElementById("step-note"); el.hidden = !text; el.textContent = text || ""; }
 document.getElementById("best").onclick = () => { selected.clear(); bestIds(4).forEach(id => selected.add(id)); stepNote(""); rerender(); };
@@ -771,6 +806,14 @@ document.getElementById("clear").onclick = () => { selected.clear(); rerender();
 document.getElementById("stake").oninput = renderSlip;
 document.getElementById("bankroll").oninput = renderSlip;
 document.getElementById("payout").oninput = renderSlip;
+document.addEventListener("change", e => {
+  const inp = e.target.closest("[data-gline]");
+  if (!inp) return;
+  const v = parseFloat(inp.value);
+  edits.goblinLines = { ...(edits.goblinLines || {}) };
+  if (isNaN(v)) delete edits.goblinLines[inp.dataset.gline]; else edits.goblinLines[inp.dataset.gline] = v;
+  persist(); rerender();
+});
 const head = document.getElementById("slip-head");
 const flip = () => { const s = document.getElementById("slip"); const open = s.classList.toggle("open"); head.setAttribute("aria-expanded", open); document.getElementById("toggle-hint").textContent = open ? "tap to close" : "tap to open"; };
 head.onclick = flip;
@@ -822,8 +865,8 @@ async function deleteEntry(id) {
 function logPlayed(type) {
   const picks = board().filter(p => selected.has(p.id));
   const n = picks.length;
-  const custom = parseFloat(document.getElementById("payout").value);
-  const table = type === "Power" ? (custom > 1 ? { [n]: custom } : POWER[n]) : FLEX[n];
+  const T = entryTables(picks);
+  const table = type === "Power" ? T.power[n] : T.flex[n];
   if (!table) return;
   const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
   saveEntry({ id: "e" + Date.now().toString(36), type, stake, table, status: "open", hits: null, createdAt: new Date().toISOString(),
@@ -936,17 +979,18 @@ const tools = [
       return { ids, power_return: POWER[n] ? +ret(probs, POWER[n]).toFixed(3) : null, flex_return: FLEX[n] ? +ret(probs, FLEX[n]).toFixed(3) : null };
     } },
   { name: "set_goblin", description: "Mark or unmark picks as Goblins in the user's app (Goblins are More-only and pay less). Returns the current Goblin ids.",
-    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } }, on: { type: "boolean" } }, required: ["ids", "on"] },
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } }, on: { type: "boolean" }, line: { type: "number", description: "The Goblin line the app shows, if the user said it" } }, required: ["ids", "on"] },
     execute(input) {
       const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => findPick(id));
       if (!ids.length) throw new Error("No matching pick ids on the board.");
       const g = new Set(edits.goblins || []);
       ids.forEach(id => input.on === false ? g.delete(id) : g.add(id));
+      if (input.on !== false && input.line != null && !isNaN(Number(input.line))) { edits.goblinLines = { ...(edits.goblinLines || {}) }; ids.forEach(id => { edits.goblinLines[id] = Number(input.line); }); }
       edits.goblins = [...g]; persist(); rerender(); addMsg("act", (input.on === false ? "Unmarked Goblin: " : "Marked Goblin: ") + ids.join(", "));
       return { goblins: edits.goblins };
     } },
   { name: "reset_board", description: "Undo every change the user made: restore hidden picks, drop edits and added picks.",
-    execute() { edits = { removed: [], overrides: {}, added: [], goblins: [] }; persist(); rerender(); addMsg("act", "Board reset to the researched picks"); return "reset"; } }
+    execute() { edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {} }; persist(); rerender(); addMsg("act", "Board reset to the researched picks"); return "reset"; } }
 ];
 
 let sampleFn = null, busy = false;
@@ -1029,7 +1073,8 @@ async function loadLocalFeed() {
     if (!snap.exists) return;
     const d = snap.data() || {};
     edits = { removed: Array.isArray(d.removed) ? d.removed.map(String) : [], overrides: d.overrides && typeof d.overrides === "object" ? d.overrides : {},
-      added: Array.isArray(d.added) ? d.added : [], goblins: Array.isArray(d.goblins) ? d.goblins.map(String) : [] };
+      added: Array.isArray(d.added) ? d.added : [], goblins: Array.isArray(d.goblins) ? d.goblins.map(String) : [],
+      goblinLines: d.goblinLines && typeof d.goblinLines === "object" ? d.goblinLines : {} };
     renderBoard(); renderSlip();
   }, () => setSync("Couldn't load saved changes"));
 })();
