@@ -59,6 +59,22 @@
    "when": "Fri · time TBD"
   },
   {
+   "books": "Books 1.5 (4)",
+   "game": "Ducks @ Devils",
+   "game_id": "anaheim-ducks-new-jersey-devils",
+   "id": "nhl-evan-rodrigues-shots-on-goal",
+   "line": "2",
+   "note": "58% (a 23% push chance at exactly 2). 0 or 1 shot in 6 of 9 games this season and 7 of his last 10 (ESPN). Books are at 1.5.",
+   "p": 0.578,
+   "player": "Evan Rodrigues",
+   "side": "Less",
+   "sport": "NHL",
+   "start": "2026-10-22T23:10:00Z",
+   "stat": "Shots on Goal",
+   "team": "",
+   "when": "Thu 6:10 PM CT"
+  },
+  {
    "game": "Cavaliers @ 76ers",
    "game_id": "cleveland-cavaliers-philadelphia-76ers",
    "start": "2026-10-22T23:10:00Z",
@@ -73,6 +89,22 @@
    "books": "Books 4.5–8.5 (9)",
    "p": 0.568,
    "note": "57%. Scored 6+ in 7 of his last 10 and 34 of 51 last season, including 10 in his Sixers debut. Risk: a bench role in a deep rotation."
+  },
+  {
+   "id": "nhl-pavel-zacha-sog",
+   "sport": "NHL",
+   "player": "Pavel Zacha",
+   "team": "",
+   "game": "Predators @ Bruins",
+   "game_id": "nashville-predators-boston-bruins",
+   "start": "2026-10-22T23:00:00Z",
+   "when": "Thu 6:00 PM CT",
+   "stat": "Shots on Goal",
+   "side": "Less",
+   "line": "2",
+   "books": "Books 1.5 (4)",
+   "p": 0.558,
+   "note": "56% (a 23% push chance at exactly 2). 0 or 1 shot in 6 of 9 this season, 47 of 84 last season, and 2 of 2 vs Nashville."
   },
   {
    "books": "Books 31.5/32.5 (4)",
@@ -125,22 +157,6 @@
    "when": "Thu 6:10 PM CT"
   },
   {
-   "books": "Books 1.5 (4)",
-   "game": "Ducks @ Devils",
-   "game_id": "anaheim-ducks-new-jersey-devils",
-   "id": "nhl-evan-rodrigues-shots-on-goal",
-   "line": "2",
-   "note": "Books 54%. No X injury news found on Rodrigues for tonight's Ducks @ Devils game; no NHL game-log check available. Thin edge, keep stakes small.",
-   "p": 0.54,
-   "player": "Evan Rodrigues",
-   "side": "Less",
-   "sport": "NHL",
-   "start": "2026-10-22T23:10:00Z",
-   "stat": "Shots on Goal",
-   "team": "",
-   "when": "Thu 6:10 PM CT"
-  },
-  {
    "game": "Cavaliers @ 76ers",
    "game_id": "cleveland-cavaliers-philadelphia-76ers",
    "start": "2026-10-22T23:10:00Z",
@@ -155,6 +171,22 @@
    "books": "Books 7.5–10.5 (9)",
    "p": 0.54,
    "note": "54% (lean). Under 9 in 8 of his last 10 and 3 of 4 vs Philly. Jarrett Allen is expected to play, which keeps rebounds split. Cappers took More 8.5; PrizePicks has 9."
+  },
+  {
+   "id": "nhl-ivan-barbashev-sog",
+   "sport": "NHL",
+   "player": "Ivan Barbashev",
+   "team": "",
+   "game": "Golden Knights @ Blues",
+   "game_id": "vegas-golden-knights-st-louis-blues",
+   "start": "2026-10-23T00:00:00Z",
+   "when": "Thu 7:00 PM CT",
+   "stat": "Shots on Goal",
+   "side": "Less",
+   "line": "1.5",
+   "books": "Books 1.5 (4)",
+   "p": 0.54,
+   "note": "54% (lean). 0 or 1 shot in 7 of 11 this season and 3 of 3 vs St. Louis."
   },
   {
    "books": "Books 23.5 (2)",
@@ -180,14 +212,63 @@
  "specials_info": [],
  "updated": "2026-10-22T14:39:34Z",
  "x_feed": {
-  "checked": "2026-10-22T17:20:00Z",
-  "items": [],
+  "checked": "2026-10-22T20:05:00Z",
+  "items": [
+   {
+    "title": "Ville Husso More 27.5 Saves",
+    "handles": "@NateDFS15, @AIPICKX",
+    "ok": false,
+    "verdict": "51% on price. NJ shoots a lot, but the books already price that."
+   },
+   {
+    "title": "Mikhail Sergachev More 1.5 SOG",
+    "handles": "@betonjmont, @PixFromTheSix",
+    "ok": false,
+    "verdict": "PrizePicks has 2, not 1.5: More 2 is 52% with a 23% push chance."
+   },
+   {
+    "title": "Svechnikov / Pastrnak / Kyle Connor SOG",
+    "handles": "@tkbpicks, @ThePropDen, @Frost_Props",
+    "ok": false,
+    "verdict": "48.5%, 47% and 30% at PrizePicks' lines (Connor is 3, not 2.5)."
+   },
+   {
+    "title": "Luther Burden More 4.5 Receptions",
+    "handles": "@__LordPenguin (212 likes), @TurtleBetsDFS",
+    "ok": false,
+    "verdict": "No PrizePicks receptions line for Burden in the feed. His rec yds More 57.5 is 49%."
+   },
+   {
+    "title": "A.J. Brown More 5 Receptions",
+    "handles": "@NoExpertFS, @ethical443612",
+    "ok": false,
+    "verdict": "51.6% with a 15% push chance at 5."
+   },
+   {
+    "title": "Hunter Henry More 2.5 Receptions",
+    "handles": "@TurtleBetsDFS",
+    "ok": false,
+    "verdict": "No PrizePicks receptions line in the feed. His rec yds is 46%."
+   },
+   {
+    "title": "Jaylon Tyson More 8.5 Points",
+    "handles": "@efficientstats, @DanaWhiteparlay",
+    "ok": false,
+    "verdict": "55% on price, but he scored 9+ in only 6 of his last 25. Stats say no."
+   },
+   {
+    "title": "Colby Donovan More 2.5 Tackles (soccer)",
+    "handles": "@enil2u (Taco slip)",
+    "ok": false,
+    "verdict": "Can't price soccer props. The Taco on that slip is the Caleb Williams one, which is already on the board."
+   }
+  ],
   "summary": [
-   "Noon check: ESPN injury reports, X news and fresh lines for tonight's games.",
-   "Jarrett Allen expects to play (Cavs). Caleb Williams, Henderson and A.J. Brown have no injury designation. Bears: Sanborn out, T.J. Edwards doubtful, Sweat suspended. Patriots: CB Carlton Davis out.",
-   "Lines moved: Cam Johnson rebounds to 3.5, Hartenstein points to 8.5, Gordon PRA to 23.5. All three are now 47% and were removed.",
-   "Added: Caldwell-Pope More 5.5 pts (57%), Mobley Less 9 reb (54%), Maxey More 5 ast (54%, @RedHottLocks). The Caleb Williams Taco is now 68%.",
-   "Skipped on stats: Gordon Less 6 reb (under in 17 of 39 last season) and Jaylon Tyson More 8.5 pts (0 of last 10)."
+   "2:30 PM check: read about 560 X posts across NBA, NFL, NHL, soccer, tennis, esports, WNBA and MLB. No WNBA or MLB games today.",
+   "Added (books and ESPN game logs agree): Pavel Zacha Less 2 SOG (56%), Ivan Barbashev Less 1.5 SOG (54%). Evan Rodrigues Less 2 SOG is now 58%.",
+   "Capper picks checked and skipped: Husso More 27.5 saves (51%), Sergachev More 2 SOG (52%), LeBron More 6.5 reb (53%; 28 of 73 last season), Harden More 11.5 reb+ast (1 of last 10), Jaylon Tyson More 8.5 pts (6 of last 25), Jaylen Brown More 30.5 PRA (53%), TNF receptions and attempts (about 50%).",
+   "Soccer and esports picks can't be priced: no PrizePicks lines for them in our odds feed.",
+   "@PrizePicksTacos' -600 lists are deep Goblin lines with cut payouts; skipped. The Caleb Williams Taco is still the only live Taco."
   ]
  }
 }

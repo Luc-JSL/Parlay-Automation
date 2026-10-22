@@ -8,6 +8,7 @@ Usage:
 
 Stats: NBA points rebounds assists threes blocks steals turnovers pra pr pa ra
        NFL pass_yds pass_tds completions pass_att rush_yds rush_att receptions rec_yds rush_rec_yds targets
+       NHL sog points goals assists saves
 Prints this season's games, the last --n regular/postseason games (this season first, then last season),
 the hit rate on the chosen side, the average, and games against --opp. Preseason is ignored.
 """
@@ -29,6 +30,7 @@ NFL = {"pass_yds": ["passingYards"], "pass_tds": ["passingTouchdowns"], "complet
        "pass_att": ["passingAttempts"], "rush_yds": ["rushingYards"], "rush_att": ["rushingAttempts"],
        "receptions": ["receptions"], "rec_yds": ["receivingYards"], "targets": ["receivingTargets"],
        "rush_rec_yds": ["rushingYards", "receivingYards"]}
+NHL = {"sog": ["shotsTotal"], "points": ["points"], "goals": ["goals"], "assists": ["assists"], "saves": ["saves"]}
 
 
 def get(url: str) -> dict:
@@ -82,7 +84,7 @@ def value(row: dict, keys: list[str]):
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("league", choices=["nba", "nfl"])
+    ap.add_argument("league", choices=["nba", "nfl", "nhl"])
     ap.add_argument("player")
     ap.add_argument("stat")
     ap.add_argument("line", type=float)
@@ -92,7 +94,7 @@ def main() -> None:
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
 
-    keys = (NBA if a.league == "nba" else NFL).get(a.stat)
+    keys = {"nba": NBA, "nfl": NFL, "nhl": NHL}[a.league].get(a.stat)
     if not keys:
         sys.exit(f"Unknown stat {a.stat!r}")
     pid = find_player(a.player, a.league)

@@ -95,7 +95,7 @@ A PLAY is 58% or better. A LEAN is 54–58% (5–6 pick Flex only). Avoid stacki
 - `python3 src/prizepicks.py breakeven | devig A B | ev p1 p2 ... [--payout X]`
 - `python3 src/twitter.py news "<player>" | insiders [--sport NBA] | cappers | specials | search "<query>"`
 - `python3 src/clv.py` (CLV and calibration into `SUMMARY.md`)
-- `python3 src/stats.py nba|nfl "<player>" <stat> <line> More|Less [--opp ABBR] [--json]` (ESPN game logs: hit rates this season, last 10, last season, vs opponent)
+- `python3 src/stats.py nba|nfl|nhl "<player>" <stat> <line> More|Less [--opp ABBR] [--json]` (ESPN game logs: hit rates this season, last 10, last season, vs opponent)
 - Network: ESPN, basketball-reference, hockey-reference, tennisabstract and pbs.twimg.com (X images) are allowed. NBA.com and pro-football-reference block bots.
 
 ## Lessons learned (don't repeat)
