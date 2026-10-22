@@ -1,0 +1,5 @@
+date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,result,notes
+2026-10-22,NFL,NE@CHI,Drake Maye,Pass TDs,More,Goblin 1.5 or 0.5,O1.5 -116/-122,0.52,,,only play at goblin/0.5
+2026-10-22,NFL,NE@CHI,Luther Burden III,Rec Yds,More,<=51.5,O55.5 -114,0.51,,,threshold-dependent
+2026-10-22,NFL,NE@CHI,Drake Maye,Pass Yds,Less,>=263.5,U251.5 -114,0.51,,,threshold-dependent
+2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,More,<=16.5,analyst lean 20+,,,,threshold-dependent
