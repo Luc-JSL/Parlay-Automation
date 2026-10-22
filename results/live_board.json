@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-22T05:58:56Z",
- "quota_remaining": "240",
- "scanned_games": 0,
+ "updated": "2026-10-22T06:05:31Z",
+ "quota_remaining": "198",
+ "scanned_games": 9,
  "bans": [
   "anthony davis",
   "breece hall",
@@ -173,9 +173,25 @@
    "stat": "Rebounds",
    "side": "Less",
    "line": "4.5",
-   "books": "Books 4.5 (3)",
-   "p": 0.54,
-   "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. No injury or minutes news on X as of 1 AM CT. Lean only: fill a 5–6 pick Flex."
+   "books": "Books 4.5 (4)",
+   "p": 0.542,
+   "note": "Lean only (5–6 pick Flex). Drop it if Jarrett Allen is ruled out: with Diop and Tomlin also out, the guards would grab more boards."
+  },
+  {
+   "id": "nba-evan-mobley-points",
+   "sport": "NBA",
+   "player": "Evan Mobley",
+   "team": "",
+   "game": "Cavaliers @ 76ers",
+   "game_id": "cleveland-cavaliers-philadelphia-76ers",
+   "start": "2026-10-22T23:10:00Z",
+   "when": "Thu 6:10 PM CT",
+   "stat": "Points",
+   "side": "More",
+   "line": "17.5",
+   "books": "Books 17.5/18.5 (4)",
+   "p": 0.542,
+   "note": "Lean at 54%. Jarrett Allen is questionable (knee) and backups Diop and Tomlin are out, so Mobley would start at center if Allen sits. Check Allen's status before lock. https://x.com/camijustice/status/2113034008997117955"
   },
   {
    "id": "nba-jamal-murray-rebounds",
@@ -196,20 +212,43 @@
  ],
  "specials_info": [],
  "x_feed": {
-  "checked": "2026-10-22T06:05:00Z",
+  "checked": "2026-10-22T06:30:00Z",
   "summary": [
-   "Injury news: no injury, minutes or lineup news on X for any player on the board (last 30 hours).",
-   "Cappers: 91 posts read from 22 accounts. Most slips are images, so only 1 pick for tonight could be checked.",
-   "PrizePicks accounts: 60 posts read. No discounted (Taco) lines or promos posted in the last 24 hours.",
-   "Jaylen Brown Less 4 assists was removed: PrizePicks now has the line at 3.5, and Less 3.5 is only about 47%."
+   "Cavs: Jarrett Allen is questionable (right knee); Diop and Tomlin are out. Check his status before playing the Mobley or Mitchell picks.",
+   "Bears: RB Kyle Monangai is ruled out for Thursday Night Football (@AdamSchefter, @RapSheet).",
+   "No injury news on X for the other players on the board.",
+   "Cappers: 4 picks for tonight checked against the books. None cleared 54%, so none were added.",
+   "PrizePicks accounts: no discounted (Taco) lines or promos in the last 24 hours.",
+   "Jaylen Brown Less 4 assists was removed: PrizePicks moved the line to 3.5, where Less is only about 47%."
   ],
   "items": [
+   {
+    "title": "Isaiah Hartenstein More 7.5 Points",
+    "handles": "@schmidt_bets",
+    "ok": true,
+    "verdict": "Agrees with our check: already on the board at 56.4%.",
+    "url": "https://x.com/schmidt_bets/status/2113131181101449723"
+   },
    {
     "title": "Joel Embiid More 3.5 Assists",
     "handles": "@picksbyangel, @TurtleBetsDFS, @TheBettingFloor",
     "ok": false,
-    "verdict": "Books make it 52.5% at 3.5 (4 books, margin removed), below the 54% bar. Not added.",
+    "verdict": "Books make it 52.5% at 3.5 (4 books, margin removed), below the 54% bar.",
     "url": "https://x.com/TurtleBetsDFS/status/2113110092065210497"
+   },
+   {
+    "title": "D'Andre Swift More 2.5 Receptions",
+    "handles": "@PropKitchen, @ChronicBets, @DDOGGSTACKS",
+    "ok": false,
+    "verdict": "Books make it 52.0% (5 books), even with Monangai out. Below the bar.",
+    "url": "https://x.com/PropKitchen/status/2113147981121675361"
+   },
+   {
+    "title": "Efton Chism III More 19.5 Rec Yds",
+    "handles": "@austinsprops",
+    "ok": false,
+    "verdict": "Books have him at 16.5–18.5, so More 19.5 is only about 47%.",
+    "url": "https://x.com/austinsprops/status/2113128991712530888"
    }
   ]
  }
