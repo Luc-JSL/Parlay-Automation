@@ -55,6 +55,12 @@ python3 src/prizepicks.py ev 0.60 0.59 0.61 --stake 10   # EV of a 3-pick entry
 # Combined odds, implied probability, and EV for a parlay
 python3 src/parlay_calc.py -160 -300 1.38 --true-probs 0.60 0.74 0.70
 
+# X/Twitter (needs TWITTERAPI_IO_KEY from https://twitterapi.io); accounts live in results/cappers.json
+python3 src/twitter.py insiders --sport NBA --hours 12   # injury posts from news insiders
+python3 src/twitter.py news "Jalen Williams" --hours 18  # news for specific players
+python3 src/twitter.py cappers --hours 12                # capper picks to check
+python3 src/twitter.py specials --hours 24               # PrizePicks promos
+
 # Live odds (needs a free key from https://the-odds-api.com in ODDS_API_KEY)
 # Only games that haven't started are shown.
 python3 src/fetch_odds.py basketball_nba
@@ -82,7 +88,7 @@ python3 src/fetch_odds.py edges basketball_nba --hours 36 --min 0.56 --json /tmp
 | NBA stats | [balldontlie](https://www.balldontlie.io) / NBA.com | `BALLDONTLIE_API_KEY` env var |
 | NFL stats / injuries | ESPN public endpoints, nflverse | no key needed (network allow-list) |
 | Tennis stats / H2H | Tennis Abstract, ATP/WTA sites | no key needed (network allow-list) |
-| Breaking news (X/Twitter) | X API (paid tier for search) | `X_BEARER_TOKEN` env var |
+| Breaking news (X/Twitter) | [twitterapi.io](https://twitterapi.io) | `TWITTERAPI_IO_KEY` env var, `src/twitter.py` |
 
 Never commit API keys. Store them as environment variables / secrets.
 

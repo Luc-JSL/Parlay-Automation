@@ -1,7 +1,7 @@
 # Parlay Lab: context for every session
 
 Read this first. It covers what's built, how the user wants things done, and where everything lives.
-The repo's working branch is **`claude/cool-edison-x9a8gv`**.
+The repo's working branch is **`claude/loving-heisenberg-pfretk`**.
 
 ## The user
 - 19 years old, lives in **Arkansas**, plays **PrizePicks only** (pick'em More/Less). PrizePicks is 18+ in Arkansas.
@@ -19,6 +19,8 @@ The repo's working branch is **`claude/cool-edison-x9a8gv`**.
 - **Features:**
   - **List and Cards views.** List is the default: all picks in one section, best first.
   - **Sport tabs**, plus a **Specials** section (PrizePicks promos) at the top.
+  - **From X** section: what the last X check found (`x_feed` in `board/live`): injury news, capper picks checked with
+    an ADDED/SKIPPED verdict, and promos.
   - **Entry slip:**
     - Load best 4, **+ Add 1 / − Remove 1**, bankroll and stake fields, and a "Power payout in app" override.
     - Power vs Flex expected return, a payout breakdown per outcome, and a quarter-Kelly stake suggestion (max 2% of bankroll).
@@ -41,7 +43,7 @@ The repo's working branch is **`claude/cool-edison-x9a8gv`**.
 
   | Doc | What |
   |---|---|
-  | `board/live` | Picks on the board: `picks[]`, `bans[]`, `specials_info[]`, `updated` |
+  | `board/live` | Picks on the board: `picks[]`, `bans[]`, `specials_info[]`, `x_feed{}`, `updated` |
   | `board/staged` | Copy of the latest scan |
   | `board/edits` | The user's hides, overrides, added picks, `goblins[]`, `goblinLines{}`. Never overwrite. |
   | `entries/*` | The user's logged entries. Never overwrite. |
@@ -49,7 +51,7 @@ The repo's working branch is **`claude/cool-edison-x9a8gv`**.
   | `state/tracker` | `{csv}`, the pick tracker |
   | `state/linelog` | `{jsonl}`, line log for CLV |
   | `state/summary` | `{md}`, results summary |
-  | `state/cappers` | X accounts to watch (also `results/cappers.json`) |
+  | `state/cappers` | X accounts to watch (also `results/cappers.json`): `cappers`, `tennis`, `prizepicks_official`, `insiders` |
 
   Read a doc before writing it, and pin the write with `if_version`.
 
@@ -90,7 +92,7 @@ A PLAY is 58% or better. A LEAN is 54–58% (5–6 pick Flex only). Avoid stacki
 - `python3 src/fetch_odds.py sports | events <sport> | <sport> | edges <sport> --apps prizepicks`
 - `python3 src/live_board.py [--budget N] [--hours H]` writes `results/live_board.json`
 - `python3 src/prizepicks.py breakeven | devig A B | ev p1 p2 ... [--payout X]`
-- `python3 src/twitter.py news "<player>" | cappers | specials | search "<query>"`
+- `python3 src/twitter.py news "<player>" | insiders [--sport NBA] | cappers | specials | search "<query>"`
 - `python3 src/clv.py` (CLV and calibration into `SUMMARY.md`)
 
 ## Lessons learned (don't repeat)

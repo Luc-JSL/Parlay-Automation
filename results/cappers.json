@@ -1,233 +1,305 @@
 {
- "updated": "2026-10-22",
- "note": "Follower counts are approximate, from search snippets of unknown date. Records are self-reported and unverified; most accounts sell picks or post affiliate codes. Their picks are only ideas: our check decides.",
- "cappers": [
-  {
-   "handle": "AsPicks1",
-   "name": "A'S PICKS",
-   "followers": "~93.3K",
-   "sports": [
-    "NFL",
-    "MLB"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "PropBetGuy",
-   "name": "Prop Bet Guy",
-   "followers": "~86.8K",
-   "sports": [
-    "NBA",
-    "NFL",
-    "MLB"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "DFFsports",
-   "name": "DFF Bets",
-   "followers": "~80K",
-   "sports": [
-    "NBA",
-    "NFL"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "DK__DFS",
-   "name": "DK (DK Juice Reel)",
-   "followers": "~79K",
-   "sports": [
-    "NBA",
-    "NFL",
-    "MLB"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "PrizePicksValue",
-   "name": "PrizePicks Value",
-   "followers": "~65K",
-   "sports": [
-    "NBA",
-    "NFL",
-    "MLB"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "PrizePicksPapa",
-   "name": "PAPA",
-   "followers": "~60.7K",
-   "sports": [
-    "NBA"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "WyzeProps",
-   "name": "WyzeProps",
-   "followers": "~50.2K",
-   "sports": [
-    "NBA",
-    "MLB"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "WeezyProps",
-   "name": "Weezy Props",
-   "followers": "~38.9K",
-   "sports": [
-    "MLB",
-    "NBA",
-    "NFL"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "PropHolliday",
-   "name": "Bobby Stanley Jr.",
-   "followers": "~22.8K",
-   "sports": [
-    "NFL"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "NHLPropKing",
-   "name": "NHL Prop King",
-   "followers": "~22.1K",
-   "sports": [
-    "NHL"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "Prophetprops1",
-   "name": "Prophet",
-   "followers": "~19.5K",
-   "sports": [
-    "NBA"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "propbetguru",
-   "name": "Gray",
-   "followers": "~17K",
-   "sports": [
-    "NBA"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "Benjiprizepicks",
-   "name": "Benji",
-   "followers": "~13K",
-   "sports": [
-    "multi"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "EstablishRunNBA",
-   "name": "Establish The Run NBA",
-   "followers": "~10K",
-   "sports": [
-    "NBA"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "kjk_dfs",
-   "name": "KJK DFS",
-   "followers": "unknown",
-   "sports": [
-    "NBA",
-    "NFL",
-    "MLB"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "PrizePuck_",
-   "name": "Prizepuck",
-   "followers": "unknown",
-   "sports": [
-    "NHL"
-   ],
-   "paid": false
-  }
- ],
- "tennis": [
-  {
-   "handle": "AltaPicks",
-   "name": "Alta Picks",
-   "followers": "~30.4K",
-   "sports": [
-    "tennis"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "tennis_mister",
-   "name": "MISTER TENNIS PICKS",
-   "followers": "~25.7K",
-   "sports": [
-    "tennis"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "propitlikeit",
-   "name": "Prop It Like It's Hot",
-   "followers": "~19.4K",
-   "sports": [
-    "tennis"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "MatterTipTennis",
-   "name": "Vinny",
-   "followers": "~11.5K",
-   "sports": [
-    "tennis"
-   ],
-   "paid": true
-  },
-  {
-   "handle": "TennisTipster05",
-   "name": "Tennis Tipster",
-   "followers": "~6.3K",
-   "sports": [
-    "tennis"
-   ],
-   "paid": false
-  },
-  {
-   "handle": "SneakySlips",
-   "name": "SneakySlips",
-   "followers": "unknown",
-   "sports": [
-    "tennis"
-   ],
-   "paid": true
-  }
- ],
- "prizepicks_official": [
-  {
-   "handle": "PrizePicks",
-   "purpose": "Official main account: promos and the weekly Taco Tuesday discounted lines. One recent 'guess the admin password' giveaway post looked like a possible compromise; never act on giveaways or links."
-  },
-  {
-   "handle": "PrizeSupport",
-   "purpose": "Official support: rules, stat corrections, Taco Tuesday timing."
-  },
-  {
-   "handle": "PrizePicksTacos",
-   "purpose": "Unofficial Taco Tuesday and payout-boost tracker (affiliate); use only to spot specials, confirm in the app."
-  }
- ]
+  "updated": "2026-10-22",
+  "note": "Follower counts are approximate, from search snippets of unknown date. Records are self-reported and unverified; most accounts sell picks or post affiliate codes. Their picks are only ideas: our check decides.",
+  "cappers": [
+    {
+      "handle": "AsPicks1",
+      "name": "A'S PICKS",
+      "followers": "~93.3K",
+      "sports": [
+        "NFL",
+        "MLB"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "PropBetGuy",
+      "name": "Prop Bet Guy",
+      "followers": "~86.8K",
+      "sports": [
+        "NBA",
+        "NFL",
+        "MLB"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "DFFsports",
+      "name": "DFF Bets",
+      "followers": "~80K",
+      "sports": [
+        "NBA",
+        "NFL"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "DK__DFS",
+      "name": "DK (DK Juice Reel)",
+      "followers": "~79K",
+      "sports": [
+        "NBA",
+        "NFL",
+        "MLB"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "PrizePicksValue",
+      "name": "PrizePicks Value",
+      "followers": "~65K",
+      "sports": [
+        "NBA",
+        "NFL",
+        "MLB"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "PrizePicksPapa",
+      "name": "PAPA",
+      "followers": "~60.7K",
+      "sports": [
+        "NBA"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "WyzeProps",
+      "name": "WyzeProps",
+      "followers": "~50.2K",
+      "sports": [
+        "NBA",
+        "MLB"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "WeezyProps",
+      "name": "Weezy Props",
+      "followers": "~38.9K",
+      "sports": [
+        "MLB",
+        "NBA",
+        "NFL"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "PropHolliday",
+      "name": "Bobby Stanley Jr.",
+      "followers": "~22.8K",
+      "sports": [
+        "NFL"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "NHLPropKing",
+      "name": "NHL Prop King",
+      "followers": "~22.1K",
+      "sports": [
+        "NHL"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "Prophetprops1",
+      "name": "Prophet",
+      "followers": "~19.5K",
+      "sports": [
+        "NBA"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "propbetguru",
+      "name": "Gray",
+      "followers": "~17K",
+      "sports": [
+        "NBA"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "Benjiprizepicks",
+      "name": "Benji",
+      "followers": "~13K",
+      "sports": [
+        "multi"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "EstablishRunNBA",
+      "name": "Establish The Run NBA",
+      "followers": "~10K",
+      "sports": [
+        "NBA"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "kjk_dfs",
+      "name": "KJK DFS",
+      "followers": "unknown",
+      "sports": [
+        "NBA",
+        "NFL",
+        "MLB"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "PrizePuck_",
+      "name": "Prizepuck",
+      "followers": "unknown",
+      "sports": [
+        "NHL"
+      ],
+      "paid": false
+    }
+  ],
+  "tennis": [
+    {
+      "handle": "AltaPicks",
+      "name": "Alta Picks",
+      "followers": "~30.4K",
+      "sports": [
+        "tennis"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "tennis_mister",
+      "name": "MISTER TENNIS PICKS",
+      "followers": "~25.7K",
+      "sports": [
+        "tennis"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "propitlikeit",
+      "name": "Prop It Like It's Hot",
+      "followers": "~19.4K",
+      "sports": [
+        "tennis"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "MatterTipTennis",
+      "name": "Vinny",
+      "followers": "~11.5K",
+      "sports": [
+        "tennis"
+      ],
+      "paid": true
+    },
+    {
+      "handle": "TennisTipster05",
+      "name": "Tennis Tipster",
+      "followers": "~6.3K",
+      "sports": [
+        "tennis"
+      ],
+      "paid": false
+    },
+    {
+      "handle": "SneakySlips",
+      "name": "SneakySlips",
+      "followers": "unknown",
+      "sports": [
+        "tennis"
+      ],
+      "paid": true
+    }
+  ],
+  "prizepicks_official": [
+    {
+      "handle": "PrizePicks",
+      "purpose": "Official main account: promos and the weekly Taco Tuesday discounted lines. One recent 'guess the admin password' giveaway post looked like a possible compromise; never act on giveaways or links."
+    },
+    {
+      "handle": "PrizeSupport",
+      "purpose": "Official support: rules, stat corrections, Taco Tuesday timing."
+    },
+    {
+      "handle": "PrizePicksTacos",
+      "purpose": "Unofficial Taco Tuesday and payout-boost tracker (affiliate); use only to spot specials, confirm in the app."
+    }
+  ],
+  "insiders": [
+    {
+      "handle": "ShamsCharania",
+      "sports": [
+        "NBA"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "ChrisBHaynes",
+      "sports": [
+        "NBA"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "Underdog__NBA",
+      "sports": [
+        "NBA"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "FantasyLabsNBA",
+      "sports": [
+        "NBA"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "AdamSchefter",
+      "sports": [
+        "NFL"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "RapSheet",
+      "sports": [
+        "NFL"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "TomPelissero",
+      "sports": [
+        "NFL"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "Underdog__NFL",
+      "sports": [
+        "NFL"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "FieldYates",
+      "sports": [
+        "NFL"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    },
+    {
+      "handle": "josemorgado",
+      "sports": [
+        "Tennis"
+      ],
+      "purpose": "News insider: injuries, lineups, minutes. Trusted over cappers; official reports still win."
+    }
+  ]
 }
