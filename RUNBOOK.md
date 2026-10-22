@@ -84,20 +84,31 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
    `"tennis": true`, `"team": "ATP"` or `"WTA"`, and a `start` time. Don't post "play if line ≤ X" picks below the books'
    line: in the app those lower lines are usually Goblins, which pay less. Skip tennis if you can't find match odds.
    Tennis picks from cappers (step 5) count toward the 4.
-7. **Publish to the board.** Save the final JSON to `results/live_board.json`. Then put it on the board: `get` `board/live`
+7. **Top picks (every run).** Pick the 3–5 best picks on the board for games that haven't started, the way a sharp would:
+   - **Line check:** PrizePicks' line vs the books (a stale or half-point-better line, or a juiced side at the same number).
+   - **Game logs:** `src/stats.py` hit rates over the last 10, this season, last season, and vs the opponent.
+   - **News:** injuries, minutes, lineup and blowout risk (spread), and late X news from beat writers.
+
+   Only picks where the price and the stats agree, never Goblins below 75%, and at most 2 from one team. Write them to
+   `top_picks` in `results/live_board.json`:
+   `{"updated": "<ISO UTC>", "picks": [{"id": "<pick id on the board>", "confidence": 1-10, "books": "<one sentence>",
+   "stats": "<one sentence with hit rates>", "news": "<one sentence>"}], "slip": {"ids": [...], "label": "<e.g. 3-pick Power: A + B + C>",
+   "note": "<one sentence: how often it hits and why this size>"}}`. Be honest with confidence: 8+ only when the books, the
+   stats and the news all clearly agree. If nothing qualifies, write `"picks": []` so the section hides.
+8. **Publish to the board.** Save the final JSON to `results/live_board.json`. Then put it on the board: `get` `board/live`
    to read its `version`, and `set` it from the file with `if_version`. Also `set` `board/staged` to the same file so the
    two match. Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
    `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`. Only picks at 54% or better go on the board.
-8. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
+9. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
    and `result` (W/L/P/void) from box scores. Append every pick that is new to the board this run, without duplicating rows.
    Update `results/SUMMARY.md` with the record and the hit rate by sport, then run `python3 src/clv.py`. It rewrites the
    line-movement (CLV) and calibration sections from `results/line_log.jsonl` and the tracker. If average CLV over
    30+ picks is negative, write that down as a lesson and raise the bar for picks of that type.
-9. **Save state** with one ArtifactData `batch`: `set` each doc from its repo file, wrapping text files in their field
+10. **Save state** with one ArtifactData `batch`: `set` each doc from its repo file, wrapping text files in their field
    (for example `{"csv": "<tracker text>"}`), each with the `if_version` you loaded. Then commit
    `Board update <date> <time CT>` and try `git push -u origin claude/loving-heisenberg-pfretk`. If the push is refused (403),
    that's expected: say so in one line and stop. Don't retry, and don't look for a way around it.
-10. Finish with 6 lines: the top 4 picks now on the board, picks added from cappers or specials, picks graded, ban-list changes,
+11. Finish with 6 lines: the top picks and suggested slip now on the board, picks added from cappers or specials, picks graded, ban-list changes,
    average CLV so far, and API quota left.
 
 ## Rules

@@ -19,6 +19,8 @@ The repo's working branch is **`claude/loving-heisenberg-pfretk`**.
 - **Features:**
   - **List and Cards views.** List is the default: all picks in one section, best first.
   - **Sport tabs**, plus a **Specials** section (PrizePicks promos) at the top.
+  - **Top picks** section at the top: 3–5 best picks with a confidence rating (1–10) and Books / Stats / News reasons, plus a
+    suggested slip with a "Load top slip" button (`top_picks` in `board/live`). Every run, scheduled or manual, refreshes it.
   - **From X** section: what the last X check found (`x_feed` in `board/live`): injury news, capper picks checked with
     an ADDED/SKIPPED verdict, and promos.
   - **Entry slip:**
@@ -43,7 +45,7 @@ The repo's working branch is **`claude/loving-heisenberg-pfretk`**.
 
   | Doc | What |
   |---|---|
-  | `board/live` | Picks on the board: `picks[]`, `bans[]`, `specials_info[]`, `x_feed{}`, `updated` |
+  | `board/live` | Picks on the board: `picks[]`, `bans[]`, `specials_info[]`, `x_feed{}`, `top_picks{}`, `updated` |
   | `board/staged` | Copy of the latest scan |
   | `board/edits` | The user's hides, overrides, added picks, `goblins[]`, `goblinLines{}`. Never overwrite. |
   | `entries/*` | The user's logged entries. Never overwrite. |

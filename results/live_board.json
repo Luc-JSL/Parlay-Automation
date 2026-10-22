@@ -261,5 +261,47 @@
    "Donovan Mitchell rebounds and Barbashev SOG weren't in PrizePicks' feed; check your app.",
    "Insiders (12h): no injury news touching board picks (Rapoport: JJ McCarthy starts for Giants Sunday; Cobolli beat Wawrinka 6-2 first set)."
   ]
+ },
+ "top_picks": {
+  "updated": "2026-10-22T23:05:00Z",
+  "picks": [
+   {
+    "id": "nhl-brock-boeser-sog",
+    "confidence": 7,
+    "books": "All books at 1.5 with the Under about 55%; PrizePicks' 2 adds a 23% push (refund) chance.",
+    "stats": "0 or 1 shot in 8 of 11 games this season, 7 of last 10 (avg 1.3).",
+    "news": "No lineup news affecting him."
+   },
+   {
+    "id": "nba-jalen-williams-points-less",
+    "confidence": 6.5,
+    "books": "Most books at 18.5 or lower, so PrizePicks' 19 is a half point high (53%).",
+    "stats": "Under 19 in 24 of 38 last season and 6 of last 10; 12 in the opener.",
+    "news": "OKC is favored by 8.5: a blowout sits the starters late, which helps the Less."
+   },
+   {
+    "id": "nba-jokic-assists",
+    "confidence": 6,
+    "books": "53% to win plus an 11% push chance at exactly 9.",
+    "stats": "10+ assists in 45 of 72 last season, 2 of 3 vs OKC.",
+    "news": "Risk: a Denver blowout loss means fewer 4th-quarter minutes."
+   },
+   {
+    "id": "nba-murray-ra",
+    "confidence": 6,
+    "books": "54% plus an 11% push chance at 10.",
+    "stats": "11+ in 48 of 83 last season; 14, 14 and 17 vs OKC.",
+    "news": "Same team as Jokic: don't stack both."
+   }
+  ],
+  "slip": {
+   "ids": [
+    "nhl-brock-boeser-sog",
+    "nba-jalen-williams-points-less",
+    "nba-jokic-assists"
+   ],
+   "label": "3-pick Power: Boeser + Jalen Williams + Jokic",
+   "note": "All three hit about 16% of the time, but pushes turn it into a 2-pick 3x. Best expected payout tonight."
+  }
  }
 }

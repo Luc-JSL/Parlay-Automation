@@ -109,12 +109,13 @@ def main() -> None:
     budget = a.budget if a.budget is not None else auto_budget(remaining)
     now = datetime.now(timezone.utc)
 
-    old, specials_info, x_feed = [], [], None
+    old, specials_info, x_feed, top_picks = [], [], None, None
     if os.path.exists(OUT):
         with open(OUT) as f:
             prev = json.load(f)
         old, specials_info = prev.get("picks", []), prev.get("specials_info", [])
         x_feed = prev.get("x_feed")  # the X step rewrites this; keep it until then
+        top_picks = prev.get("top_picks")  # the top-picks step rewrites this; the page hides picks that dropped off
 
     queue = []  # (start, sport_key, label, markets, event)
     if budget > 0:
@@ -163,6 +164,8 @@ def main() -> None:
              "scanned_games": len(scanned), "bans": sorted(bans), "picks": picks, "specials_info": specials_info}
     if x_feed:
         board["x_feed"] = x_feed
+    if top_picks:
+        board["top_picks"] = top_picks
     with open(OUT, "w") as f:
         json.dump(board, f, indent=1)
     print(f"budget {budget}, spent ~{spent}, scanned {len(scanned)} games, kept {len(kept)} older picks, "
