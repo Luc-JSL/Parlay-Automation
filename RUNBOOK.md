@@ -58,6 +58,8 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
      - Tennis: estimate from match odds and research, as in step 6, and require 54%+ at the posted line.
      - Add a pick that passes with `"source": "@handle"`, and say in `note` that our check agrees. Skip the rest silently.
        Never add a pick only because a capper posted it, and never copy a capper's claimed record or "lock" language.
+     - Most slips are screenshots. For posts with `images`, download each image (`curl -sSo <file> <url>`) and read it
+       to get the picks. If pbs.twimg.com is blocked, say so in `x_feed.summary` and move on.
    - `python3 src/twitter.py specials --hours 24` reads PrizePicks' own accounts. For a discounted line on a player
      ("Taco Tuesday" and the like), add it as a pick with `"special": "<promo name>"` and the discounted line. Work out the
      fair rate at that line from the scan's sportsbook prices if the player was scanned, otherwise from research.
