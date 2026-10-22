@@ -26,23 +26,6 @@
  ],
  "picks": [
   {
-   "id": "alexfer",
-   "sport": "Tennis",
-   "player": "Alexandrova v Fernandez",
-   "team": "WTA",
-   "game": "Ningbo QF",
-   "when": "Thu 11:00 PM CT",
-   "stat": "Total Games",
-   "side": "More",
-   "line": "21.5",
-   "books": "Books' line 21.5 (moneyline -138/+114)",
-   "p": 0.57,
-   "game_id": "ningbo1",
-   "tennis": true,
-   "note": "At the books' line of 21.5 it's 57%: a close moneyline and three straight three-set meetings. 20.5 shows as a Goblin in your app, which pays less and isn't worth it here. If your normal line is 22.5, skip it.",
-   "start": "2026-10-23T04:00:00Z"
-  },
-  {
    "id": "chidekh",
    "sport": "Tennis",
    "player": "Clément Chidekh",
@@ -178,12 +161,12 @@
  "x_feed": {
   "checked": "2026-10-22T06:15:00Z",
   "summary": [
-   "Cavs: Jarrett Allen is questionable (right knee); Diop and Tomlin are out. Check his status before playing the Mobley or Mitchell picks.",
    "Bears: RB Kyle Monangai is ruled out for Thursday Night Football (@AdamSchefter, @RapSheet).",
    "No injury news on X for the other players on the board.",
    "Cappers: 105 posts read, and slip screenshots are now read too. 7 picks for tonight checked against the books. None cleared 54%, so none were added.",
    "PrizePicks accounts: no discounted (Taco) lines or promos in the last 24 hours.",
-   "Ajay Mitchell More 2.5 rebounds was removed: PrizePicks is a full rebound under every book, so it's a Goblin in the app and needs 75%+ (it's 61%)."
+   "Ajay Mitchell More 2.5 rebounds was removed: PrizePicks is a full rebound under every book, so it's a Goblin in the app and needs 75%+ (it's 61%).",
+   "Alexandrova v Fernandez removed: the app has 20.5 (Goblin) and 22.5. At 22.5 the books make it a coin flip (More 49%, Less 51%), and the Goblin needs 75%."
   ],
   "items": [
    {
