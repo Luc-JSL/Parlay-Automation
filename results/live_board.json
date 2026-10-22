@@ -212,12 +212,12 @@
  ],
  "specials_info": [],
  "x_feed": {
-  "checked": "2026-10-22T06:30:00Z",
+  "checked": "2026-10-22T06:15:00Z",
   "summary": [
    "Cavs: Jarrett Allen is questionable (right knee); Diop and Tomlin are out. Check his status before playing the Mobley or Mitchell picks.",
    "Bears: RB Kyle Monangai is ruled out for Thursday Night Football (@AdamSchefter, @RapSheet).",
    "No injury news on X for the other players on the board.",
-   "Cappers: 4 picks for tonight checked against the books. None cleared 54%, so none were added.",
+   "Cappers: 105 posts read, and slip screenshots are now read too. 7 picks for tonight checked against the books. None cleared 54%, so none were added.",
    "PrizePicks accounts: no discounted (Taco) lines or promos in the last 24 hours.",
    "Jaylen Brown Less 4 assists was removed: PrizePicks moved the line to 3.5, where Less is only about 47%."
   ],
@@ -228,6 +228,13 @@
     "ok": true,
     "verdict": "Agrees with our check: already on the board at 56.4%.",
     "url": "https://x.com/schmidt_bets/status/2113131181101449723"
+   },
+   {
+    "title": "TNF 10X slip: Henry More 35.5 Rec Yds, Swift More 2.5 Recs, Douglas More 38.5 Rec Yds, Roschon Johnson More 7.5 Rec Yds",
+    "handles": "@DFFsports",
+    "ok": false,
+    "verdict": "Read from the slip image. Books make the four legs 46%, 52%, 48% and 50%. None clears 54%, and a 4-pick Power needs 56%.",
+    "url": "https://x.com/DFFsports/status/2113139008419275104"
    },
    {
     "title": "Joel Embiid More 3.5 Assists",
@@ -249,6 +256,13 @@
     "ok": false,
     "verdict": "Books have him at 16.5–18.5, so More 19.5 is only about 47%.",
     "url": "https://x.com/austinsprops/status/2113128991712530888"
+   },
+   {
+    "title": "Tennis: Bublik and Nakashima to win (Thu)",
+    "handles": "@propitlikeit",
+    "ok": false,
+    "verdict": "Read from the slip image. These are win picks, not PrizePicks lines, so there's nothing to add.",
+    "url": "https://x.com/propitlikeit/status/2113060462954987832"
    }
   ]
  }
