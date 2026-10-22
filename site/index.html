@@ -1,0 +1,428 @@
+<title>Parlay Lab Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: app-style board. Sticky top bar, hero slip summary, sport tabs, grid of player cards, entry slip docked right (bottom sheet on phones). Single dark theme on purpose. */
+:root {
+  --ink: #0d0a18;          /* page ground, violet-black */
+  --panel: #171228;        /* card surface */
+  --panel-2: #211a38;      /* raised surface */
+  --line: #2f2650;         /* hairlines */
+  --text: #f3f0ff;
+  --muted: #a69cc8;
+  --violet: #8b5cf6;       /* accent */
+  --violet-hi: #b39bff;
+  --more: #3ee6a3;         /* More side */
+  --less: #ff7a8a;         /* Less side */
+  --gold: #ffcf5c;         /* PLAY tag */
+  --f-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--ink);
+}
+.wrap {
+  max-width: 1240px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--violet-hi); outline-offset: 2px; }
+
+/* top bar */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.bar .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+  background: var(--violet); color: var(--ink); font-size: 15px;
+}
+.bar-meta { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.chip {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; color: var(--muted); white-space: nowrap;
+}
+
+/* hero */
+.hero { padding-block: 36px 20px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: end; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-hi); }
+h1 {
+  font-family: var(--f-display); font-weight: 800; font-size: clamp(36px, 6vw, 64px);
+  line-height: 0.98; letter-spacing: -0.035em; margin: 10px 0 14px; text-wrap: balance;
+}
+h1 em { font-style: normal; color: var(--violet-hi); }
+.lede { color: var(--muted); max-width: 58ch; margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.stat { background: var(--panel); padding: 14px 16px; }
+.stat b { display: block; font-family: var(--f-mono); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--muted); }
+
+/* break-even strip */
+.be { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 22px; }
+.be div { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--muted); }
+.be b { font-family: var(--f-mono); color: var(--text); font-size: 14px; margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+/* main grid */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; padding-bottom: 120px; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer;
+  font-weight: 600; font-size: 14px; display: flex; gap: 8px; align-items: center;
+}
+.tab .n { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.tab[aria-selected="true"] { background: var(--violet); border-color: var(--violet); color: var(--ink); }
+.tab[aria-selected="true"] .n { color: var(--ink); }
+
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 22px 0 12px; flex-wrap: wrap; }
+.section-head h2 { font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin: 0; }
+.section-head p { margin: 0; color: var(--muted); font-size: 13px; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px;
+  display: flex; flex-direction: column; gap: 12px; position: relative; transition: border-color .15s, transform .15s;
+}
+.card.sel { border-color: var(--violet); box-shadow: 0 0 0 1px var(--violet) inset; }
+.card-top { display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 12px; flex: 0 0 auto; display: grid; place-items: center;
+  background: var(--panel-2); font-family: var(--f-display); font-weight: 800; font-size: 15px; color: var(--violet-hi);
+}
+.who { min-width: 0; }
+.who b { display: block; font-size: 15px; line-height: 1.2; }
+.who span { font-size: 12px; color: var(--muted); }
+.tag {
+  margin-left: auto; align-self: flex-start; font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 6px; padding: 3px 7px; white-space: nowrap;
+}
+.tag.play { background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--gold); }
+.tag.lean { background: color-mix(in srgb, var(--violet) 22%, transparent); color: var(--violet-hi); }
+.tag.below { background: var(--panel-2); color: var(--muted); }
+
+.line-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.line b { font-family: var(--f-mono); font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.line .cond { font-family: var(--f-mono); font-size: 13px; color: var(--muted); margin-right: 4px; }
+.line span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.prob { text-align: right; }
+.prob b { font-family: var(--f-mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.prob span { display: block; font-size: 11px; color: var(--muted); }
+.meter { height: 4px; background: var(--panel-2); border-radius: 4px; position: relative; overflow: hidden; }
+.meter i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; }
+.meter::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--text); opacity: .5; left: var(--be); }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.foot { display: flex; align-items: center; gap: 8px; }
+.when { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.pick-btn {
+  margin-left: auto; border: 0; border-radius: 10px; padding: 9px 14px; cursor: pointer; font-weight: 700; font-size: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.pick-btn.more { background: color-mix(in srgb, var(--more) 16%, transparent); color: var(--more); }
+.pick-btn.less { background: color-mix(in srgb, var(--less) 16%, transparent); color: var(--less); }
+.card.sel .pick-btn.more { background: var(--more); color: var(--ink); }
+.card.sel .pick-btn.less { background: var(--less); color: var(--ink); }
+
+/* slip */
+.slip {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px;
+}
+.slip h3 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+.slip h3 .count { font-family: var(--f-mono); font-size: 13px; background: var(--violet); color: var(--ink); border-radius: 999px; padding: 2px 9px; }
+.slip-body { display: flex; flex-direction: column; gap: 14px; }
+.slip-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.slip-list li { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 8px 10px; font-size: 13px; }
+.slip-list li .s { min-width: 0; flex: 1; }
+.slip-list li .s b { display: block; font-size: 13px; }
+.slip-list li .s span { color: var(--muted); font-size: 12px; }
+.side { font-family: var(--f-mono); font-size: 11px; font-weight: 700; }
+.side.more { color: var(--more); } .side.less { color: var(--less); }
+.x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 2px 4px; }
+.empty { color: var(--muted); font-size: 13px; margin: 0; }
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mode { background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
+.mode .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.mode b { display: block; font-family: var(--f-mono); font-size: 20px; font-variant-numeric: tabular-nums; }
+.mode span { font-size: 11px; color: var(--muted); }
+.mode.good b { color: var(--more); } .mode.bad b { color: var(--less); }
+.warn { font-size: 12px; color: var(--gold); margin: 0; }
+.slip-actions { display: flex; gap: 8px; }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
+.ghost.primary { border-color: var(--violet); color: var(--violet-hi); }
+.stake { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.stake input { width: 80px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 6px 8px; font-family: var(--f-mono); }
+
+/* how it works */
+.how { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.how div { border-top: 2px solid var(--violet); padding-top: 12px; }
+.how h4 { margin: 0 0 6px; font-family: var(--f-display); font-size: 17px; }
+.how p { margin: 0; color: var(--muted); font-size: 14px; }
+footer { border-top: 1px solid var(--line); margin-top: 40px; padding-block: 20px; color: var(--muted); font-size: 12px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+
+@media (max-width: 920px) {
+  .hero { grid-template-columns: 1fr; }
+  .main { grid-template-columns: 1fr; }
+  .slip {
+    position: fixed; top: auto; left: 0; right: 0; bottom: 0; border-radius: 20px 20px 0 0; z-index: 6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    max-height: 70vh; overflow-y: auto; box-shadow: 0 -12px 40px rgba(0,0,0,.5);
+  }
+  .slip:not(.open) .slip-body { display: none; }
+  .slip h3 { cursor: pointer; }
+  .how { grid-template-columns: 1fr; }
+}
+@media (min-width: 921px) { .toggle-hint { display: none; } }
+.toggle-hint { margin-left: auto; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">PL</span>Parlay Lab</div>
+    <div class="bar-meta">
+      <span class="chip">Board · Thu Oct 22 – Fri Oct 23</span>
+      <span class="chip">Updated 00:45 ET</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">PrizePicks More / Less board</div>
+      <h1>Only take picks that beat the <em>break-even line</em>.</h1>
+      <p class="lede">Each NBA and NFL card is a real PrizePicks line checked against 2–6 sportsbooks, with the books' margin removed, then checked against injury news. Tennis cards show the line a pick needs, because no PrizePicks tennis lines were found. Tap picks to build an entry and see its expected return.</p>
+    </div>
+    <div class="stats" aria-label="Board summary">
+      <div class="stat"><b id="s-total">12</b><span>picks on board</span></div>
+      <div class="stat"><b id="s-play">5</b><span>clear 58%</span></div>
+      <div class="stat"><b>0–0</b><span>graded record</span></div>
+    </div>
+  </section>
+
+  <div class="be" aria-label="Break-even hit rate per pick">
+    <div>2 Power<b>57.7%</b></div>
+    <div>3 Power<b>58.5%</b></div>
+    <div>3 Flex<b>59.1%</b></div>
+    <div>4 Power<b>56.2%</b></div>
+    <div>4 Flex<b>56.9%</b></div>
+    <div>5 Power<b>54.9%</b></div>
+    <div>5 Flex<b>54.3%</b></div>
+    <div>6 Power<b>54.7%</b></div>
+    <div>6 Flex<b>54.2%</b></div>
+  </div>
+
+  <div class="main">
+    <div>
+      <div class="tabs" role="tablist" aria-label="Sport">
+        <button class="tab" role="tab" id="tab-all" data-sport="all" aria-selected="true">All <span class="n" id="n-all"></span></button>
+        <button class="tab" role="tab" id="tab-nba" data-sport="NBA" aria-selected="false">NBA <span class="n" id="n-NBA"></span></button>
+        <button class="tab" role="tab" id="tab-nfl" data-sport="NFL" aria-selected="false">NFL <span class="n" id="n-NFL"></span></button>
+        <button class="tab" role="tab" id="tab-tennis" data-sport="Tennis" aria-selected="false">Tennis <span class="n" id="n-Tennis"></span></button>
+      </div>
+      <div id="board"></div>
+
+      <section class="how" aria-label="How picks are made">
+        <div><h4>Real lines</h4><p>Prop lines from PrizePicks and US sportsbooks come from The Odds API. Games that have already started are skipped.</p></div>
+        <div><h4>Fair odds</h4><p>Each book's margin is removed, and its line is converted to the PrizePicks number. Ties on whole-number lines are counted as pushes.</p></div>
+        <div><h4>News check</h4><p>Injury reports, minutes and roles, and the game's spread. A pick is dropped when its status is unclear close to lock.</p></div>
+      </section>
+    </div>
+
+    <aside class="slip" id="slip" aria-label="Entry slip">
+      <h3 id="slip-head" role="button" tabindex="0" aria-expanded="false">Your entry <span class="count" id="count">0</span><span class="toggle-hint" id="toggle-hint">tap to open</span></h3>
+      <div class="slip-body">
+        <ul class="slip-list" id="slip-list"></ul>
+        <p class="empty" id="slip-empty">Tap More or Less on 2–6 picks. The slip shows the expected return for Power and Flex entries.</p>
+        <div class="stake"><label for="stake">Stake $</label><input id="stake" type="number" min="1" step="1" value="10"></div>
+        <div class="modes">
+          <div class="mode" id="m-power"><div class="k">Power</div><b>–</b><span>expected return</span></div>
+          <div class="mode" id="m-flex"><div class="k">Flex</div><b>–</b><span>expected return</span></div>
+        </div>
+        <p class="warn" id="warn" hidden></p>
+        <div class="slip-actions">
+          <button class="ghost primary" id="best" type="button">Load best 4</button>
+          <button class="ghost" id="clear" type="button">Clear</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Picks are estimates, not guarantees. Check the line and payout in the app before you enter. Play within limits.</span>
+    <span>Not affiliated with PrizePicks.</span>
+  </div>
+</footer>
+
+<script>
+const PICKS = [
+  { id: "amitch", sport: "NBA", player: "Ajay Mitchell", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "More", line: "2.5", books: "Books 3.5 (2)", p: 0.60, game_id: "denokc",
+    note: "PrizePicks is a full point under the books. He averaged 4.0 rebounds in 30+ minutes in last spring's playoffs. Confirm he's active and in the rotation." },
+  { id: "jbrown", sport: "NBA", player: "Jaylen Brown", team: "PHI", game: "CLE @ PHI", when: "Thu 7:10 PM ET", stat: "Assists", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.57, game_id: "cleph",
+    note: "Scoring-first role next to LeBron, Maxey and Embiid. Drop it if one of them sits. He had 6 assists in the opener." },
+  { id: "cjohn", sport: "NBA", player: "Cameron Johnson", team: "DEN", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.565, game_id: "denokc",
+    note: "3.8 rebounds per game last season, next to Jokic and Gordon. OKC is an 8-point favorite, so a blowout could cut his minutes." },
+  { id: "jwill", sport: "NBA", player: "Jalen Williams", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "5", books: "Books 4.5 (3)", p: 0.555, game_id: "denokc",
+    note: "4.6 rebounds per game last season, but 7 in the opener. Drop it if Holmgren or Hartenstein is out." },
+  { id: "stev", sport: "NFL", player: "Rhamondre Stevenson", team: "NE", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rush Yds", side: "Less", line: "42.5", books: "Books 41.5–44.5 (6)", p: 0.55, game_id: "nechi",
+    note: "Henderson is back at full practice and Kiner has the hot hand. Both starting guards are out. He ran 14 times for 36 yards last week." },
+  { id: "chism", sport: "NFL", player: "Efton Chism III", team: "NE", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rec Yds", side: "Less", line: "19.5", books: "Books 16.5–18.5 (5)", p: 0.55, game_id: "nechi",
+    note: "0 catches on 1 target in A.J. Brown's return. The Bears allow the most 30+ yard passes in the league, so one long catch beats it." },
+  { id: "caleb", sport: "NFL", player: "Caleb Williams", team: "CHI", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rush Yds", side: "Less", line: "19.5", books: "Books 19.5–21.5 (6)", p: 0.53, game_id: "nechi",
+    note: "Grade 2 hamstring strain. He ran 4 times for 3 yards in his first game back. This is below break-even." },
+  { id: "love", sport: "NFL", player: "Colston Loveland", team: "CHI", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rec Yds", side: "More", line: "41.5", books: "Books 41.5–45.5 (6)", p: 0.52, game_id: "nechi",
+    note: "6 catches for 65 yards on 88% of snaps last week. Nothing here the books don't already price in. Use it only to fill a slot." },
+  { id: "alexfer", sport: "Tennis", player: "Alexandrova v Fernandez", team: "WTA", game: "Ningbo QF", when: "Fri 12:00 AM ET", stat: "Total Games", side: "More", line: "20.5", cond: "≤", books: "PP line not found", p: 0.63, game_id: "ningbo1", tennis: true,
+    note: "The moneyline is close (-138/+114), and their last 3 meetings went three sets. 57% at 21.5. Fernandez has played almost 6 hours to get here." },
+  { id: "chidekh", sport: "Tennis", player: "Clément Chidekh", team: "ATP", game: "Brussels QF v Cerundolo", when: "Fri · time TBD", stat: "Games Won", side: "More", line: "8.5", cond: "≤", books: "PP line not found", p: 0.63, game_id: "brussels", tennis: true,
+    note: "About a 40% underdog, so a three-set loss still gets him 9+ games. 70% at 7.5, a lean at 9.5." },
+  { id: "machac", sport: "Tennis", player: "Machac v Khachanov", team: "ATP", game: "Almaty R16", when: "Thu 4:00 AM ET", stat: "Total Games", side: "More", line: "21.5", cond: "≤", books: "Polymarket O21.5 ~61%", p: 0.60, game_id: "almaty", tennis: true,
+    note: "Locks first, at 4 AM. Machac has had an injury-filled 2026, so there's a risk he retires mid-match." },
+  { id: "bouz", sport: "Tennis", player: "Bouzková v Bejlek", team: "WTA", game: "Ningbo QF", when: "Fri 1:00 AM ET", stat: "Total Games", side: "More", line: "19.5", cond: "≤", books: "Books O/U 21.5 -113/-118", p: 0.60, game_id: "ningbo2", tennis: true,
+    note: "The books have 21.5 as a coin flip, so it's only 55% at 20.5. Alternate: Krueger v Gibson (Osaka) More at 19.5 or lower." }
+];
+
+const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
+const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
+const BEST = ["amitch", "jbrown", "alexfer", "chidekh"];
+
+function dist(probs) {
+  let d = [1];
+  for (const p of probs) {
+    const n = new Array(d.length + 1).fill(0);
+    d.forEach((q, k) => { n[k] += q * (1 - p); n[k + 1] += q * p; });
+    d = n;
+  }
+  return d;
+}
+const ret = (probs, table) => { const d = dist(probs); return Object.entries(table).reduce((s, [k, m]) => s + (d[k] || 0) * m, 0); };
+function breakeven(n, table) {
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (ret(Array(n).fill(mid), table) < 1) lo = mid; else hi = mid; }
+  return hi;
+}
+const BE4 = breakeven(4, POWER[4]);
+
+const tier = p => p >= 0.58 ? ["play", "PLAY"] : p >= 0.54 ? ["lean", "LEAN"] : ["below", "BELOW B/E"];
+const pct = p => (p * 100).toFixed(1).replace(/\.0$/, "") + "%";
+const initials = name => name.split(/\s+v\s+|\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toUpperCase();
+
+const selected = new Set();
+let filter = "all";
+try { const saved = JSON.parse(localStorage.getItem("pl-slip") || "[]"); saved.forEach(id => PICKS.some(p => p.id === id) && selected.add(id)); } catch (e) {}
+const save = () => { try { localStorage.setItem("pl-slip", JSON.stringify([...selected])); } catch (e) {} };
+
+function cardHTML(p) {
+  const [cls, label] = tier(p.p);
+  const color = p.side === "More" ? "var(--more)" : "var(--less)";
+  const sel = selected.has(p.id);
+  return `<article class="card${sel ? " sel" : ""}" data-id="${p.id}">
+    <div class="card-top">
+      <div class="avatar" aria-hidden="true">${p.tennis ? p.team : initials(p.player)}</div>
+      <div class="who"><b>${p.player}</b><span>${p.tennis ? p.game : p.team + " · " + p.game}</span></div>
+      <span class="tag ${cls}">${label}</span>
+    </div>
+    <div class="line-row">
+      <div class="line">${p.cond ? `<span class="cond">play if</span>` : ""}<b>${p.cond ? p.cond + " " : ""}${p.line}</b><span>${p.stat} · ${p.books}</span></div>
+      <div class="prob"><b>${pct(p.p)}</b><span>est. hit rate</span></div>
+    </div>
+    <div class="meter" style="--be:${(BE4 - 0.4) / 0.3 * 100}%" title="Marker shows the 4-pick Power break-even"><i style="width:${Math.min(100, (p.p - 0.4) / 0.3 * 100)}%;background:${color}"></i></div>
+    <p class="note">${p.note}</p>
+    <div class="foot">
+      <span class="when">${p.when}</span>
+      <button class="pick-btn ${p.side.toLowerCase()}" type="button" aria-pressed="${sel}" data-id="${p.id}">${sel ? "✓ " : ""}${p.side}</button>
+    </div>
+  </article>`;
+}
+
+function renderBoard() {
+  const groups = filter === "all" ? ["NBA", "NFL", "Tennis"] : [filter];
+  const heads = {
+    NBA: ["NBA", "Real PrizePicks lines vs. 2–3 books. Thursday tips at 7:10 and 9:40 PM ET."],
+    NFL: ["NFL · Patriots @ Bears", "No pick clears break-even. Use one at most, as the 5th or 6th pick of a Flex."],
+    Tennis: ["Tennis", "No PrizePicks lines found. Play only when the app's line is at or under the number shown."]
+  };
+  document.getElementById("board").innerHTML = groups.map(g => {
+    const list = PICKS.filter(p => p.sport === g).sort((a, b) => b.p - a.p);
+    return `<div class="section-head"><h2>${heads[g][0]}</h2><p>${heads[g][1]}</p></div><div class="cards">${list.map(cardHTML).join("")}</div>`;
+  }).join("");
+}
+
+function renderSlip() {
+  const picks = PICKS.filter(p => selected.has(p.id));
+  document.getElementById("count").textContent = picks.length;
+  document.getElementById("slip-empty").hidden = picks.length > 0;
+  document.getElementById("slip-list").innerHTML = picks.map(p => `<li>
+      <span class="side ${p.side.toLowerCase()}">${p.side.toUpperCase()}</span>
+      <span class="s"><b>${p.player}</b><span>${p.cond ? p.cond + " " : ""}${p.line} ${p.stat} · ${pct(p.p)}</span></span>
+      <button class="x" type="button" aria-label="Remove ${p.player}" data-id="${p.id}">×</button></li>`).join("");
+  const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
+  const probs = picks.map(p => p.p), n = probs.length;
+  for (const [key, table] of [["power", POWER], ["flex", FLEX]]) {
+    const el = document.getElementById("m-" + key);
+    const b = el.querySelector("b"), s = el.querySelector("span");
+    el.classList.remove("good", "bad");
+    if (!table[n]) { b.textContent = "–"; s.textContent = key === "flex" ? "needs 3–6 picks" : "needs 2–6 picks"; continue; }
+    const r = ret(probs, table), ev = (r - 1) * stake;
+    b.textContent = (ev >= 0 ? "+" : "−") + "$" + Math.abs(ev).toFixed(2);
+    s.textContent = `${r.toFixed(3)}x · break-even ${pct(breakeven(n, table))}/pick`;
+    el.classList.add(r >= 1 ? "good" : "bad");
+  }
+  const warn = [];
+  const games = {};
+  picks.forEach(p => { games[p.game_id] = (games[p.game_id] || 0) + 1; });
+  if (Object.values(games).some(c => c > 1)) warn.push("Two or more picks share a game, so their results move together.");
+  if (picks.filter(p => p.tennis).length > 2) warn.push("More than two tennis \"Over games\" picks stack the same risk.");
+  if (picks.length > 6) warn.push("PrizePicks entries max out at 6 picks.");
+  const w = document.getElementById("warn");
+  w.hidden = warn.length === 0;
+  w.textContent = warn.join(" ");
+}
+
+function toggle(id) { selected.has(id) ? selected.delete(id) : selected.add(id); save(); renderBoard(); renderSlip(); }
+
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".pick-btn, .x");
+  if (btn) return toggle(btn.dataset.id);
+  const tab = e.target.closest(".tab");
+  if (tab) {
+    filter = tab.dataset.sport;
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t === tab));
+    renderBoard();
+  }
+});
+document.getElementById("best").onclick = () => { selected.clear(); BEST.forEach(id => selected.add(id)); save(); renderBoard(); renderSlip(); };
+document.getElementById("clear").onclick = () => { selected.clear(); save(); renderBoard(); renderSlip(); };
+document.getElementById("stake").oninput = renderSlip;
+const head = document.getElementById("slip-head");
+const flip = () => { const s = document.getElementById("slip"); const open = s.classList.toggle("open"); head.setAttribute("aria-expanded", open); document.getElementById("toggle-hint").textContent = open ? "tap to close" : "tap to open"; };
+head.onclick = flip;
+head.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } };
+
+["all", "NBA", "NFL", "Tennis"].forEach(s => { document.getElementById("n-" + s).textContent = s === "all" ? PICKS.length : PICKS.filter(p => p.sport === s).length; });
+document.getElementById("s-total").textContent = PICKS.length;
+document.getElementById("s-play").textContent = PICKS.filter(p => p.p >= 0.58).length;
+renderBoard();
+renderSlip();
+</script>
