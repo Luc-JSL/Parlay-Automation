@@ -188,7 +188,29 @@ h1 em { font-style: normal; color: var(--violet-hi); }
 .warn { font-size: 12px; color: var(--gold); margin: 0; }
 .advice { font-size: 13px; margin: 0; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
 .advice b { color: var(--more); }
-.slip-actions { display: flex; gap: 8px; }
+.slip-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.ghost.played { border-color: var(--more); color: var(--more); }
+.payouts { display: grid; gap: 4px; font-size: 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.payouts .row { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); }
+.payouts .row b { font-family: var(--f-mono); color: var(--text); font-variant-numeric: tabular-nums; }
+.payouts .row b.win { color: var(--more); }
+.payouts .row b.lose { color: var(--less); }
+.payouts .h { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.entries { margin-top: 36px; }
+.profit-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+.profit-strip div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.profit-strip span { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.profit-strip b { font-family: var(--f-mono); font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.entry { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 8px; }
+.entry .what { flex: 1 1 260px; min-width: 0; }
+.entry .what b { display: block; font-size: 14px; }
+.entry .what span { font-size: 12px; color: var(--muted); }
+.entry .money { font-family: var(--f-mono); font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.entry .settle { display: flex; gap: 6px; flex-wrap: wrap; }
+.entry .settle button { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 12px; cursor: pointer; color: var(--text); }
+.entry .settle button:hover { border-color: var(--violet); }
+.pos { color: var(--more); } .neg { color: var(--less); }
+@media (max-width: 600px) { .profit-strip { grid-template-columns: 1fr 1fr; } }
 .ghost { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
 .ghost.primary { border-color: var(--violet); color: var(--violet-hi); }
 .stake { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
@@ -270,7 +292,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     <div class="stats" aria-label="Board summary">
       <div class="stat"><b id="s-total">12</b><span>Picks found</span></div>
       <div class="stat"><b id="s-play">5</b><span>Clear the line</span></div>
-      <div class="stat"><b>0–0</b><span>Graded</span></div>
+      <div class="stat"><b id="s-profit">$0.00</b><span>Total profit</span></div>
     </div>
   </section>
 
@@ -311,6 +333,16 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
       <div id="board"></div>
       <div class="hidden-row" id="hidden-row" hidden></div>
 
+      <section class="entries" aria-label="My entries and profit">
+        <div class="section-head"><h2>My entries &amp; profit</h2><p>Tap "I played Power" or "I played Flex" in the slip, then mark each entry when it settles.</p></div>
+        <div class="profit-strip">
+          <div><span>Total profit</span><b id="p-total">$0.00</b></div>
+          <div><span>Open entries: max profit</span><b id="p-open">$0.00</b></div>
+          <div><span>Record</span><b id="p-record">0–0</b></div>
+        </div>
+        <div id="entries"><p class="empty">No entries logged yet.</p></div>
+      </section>
+
       <section class="how" aria-label="How picks are made">
         <div><h4>Real lines</h4><p>Prop lines from PrizePicks and US sportsbooks come from The Odds API. Games that have already started are skipped.</p></div>
         <div><h4>Fair odds</h4><p>Each book's margin is removed, and its line is converted to the PrizePicks number. Ties on whole-number lines are counted as pushes.</p></div>
@@ -330,10 +362,13 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
           <div class="mode" id="m-power"><div class="k">Power slip</div><b>–</b><span>expected return</span></div>
           <div class="mode" id="m-flex"><div class="k">Flex slip</div><b>–</b><span>expected return</span></div>
         </div>
+        <div class="payouts" id="payouts" hidden></div>
         <p class="advice" id="advice" hidden></p>
         <p class="warn" id="warn" hidden></p>
         <div class="slip-actions">
           <button class="ghost primary" id="best" type="button">Load best 4</button>
+          <button class="ghost played" id="played-power" type="button" hidden>I played Power</button>
+          <button class="ghost played" id="played-flex" type="button" hidden>I played Flex</button>
           <button class="ghost" id="clear" type="button">Clear slip</button>
         </div>
       </div>
@@ -540,6 +575,15 @@ function renderSlip() {
     s.textContent = `${r.toFixed(3)}x · break-even ${pct(breakeven(n, table[n]))}/pick`;
     el.classList.add(r >= 1 ? "good" : "bad");
   }
+  const pay = document.getElementById("payouts");
+  const money = v => (v >= 0 ? "+" : "−") + "$" + Math.abs(v).toFixed(2);
+  const rows = [];
+  if (powerTable[n]) rows.push(`<div class="h">Power · ${n} picks</div>`, ...Object.entries(powerTable[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="win">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Any miss</span><b class="lose">${money(-stake)}</b></div>`);
+  if (FLEX[n]) rows.push(`<div class="h">Flex · ${n} picks</div>`, ...Object.entries(FLEX[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="${m >= 1 ? "win" : "lose"}">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Fewer hits</span><b class="lose">${money(-stake)}</b></div>`);
+  pay.hidden = rows.length === 0;
+  pay.innerHTML = rows.join("");
+  document.getElementById("played-power").hidden = !powerTable[n];
+  document.getElementById("played-flex").hidden = !FLEX[n];
   const adv = document.getElementById("advice");
   const options = [["Power", powerTable[n]], ["Flex", FLEX[n]]].filter(o => o[1]).map(([name, row]) => ({ name, row, r: ret(probs, row) }));
   const top = options.sort((a, b) => b.r - a.r)[0];
@@ -589,6 +633,71 @@ const head = document.getElementById("slip-head");
 const flip = () => { const s = document.getElementById("slip"); const open = s.classList.toggle("open"); head.setAttribute("aria-expanded", open); document.getElementById("toggle-hint").textContent = open ? "tap to close" : "tap to open"; };
 head.onclick = flip;
 head.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } };
+
+/* ---------- my entries ---------- */
+let entriesCol = null, entries = [];
+try { entries = JSON.parse(localStorage.getItem("pl-entries") || "[]"); } catch (e) {}
+const money2 = v => (v >= 0 ? "+" : "−") + "$" + Math.abs(v).toFixed(2);
+
+function entryProfit(e) {
+  if (e.status !== "settled") return 0;
+  const m = (e.table || {})[e.hits] || 0;
+  return m * e.stake - e.stake;
+}
+function renderEntries() {
+  const list = entries.slice().sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  const settled = list.filter(e => e.status === "settled");
+  const total = settled.reduce((s, e) => s + entryProfit(e), 0);
+  const open = list.filter(e => e.status !== "settled").reduce((s, e) => s + (Math.max(...Object.values(e.table || { 0: 0 })) * e.stake - e.stake), 0);
+  const wins = settled.filter(e => entryProfit(e) > 0).length;
+  for (const id of ["p-total", "s-profit"]) { const el = document.getElementById(id); el.textContent = money2(total); el.className = total > 0 ? "pos" : total < 0 ? "neg" : ""; }
+  document.getElementById("p-open").textContent = "$" + open.toFixed(2);
+  document.getElementById("p-record").textContent = `${wins}–${settled.length - wins}`;
+  const box = document.getElementById("entries");
+  if (!list.length) { box.innerHTML = `<p class="empty">No entries logged yet.</p>`; return; }
+  box.innerHTML = list.map(e => {
+    const n = (e.picks || []).length;
+    const top = Math.max(...Object.values(e.table || { 0: 0 }));
+    const right = e.status === "settled"
+      ? `<span class="money ${entryProfit(e) >= 0 ? "pos" : "neg"}">${money2(entryProfit(e))}</span><button class="ghost" type="button" data-reopen="${esc(e.id)}">Undo</button>`
+      : `<span class="money">$${e.stake.toFixed(2)} to win $${(top * e.stake).toFixed(2)}</span><div class="settle">${Array.from({ length: n + 1 }, (_, k) => n - k).map(k => `<button type="button" data-settle="${esc(e.id)}" data-hits="${k}">${k}/${n} hit</button>`).join("")}<button type="button" data-delete="${esc(e.id)}" aria-label="Delete entry">✕</button></div>`;
+    return `<div class="entry"><div class="what"><b>${n}-pick ${esc(e.type)} · $${e.stake.toFixed(2)}</b><span>${esc((e.picks || []).map(p => `${p.player} ${p.side} ${p.line} ${p.stat}`).join(" · "))}</span></div>${right}</div>`;
+  }).join("");
+}
+async function saveEntry(e) {
+  const i = entries.findIndex(x => x.id === e.id);
+  if (i >= 0) entries[i] = e; else entries.push(e);
+  renderEntries();
+  try { localStorage.setItem("pl-entries", JSON.stringify(entries)); } catch (err) {}
+  if (entriesCol) { try { const { id, ...data } = e; await entriesCol.doc(id).set(data); } catch (err) { setSync("Couldn't save the entry: " + (err && err.message || "unknown error")); } }
+}
+async function deleteEntry(id) {
+  entries = entries.filter(x => x.id !== id);
+  renderEntries();
+  try { localStorage.setItem("pl-entries", JSON.stringify(entries)); } catch (err) {}
+  if (entriesCol) { try { await entriesCol.doc(id).delete(); } catch (err) {} }
+}
+function logPlayed(type) {
+  const picks = board().filter(p => selected.has(p.id));
+  const n = picks.length;
+  const custom = parseFloat(document.getElementById("payout").value);
+  const table = type === "Power" ? (custom > 1 ? { [n]: custom } : POWER[n]) : FLEX[n];
+  if (!table) return;
+  const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
+  saveEntry({ id: "e" + Date.now().toString(36), type, stake, table, status: "open", hits: null, createdAt: new Date().toISOString(),
+    picks: picks.map(p => ({ id: p.id, player: p.player, side: p.side, line: (p.cond ? p.cond + " " : "") + p.line, stat: p.stat, p: p.p })) });
+  document.getElementById("entries").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+document.getElementById("played-power").onclick = () => logPlayed("Power");
+document.getElementById("played-flex").onclick = () => logPlayed("Flex");
+document.addEventListener("click", e => {
+  const st = e.target.closest("[data-settle]");
+  if (st) { const x = entries.find(v => v.id === st.dataset.settle); if (x) saveEntry({ ...x, status: "settled", hits: Number(st.dataset.hits) }); return; }
+  const ro = e.target.closest("[data-reopen]");
+  if (ro) { const x = entries.find(v => v.id === ro.dataset.reopen); if (x) saveEntry({ ...x, status: "open", hits: null }); return; }
+  const del = e.target.closest("[data-delete]");
+  if (del) deleteEntry(del.dataset.delete);
+});
 
 /* ---------- chat ---------- */
 const chatLog = [];
@@ -721,6 +830,7 @@ document.getElementById("suggest").addEventListener("click", e => { const b = e.
 
 renderBoard();
 renderSlip();
+renderEntries();
 
 (async () => {
   const c = window.claude;
@@ -741,6 +851,11 @@ renderSlip();
       if (!isNaN(t)) document.getElementById("updated").textContent = ("Board update: " + t.toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT").toUpperCase();
     }
     renderBoard(); renderSlip();
+  }, () => {});
+  entriesCol = db.collection("entries");
+  entriesCol.onSnapshot(qs => {
+    entries = qs.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(e => typeof e.stake === "number" && e.table);
+    renderEntries();
   }, () => {});
   editsDoc = db.doc("board/edits");
   editsDoc.onSnapshot(snap => {
