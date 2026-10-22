@@ -450,7 +450,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
         <p class="advice" id="advice" hidden></p>
         <p class="warn" id="warn" hidden></p>
         <div class="slip-actions">
-          <button class="ghost primary" id="best" type="button">Load best entry</button>
+          <button class="ghost primary" id="best" type="button" data-best="0">Load best entry</button>
+          <button class="ghost primary" type="button" data-best="3">Best 3</button>
+          <button class="ghost primary" type="button" data-best="4">Best 4</button>
+          <button class="ghost primary" type="button" data-best="5">Best 5</button>
           <button class="ghost step" id="add1" type="button">+ Add 1</button>
           <button class="ghost step" id="drop1" type="button">− Remove 1</button>
           <button class="ghost played" id="played-power" type="button" hidden>I played Power</button>
@@ -510,9 +513,9 @@ function nextBest(current) {
   return pool.find(p => !games.has(p.game_id || p.game) && !(p.tennis && tennis >= 2))
     || pool.find(p => !(p.tennis && tennis >= 2)) || null;
 }
-/* The entry with the best expected return: 2–6 picks, one per game, at most 2 tennis Overs, Power or Flex,
-   with Goblin payout cuts counted. Tries the top 2 picks from each of the 10 best games. */
-function bestEntry() {
+/* The entry with the best expected return: 2–6 picks (or exactly `size`), one per game, at most 2 tennis Overs,
+   Power or Flex, with Goblin payout cuts counted. Tries the top 2 picks from each of the 10 best games. */
+function bestEntry(size = 0) {
   const byGame = new Map();
   for (const p of board().filter(playable).sort((a, b) => b.p - a.p)) {
     const g = p.game_id || p.game;
@@ -522,11 +525,11 @@ function bestEntry() {
   const games = [...byGame.values()].slice(0, 10);
   let best = null;
   const walk = (i, cur, tennis) => {
-    if (cur.length >= 2) {
+    if (size ? cur.length === size : cur.length >= 2) {
       const r = bestReturn(cur, false);
       if (!best || r > best.r + 1e-9) best = { ids: cur.map(p => p.id), r };
     }
-    if (i === games.length || cur.length === 6) return;
+    if (i === games.length || cur.length === (size || 6)) return;
     walk(i + 1, cur, tennis);
     for (const p of games[i]) if (!(p.tennis && tennis >= 2)) walk(i + 1, [...cur, p], tennis + (p.tennis ? 1 : 0));
   };
@@ -845,18 +848,23 @@ function entryReturn(ids) {
   return Math.max(T.power[n] ? ret(probs, T.power[n]) : 0, T.flex[n] ? ret(probs, T.flex[n]) : 0);
 }
 function stepNote(text) { const el = document.getElementById("step-note"); el.hidden = !text; el.textContent = text || ""; }
-document.getElementById("best").onclick = () => {
+function loadBest(size) {
   selected.clear();
-  const b = bestEntry();
+  const b = bestEntry(size);
   b.ids.forEach(id => selected.add(id));
   const flat = board().filter(p => p.goblin && p.line === p.stdLine).map(p => p.player);
   const why = [b.games < 4 ? `only ${b.games} different games are on the board` : "",
     flat.length ? `${flat.join(", ")} is marked as a Goblin at the normal line, which cuts the payout without raising the win chance` : ""].filter(Boolean).join(", and ");
-  stepNote(!b.ids.length ? "Not enough playable picks for an entry." : b.r >= 1
-    ? `Best entry on the board: ${b.ids.length} picks, returns ${b.r.toFixed(3)}x per $1.`
-    : `No entry on the board is profitable right now${why ? ` (${why})` : ""}. The best one returns ${b.r.toFixed(3)}x per $1, so skip it or wait for the next scan.`);
+  const picks = board().filter(p => selected.has(p.id)), n = picks.length, T = entryTables(picks, false), probs = picks.map(p => p.p);
+  const pw = T.power[n] ? ret(probs, T.power[n]) : 0, fx = T.flex[n] ? ret(probs, T.flex[n]) : 0;
+  const mode = fx > pw ? `Play it as Flex (${fx.toFixed(3)}x vs ${pw.toFixed(3)}x Power).` : `Play it as Power (${pw.toFixed(3)}x${fx ? ` vs ${fx.toFixed(3)}x Flex` : ""}).`;
+  const label = size ? `Best ${size}-pick` : `Best entry (${n} picks)`;
+  stepNote(!b.ids.length ? (size ? `Not enough picks from ${size} different games for a ${size}-pick entry.` : "Not enough playable picks for an entry.")
+    : b.r >= 1 ? `${label}: returns ${b.r.toFixed(3)}x per $1. ${mode}`
+    : `${label} isn't profitable${why ? ` (${why})` : ""}: it returns ${b.r.toFixed(3)}x per $1, so you'd lose about $${((1 - b.r) * 10).toFixed(2)} per $10. Try another size or wait for the next scan.`);
   rerender();
-};
+}
+document.querySelectorAll("[data-best]").forEach(btn => btn.onclick = () => loadBest(Number(btn.dataset.best)));
 document.getElementById("add1").onclick = () => {
   if (selected.size >= 6) return stepNote("PrizePicks entries max out at 6 picks.");
   const before = entryReturn(selected);
