@@ -21,7 +21,7 @@ less (a 4-pick Power with picks sharing a game showed 8x instead of 10x); pass -
 import argparse
 
 # picks -> {hits: multiplier}
-POWER = {2: {2: 3}, 3: {3: 5}, 4: {4: 10}, 5: {5: 20}, 6: {6: 37.5}}
+POWER = {2: {2: 3}, 3: {3: 6}, 4: {4: 10}, 5: {5: 20}, 6: {6: 37.5}}
 FLEX = {
     3: {3: 2.25, 2: 1.25},
     4: {4: 5, 3: 1.5},

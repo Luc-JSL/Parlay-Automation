@@ -13,7 +13,7 @@ Each pick on an entry has to hit about 54–59% just to break even:
 | Picks | Power | Flex |
 |---|---|---|
 | 2 | 57.7% | – |
-| 3 | 58.5% | 59.1% |
+| 3 | 55.0% (6x) | 59.1% |
 | 4 | 56.2% (59.5% if same-game picks cut it to 8x) | 56.9% |
 | 5 | 54.9% | 54.3% |
 | 6 | 54.7% | 54.2% |

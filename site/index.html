@@ -367,7 +367,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 
   <div class="be" aria-label="Break-even hit rate per pick">
     <div>2 Power<b>57.7%</b></div>
-    <div>3 Power<b>58.5%</b></div>
+    <div>3 Power<b>55.0%</b></div>
     <div>3 Flex<b>59.1%</b></div>
     
     <div>4 Power<b>56.2%</b></div>
@@ -484,7 +484,7 @@ let PICKS = [
     note: "The books have 21.5 as a coin flip, so it's only 55% at 20.5. Alternate: Krueger v Gibson (Osaka) More at 19.5 or lower." }
 ];
 
-const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
+const POWER = { 2: { 2: 3 }, 3: { 3: 6 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
 const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
 /* Picks that can go on an entry: above the lean bar, and not a Goblin on the Less side. */
 const playable = p => p.p >= 0.54 && !(p.goblin && p.side === "Less");
@@ -725,9 +725,9 @@ function renderSlip() {
 const rerender = () => { save(); renderBoard(); renderSlip(); };
 
 /* Goblins: a lower line (More only) that is easier to hit and pays less. PrizePicks doesn't publish the
-   payout formula. The user's app paid 4.5x instead of 5x on a 3-pick Power with one Goblin, so the estimate
-   uses 10% less per Goblin pick until the user types the payout the app shows. Deeper Goblins cut more. */
-const GOBLIN_CUT = 0.9;
+   payout formula. The user's app paid 4.5x instead of 6x on a 3-pick Power with one Goblin, so the estimate
+   uses 25% less per Goblin pick until the user types the payout the app shows. */
+const GOBLIN_CUT = 0.75;
 const COUNT_STATS = /rebound|assist|3-pt|three|pass td|reception|games won|shots|ks\b|strikeout|total bases|^hits|goals|blocks|steals/i;
 function goblinize(p) {
   const std = parseFloat(p.line);
@@ -909,7 +909,7 @@ Picks in the user's entry slip: ${JSON.stringify([...selected])}
 Goblin picks in the user's app (lower payout, More only): ${JSON.stringify(edits.goblins || [])}
 Ban list (players hidden from the board; never suggest them): ${JSON.stringify([...bans])}
 
-PrizePicks pays the standard table below when every pick is from a different game with no Goblins or Demons; same-game picks can cut the payout (the user saw 8x on a 4-pick, which needs 59.5% per pick), so build entries from different games. Break-even hit rate per pick: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
+PrizePicks pays the standard table below when every pick is from a different game with no Goblins or Demons; same-game picks can cut the payout (the user saw 8x on a 4-pick, which needs 59.5% per pick), so build entries from different games. Break-even hit rate per pick: 2 Power 57.7%, 3 Power 55.0% (6x), 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
 
 Rules:
 - If a pick isn't offered in the user's app, hide it with remove_picks.
