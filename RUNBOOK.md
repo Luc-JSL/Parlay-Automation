@@ -62,6 +62,10 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
      `{"title", "details", "verdict": "Worth it" or "Skip", "expires"}` with one sentence of math behind the verdict.
      Remove expired specials.
    - When anything from X conflicts with official injury reports, trust the official report.
+   - Write what this step found to `x_feed` in `results/live_board.json`, so the board's "From X" section shows it:
+     `{"checked": "<ISO UTC>", "summary": [up to 6 one-line findings, e.g. news found or "no injury news", posts read, promos found],
+     "items": [{"title": "<player stat side line>", "handles": "@a, @b", "ok": true/false, "verdict": "<one sentence with the %>", "url": "<x.com post>"}]}`.
+     List every capper pick you checked for today's games, added or not (up to 8). Replace `x_feed` on each run.
 6. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
    and research as "play if line ≤ X" (`"cond": "≤"`, `"tennis": true`, `"team": "ATP"` or `"WTA"`), each with
    a `start` time. Skip tennis if you can't find match odds. Tennis picks from cappers (step 5) count toward the 4.

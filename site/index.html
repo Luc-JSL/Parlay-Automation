@@ -271,6 +271,11 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 .src { font-size: 11px; font-weight: 500; color: var(--violet-hi); margin-left: 6px; }
 .who .src { display: block; margin-left: 0; }
 .spinfo { background: var(--glass); border: 1px solid rgba(250, 204, 21, .35); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+.xfeed { background: var(--glass); border: 1px solid rgba(92, 59, 191, .35); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+.xfeed ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+.xitem { display: flex; gap: 10px; align-items: flex-start; border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px; font-size: 13px; }
+.xitem p { margin: 2px 0 0; color: var(--muted); }
+.xitem a { color: var(--violet-hi); }
 .spinfo b { font-size: 15px; } .spinfo p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
 .gob-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--more); border: 1px solid var(--more); border-radius: 4px; padding: 1px 4px; vertical-align: middle; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -556,7 +561,8 @@ const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
    survive reloads and Claude in the coding session can read them back. */
 let edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {} };
 let bans = new Set();
-let specialsInfo = [];  // PrizePicks promos that aren't a single pick (deposit matches, boosts), from the live feed  // lower-cased player names from the ban list, sent with the live feed
+let specialsInfo = [];  // PrizePicks promos that aren't a single pick (deposit matches, boosts), from the live feed
+let xFeed = null;  // what the last X (Twitter) check read: summary lines and capper picks with our verdict
 let editsDoc = null;
 let writeChain = Promise.resolve();
 
@@ -634,6 +640,16 @@ function rowHTML(p) {
     <button class="pick-btn ${p.side === "More" ? "more" : "less"}" type="button" aria-pressed="${sel}" data-id="${esc(p.id)}">${sel ? "✓ " : ""}${esc(p.side)}</button>
   </div>`;
 }
+/* "From X" panel: what the last X check read and what it did with capper picks. Links go to x.com only. */
+function xHTML() {
+  if (!xFeed) return "";
+  const xurl = u => /^https:\/\/(x|twitter)\.com\//.test(String(u || "")) ? String(u) : "";
+  const when = new Date(xFeed.checked);
+  const sum = (xFeed.summary || []).map(t => `<li>${esc(t)}</li>`).join("");
+  const items = (xFeed.items || []).map(x => `<div class="xitem"><span class="tag ${x.ok ? "play" : "below"}">${x.ok ? "ADDED" : "SKIPPED"}</span><div><b>${esc(x.title)}</b>${x.handles ? ` <span class="src">${esc(x.handles)}</span>` : ""}<p>${esc(x.verdict)}${xurl(x.url) ? ` · <a href="${esc(xurl(x.url))}" target="_blank" rel="noopener">post</a>` : ""}</p></div></div>`).join("");
+  return `<div class="section-head"><h2>From X</h2><p>Injury news, capper picks and PrizePicks promos${isNaN(when) ? "" : ", checked " + esc(when.toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" })) + " CT"}.</p></div>`
+    + `<div class="xfeed">${sum ? `<ul>${sum}</ul>` : ""}${items}</div>`;
+}
 function renderBoard() {
   const all = board();
   document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
@@ -653,10 +669,10 @@ function renderBoard() {
     const specialsHTML = (specials.length || specialsInfo.length) ? `<div class="section-head"><h2>Specials</h2><p>PrizePicks promos found today, checked against the books.</p></div>`
       + specialsInfo.map(x => `<div class="spinfo"><b>${esc(x.title)}</b>${x.verdict ? ` <span class="tag ${/worth|play|yes/i.test(x.verdict) ? "play" : "below"}">${esc(x.verdict)}</span>` : ""}<p>${esc(x.details || "")}${x.expires ? ` · Ends ${esc(x.expires)}` : ""}</p></div>`).join("")
       + (specials.length ? `<div class="plist">${specials.map(rowHTML).join("")}</div>` : "") : "";
-    document.getElementById("board").innerHTML = specialsHTML + `<div class="section-head"><h2>All picks</h2><p>Best first. Tap More or Less to add a pick to your slip. Tap G if your app shows it as a Goblin.</p></div>`
+    document.getElementById("board").innerHTML = specialsHTML + xHTML() + `<div class="section-head"><h2>All picks</h2><p>Best first. Tap More or Less to add a pick to your slip. Tap G if your app shows it as a Goblin.</p></div>`
       + (list.length ? `<div class="plist">${list.map(rowHTML).join("")}</div>` : `<p class="empty">No picks right now.</p>`);
   } else
-  document.getElementById("board").innerHTML = groups.map(g => {
+  document.getElementById("board").innerHTML = xHTML() + groups.map(g => {
     const list = all.filter(p => p.sport === g).sort((a, b) => b.p - a.p);
     if (!list.length) return `<div class="section-head"><h2>${(heads[g] || [g])[0]}</h2><p>No picks left in this sport.</p></div>`;
     const h = heads[g] || [g, ""];
@@ -1066,6 +1082,9 @@ renderBoard();
 renderSlip();
 renderEntries();
 
+const readX = x => x && typeof x === "object" ? { checked: x.checked, summary: Array.isArray(x.summary) ? x.summary.map(String).slice(0, 6) : [],
+  items: Array.isArray(x.items) ? x.items.filter(i => i && typeof i.title === "string").slice(0, 8) : [] } : null;
+
 /* Opened outside claude.ai (for example http://localhost:8000/site/): read the latest picks from the repo's files. */
 async function loadLocalFeed() {
   try {
@@ -1074,6 +1093,8 @@ async function loadLocalFeed() {
     const d = await r.json();
     const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
     bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
+    specialsInfo = Array.isArray(d.specials_info) ? d.specials_info.filter(x => x && typeof x.title === "string").slice(0, 8) : [];
+    xFeed = readX(d.x_feed);
     if (ok.length) PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
     if (d.updated) document.getElementById("updated").textContent = ("Board update: " + new Date(d.updated).toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT").toUpperCase();
     renderBoard(); renderSlip();
@@ -1093,6 +1114,7 @@ async function loadLocalFeed() {
     const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && typeof p.player === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
     bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
     specialsInfo = Array.isArray(d.specials_info) ? d.specials_info.filter(x => x && typeof x.title === "string").slice(0, 8) : [];
+    xFeed = readX(d.x_feed);
     if (!ok.length) { renderBoard(); renderSlip(); return; }
     PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", line: "", side: "More", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
     if (d.updated) {

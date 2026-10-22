@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T05:55:23Z",
+ "updated": "2026-10-22T05:58:56Z",
  "quota_remaining": "240",
  "scanned_games": 0,
  "bans": [
@@ -35,7 +35,7 @@
    "stat": "Total Games",
    "side": "More",
    "line": "20.5",
-   "cond": "\u2264",
+   "cond": "≤",
    "books": "PP line not found",
    "p": 0.63,
    "game_id": "ningbo1",
@@ -46,14 +46,14 @@
   {
    "id": "chidekh",
    "sport": "Tennis",
-   "player": "Cl\u00e9ment Chidekh",
+   "player": "Clément Chidekh",
    "team": "ATP",
    "game": "Brussels QF v Cerundolo",
-   "when": "Fri \u00b7 time TBD",
+   "when": "Fri · time TBD",
    "stat": "Games Won",
    "side": "More",
    "line": "8.5",
-   "cond": "\u2264",
+   "cond": "≤",
    "books": "PP line not found",
    "p": 0.63,
    "game_id": "brussels",
@@ -87,7 +87,7 @@
    "stat": "Total Games",
    "side": "More",
    "line": "21.5",
-   "cond": "\u2264",
+   "cond": "≤",
    "books": "Polymarket O21.5 ~61%",
    "p": 0.6,
    "game_id": "almaty",
@@ -98,36 +98,20 @@
   {
    "id": "bouz",
    "sport": "Tennis",
-   "player": "Bouzkov\u00e1 v Bejlek",
+   "player": "Bouzková v Bejlek",
    "team": "WTA",
    "game": "Ningbo QF",
    "when": "Fri 12:00 AM CT",
    "stat": "Total Games",
    "side": "More",
    "line": "19.5",
-   "cond": "\u2264",
+   "cond": "≤",
    "books": "Books O/U 21.5 -113/-118",
    "p": 0.6,
    "game_id": "ningbo2",
    "tennis": true,
    "note": "The books have 21.5 as a coin flip, so it's only 55% at 20.5. Alternate: Krueger v Gibson (Osaka) More at 19.5 or lower.",
    "start": "2026-10-23T05:00:00Z"
-  },
-  {
-   "id": "jbrown",
-   "sport": "NBA",
-   "player": "Jaylen Brown",
-   "team": "PHI",
-   "game": "Cavaliers @ 76ers",
-   "when": "Thu 6:10 PM CT",
-   "stat": "Assists",
-   "side": "Less",
-   "line": "4",
-   "books": "Books 3.5 (3)",
-   "p": 0.571,
-   "game_id": "cleveland-cavaliers-philadelphia-76ers",
-   "note": "Scoring-first role next to LeBron, Maxey and Embiid. Drop it if one of them sits. He had 6 assists in the opener.",
-   "start": "2026-10-22T23:10:00Z"
   },
   {
    "id": "cjohn",
@@ -158,7 +142,7 @@
    "books": "Books 7.5/8.5 (3)",
    "p": 0.564,
    "game_id": "denver-nuggets-oklahoma-city-thunder",
-   "note": "PrizePicks matches the low end of the books. Not yet checked against news: a blowout would cut his minutes, which hurts More.",
+   "note": "PrizePicks matches the low end of the books. No injury news on X for OKC's bigs as of 1 AM CT. A blowout would cut his minutes, which hurts More.",
    "start": "2026-10-23T01:40:00Z"
   },
   {
@@ -191,8 +175,7 @@
    "line": "4.5",
    "books": "Books 4.5 (3)",
    "p": 0.54,
-   "auto": true,
-   "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. Not news-checked yet."
+   "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. No injury or minutes news on X as of 1 AM CT. Lean only: fill a 5–6 pick Flex."
   },
   {
    "id": "nba-jamal-murray-rebounds",
@@ -208,9 +191,26 @@
    "line": "4",
    "books": "Books 3.5/4.5 (3)",
    "p": 0.54,
-   "auto": true,
-   "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. Not news-checked yet."
+   "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. No injury or minutes news on X as of 1 AM CT. Lean only: fill a 5–6 pick Flex."
   }
  ],
- "specials_info": []
+ "specials_info": [],
+ "x_feed": {
+  "checked": "2026-10-22T06:05:00Z",
+  "summary": [
+   "Injury news: no injury, minutes or lineup news on X for any player on the board (last 30 hours).",
+   "Cappers: 91 posts read from 22 accounts. Most slips are images, so only 1 pick for tonight could be checked.",
+   "PrizePicks accounts: 60 posts read. No discounted (Taco) lines or promos posted in the last 24 hours.",
+   "Jaylen Brown Less 4 assists was removed: PrizePicks now has the line at 3.5, and Less 3.5 is only about 47%."
+  ],
+  "items": [
+   {
+    "title": "Joel Embiid More 3.5 Assists",
+    "handles": "@picksbyangel, @TurtleBetsDFS, @TheBettingFloor",
+    "ok": false,
+    "verdict": "Books make it 52.5% at 3.5 (4 books, margin removed), below the 54% bar. Not added.",
+    "url": "https://x.com/TurtleBetsDFS/status/2113110092065210497"
+   }
+  ]
+ }
 }
