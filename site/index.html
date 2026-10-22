@@ -257,7 +257,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     <div>3 Power<b>58.5%</b></div>
     <div>3 Flex<b>59.1%</b></div>
     
-    <div>4 Power 8x<b>59.5%</b></div>
+    <div>4 Power<b>56.2%</b></div>
     <div>4 Flex<b>56.9%</b></div>
     <div>5 Power<b>54.9%</b></div>
     <div>5 Flex<b>54.3%</b></div>
@@ -354,7 +354,7 @@ let PICKS = [
     note: "The books have 21.5 as a coin flip, so it's only 55% at 20.5. Alternate: Krueger v Gibson (Osaka) More at 19.5 or lower." }
 ];
 
-const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 8 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
+const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
 const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
 function bestIds(k = 4) {
   const out = [], games = new Set();
@@ -384,7 +384,7 @@ function breakeven(n, table) {
   for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (ret(Array(n).fill(mid), table) < 1) lo = mid; else hi = mid; }
   return hi;
 }
-const BE4 = breakeven(4, { 4: 8 });
+const BE4 = breakeven(4, { 4: 10 });
 
 /* Kelly fraction for one entry: maximize expected log growth over the possible hit counts. */
 function kelly(probs, row) {
@@ -532,7 +532,7 @@ function renderSlip() {
   const warn = [];
   const games = {};
   picks.forEach(p => { games[p.game_id || p.game] = (games[p.game_id || p.game] || 0) + 1; });
-  if (Object.values(games).some(c => c > 1)) warn.push("Two or more picks share a game. PrizePicks may cut the payout for same-game picks, so check the payout shown in the app.");
+  if (Object.values(games).some(c => c > 1)) warn.push("Two or more picks share a game, so PrizePicks may cut the payout (you saw 8x instead of 10x on a 4-pick). Enter the payout the app shows, or swap a pick for one from another game.");
   if (picks.filter(p => p.tennis).length > 2) warn.push("More than two tennis \"Over games\" picks stack the same risk.");
   if (picks.length > 6) warn.push("PrizePicks entries max out at 6 picks.");
   const w = document.getElementById("warn");
@@ -592,7 +592,7 @@ Hidden picks: ${JSON.stringify(PICKS.concat(edits.added).filter(p => edits.remov
 Picks in the user's entry slip: ${JSON.stringify([...selected])}
 Ban list (players hidden from the board; never suggest them): ${JSON.stringify([...bans])}
 
-The user's PrizePicks app currently pays 8x on a 4-pick Power (not 10x), so a 4-pick Power needs 59.5% per pick; prefer Flex or 5-6 pick entries unless picks clear that. Break-even hit rate per pick at the default table: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
+PrizePicks pays the standard table below when every pick is from a different game with no Goblins or Demons; same-game picks can cut the payout (the user saw 8x on a 4-pick, which needs 59.5% per pick), so build entries from different games. Break-even hit rate per pick: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
 
 Rules:
 - If a pick isn't offered in the user's app, hide it with remove_picks.

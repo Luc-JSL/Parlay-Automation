@@ -146,6 +146,7 @@ def scan_event(sport: str, ev: dict, markets: list[str], apps: set[str]) -> list
             "player": player, "market": market.removeprefix("player_"), "pp_line": line,
             "book_lines": sorted({pt for _, pt, _ in quotes}), "books": len(quotes),
             "pick": side, "fair_prob": round(prob, 3), "push_prob": round(max(0.0, 1 - o - u), 3),
+            "quotes": [[pt, round(p, 4)] for _, pt, p in quotes],
         })
     return rows
 

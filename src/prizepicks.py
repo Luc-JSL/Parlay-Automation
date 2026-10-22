@@ -15,11 +15,13 @@ Examples
 Payout multipliers change. PAYOUTS below mirror PrizePicks' help-center table
 (https://intercom.help/prizepicks/en/articles/9047668-payouts-explained).
 Check the payout shown in the app before entering and update this table if it differs.
+These are the rates for picks from different games with no Goblins or Demons. Same-game picks can pay
+less (a 4-pick Power with picks sharing a game showed 8x instead of 10x); pass --payout for those.
 """
 import argparse
 
 # picks -> {hits: multiplier}
-POWER = {2: {2: 3}, 3: {3: 5}, 4: {4: 8}, 5: {5: 20}, 6: {6: 37.5}}
+POWER = {2: {2: 3}, 3: {3: 5}, 4: {4: 10}, 5: {5: 20}, 6: {6: 37.5}}
 FLEX = {
     3: {3: 2.25, 2: 1.25},
     4: {4: 5, 3: 1.5},

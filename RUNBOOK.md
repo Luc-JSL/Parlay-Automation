@@ -8,8 +8,8 @@ artifact database document `board/live` (collection `board`, doc id `live`).
 - The user is 19, lives in **Arkansas**, and plays **PrizePicks only**. Never suggest sportsbooks
   (21+ in Arkansas) or other apps. Sportsbooks are only a price reference.
 - **No college sports.** PrizePicks doesn't offer them in Arkansas.
-- The app pays **8x on a 4-pick Power**, so each pick needs 59.5% to break even. Other payouts follow
-  `src/prizepicks.py` until the user reports what the app shows.
+- Payouts follow `src/prizepicks.py` (4-pick Power 10x) when every pick is from a different game with no Goblins or Demons.
+  Same-game picks can cut the payout (the user saw 8x, which needs 59.5% per pick), so recommend entries from different games.
 
 ## Each run (keep it short; aim for under 20 minutes)
 1. `git pull origin claude/cool-edison-x9a8gv`
@@ -40,11 +40,13 @@ artifact database document `board/live` (collection `board`, doc id `live`).
    `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`.
 7. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
    and `result` (W/L/P/void) from box scores. Append every pick that is new to the board this run, without duplicating rows.
-   Update `results/SUMMARY.md` with the record, the hit rate by sport, and calibration by probability bucket.
+   Update `results/SUMMARY.md` with the record and the hit rate by sport, then run `python3 src/clv.py`. It rewrites the
+   line-movement (CLV) and calibration sections from `results/line_log.jsonl` and the tracker. If average CLV over
+   30+ picks is negative, write that down as a lesson and raise the bar for picks of that type.
 8. Commit `Board update <date> <time CT>` and `git push -u origin claude/cool-edison-x9a8gv`.
-9. Finish with 4 lines: the top 4 staged picks, picks graded, ban-list changes, and API quota left.
+9. Finish with 5 lines: the top 4 staged picks, picks graded, ban-list changes, average CLV so far, and API quota left.
 
 ## Rules
-- A PLAY needs ≥ 58% (≥ 59.5% for a 4-pick Power at 8x). 54–58% is a LEAN for 5–6 pick Flex only.
+- A PLAY needs ≥ 58%. 54–58% is a LEAN for 5–6 pick Flex only.
 - Avoid stacking negatively correlated picks. Don't put more than 2 tennis "Over games" picks on one entry.
 - Sites blocked by network policy: note them in the summary and move on.

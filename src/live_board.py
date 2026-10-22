@@ -23,6 +23,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import fetch_odds as fo  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "results", "live_board.json")
+LOG = os.path.join(os.path.dirname(__file__), "..", "results", "line_log.jsonl")
 BANS = os.path.join(os.path.dirname(__file__), "..", "results", "ban_list.json")
 
 
@@ -57,6 +58,17 @@ def auto_budget(remaining: int) -> int:
     now = datetime.now(CENTRAL)
     days_left = calendar.monthrange(now.year, now.month)[1] - now.day + 1
     return max(0, remaining // (days_left * RUNS_PER_DAY))
+
+
+def log_lines(sport_key: str, label: str, rows: list[dict], now: datetime) -> None:
+    """Append every PrizePicks line seen this scan to results/line_log.jsonl (used by src/clv.py)."""
+    with open(LOG, "a") as f:
+        for r in rows:
+            f.write(json.dumps({
+                "t": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "id": slug(label, r["player"], r["market"]),
+                "sport_key": sport_key, "market": "player_" + r["market"] if not r["market"].startswith(("pitcher", "batter")) else r["market"],
+                "start": r["start"], "pp_line": r["pp_line"], "pick": r["pick"], "fair_prob": r["fair_prob"],
+                "quotes": r["quotes"]}) + "\n")
 
 
 def slug(*parts: str) -> str:
@@ -109,6 +121,7 @@ def main() -> None:
             continue
         rows = fo.scan_event(key, ev, markets, {"prizepicks"})
         spent += cost
+        log_lines(key, label, rows, now)
         scanned.add(slug(f"{ev['away_team']} @ {ev['home_team']}"))
         new += [to_pick(label, r) for r in rows if r["fair_prob"] >= a.min and r["books"] >= 2]
 
