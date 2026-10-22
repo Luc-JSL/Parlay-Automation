@@ -66,6 +66,14 @@ python3 src/fetch_odds.py edges basketball_nba --hours 36 --min 0.56 --json /tmp
 
 `edges` costs (markets x 2 regions) API requests per event, about 10 per NBA/NFL game.
 
+## Viewing the board
+
+- **Full version:** https://claude.ai/artifact/SjmXUoyLEsLor7gpYGActL (sign in to claude.ai). The live feed, chat, Goblin marks,
+  and saved entries all work here.
+- **On your own computer:** from the repo folder run `python3 -m http.server 8000`, then open http://localhost:8000/site/.
+  It shows the picks saved in `results/live_board.json` (run `git pull` for the newest). Chat and cloud saving don't
+  work there, and your slip and entries stay in that browser only.
+
 ## Data sources / connectors
 
 | Need | Source | How it connects |

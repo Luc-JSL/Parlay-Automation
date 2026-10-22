@@ -11,8 +11,22 @@ artifact database document `board/live` (collection `board`, doc id `live`).
 - Payouts follow `src/prizepicks.py` (4-pick Power 10x) when every pick is from a different game with no Goblins or Demons.
   Same-game picks can cut the payout (the user saw 8x, which needs 59.5% per pick), so recommend entries from different games.
 
+## Where state lives
+Scheduled sessions can read the repo but **can't push to it**, because it isn't attached to the scheduled task. So the
+working state lives in the board's artifact database (ArtifactData tool, artifact URL above), and git is only a backup:
+
+| Database doc (collection/doc) | Field | Repo file |
+|---|---|---|
+| `board/staged` | whole document | `results/live_board.json` (staged picks, not yet on the board) |
+| `board/live` | whole document | what the board shows; write it only when the user asks |
+| `state/bans` | whole document | `results/ban_list.json` |
+| `state/tracker` | `csv` | `results/tracker.csv` |
+| `state/linelog` | `jsonl` | `results/line_log.jsonl` (drop lines older than 14 days before saving) |
+| `state/summary` | `md` | `results/SUMMARY.md` |
+
 ## Each run (keep it short; aim for under 20 minutes)
-1. `git pull origin claude/cool-edison-x9a8gv`
+1. `git pull origin claude/cool-edison-x9a8gv`, then **load state**: `get` each database doc above (except `board/live`),
+   write each one to its repo file, and remember each doc's `version`.
 2. **Ban list (morning run only, the one before noon CT).** Keep `results/ban_list.json` current. Search Reddit, X,
    TikTok and YouTube for players bettors call parlay killers or "never bet on". Add a player only when current stats
    back it up: volatile minutes or snaps, a role change, active injury, blowout benching, or retirement risk in tennis.
@@ -33,9 +47,9 @@ artifact database document `board/live` (collection `board`, doc id `live`).
 5. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
    and research as "play if line ≤ X" (`"cond": "≤"`, `"tennis": true`, `"team": "ATP"` or `"WTA"`), each with
    a `start` time. Skip tennis if you can't find match odds.
-6. **Stage, don't publish.** Save the final JSON to `results/live_board.json` and commit it. **Do not write to the board**
-   (`board/live`). The user asks for board updates themselves. When they do, the session they ask
-   publishes the staged file: ArtifactData `get` of `board/live` to read its `version`, then `set` from the file with `if_version`.
+6. **Stage, don't publish.** Save the final JSON to `results/live_board.json`. **Do not write to `board/live`.**
+   The user asks for board updates themselves. When they do, the session they ask copies `board/staged` to `board/live`
+   with ArtifactData: `get` `board/live` to read its `version`, then `set` it with `if_version`.
    Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
    `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`.
 7. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
@@ -43,7 +57,10 @@ artifact database document `board/live` (collection `board`, doc id `live`).
    Update `results/SUMMARY.md` with the record and the hit rate by sport, then run `python3 src/clv.py`. It rewrites the
    line-movement (CLV) and calibration sections from `results/line_log.jsonl` and the tracker. If average CLV over
    30+ picks is negative, write that down as a lesson and raise the bar for picks of that type.
-8. Commit `Board update <date> <time CT>` and `git push -u origin claude/cool-edison-x9a8gv`.
+8. **Save state** with one ArtifactData `batch`: `set` each doc from its repo file, wrapping text files in their field
+   (for example `{"csv": "<tracker text>"}`), each with the `if_version` you loaded. Then commit
+   `Board update <date> <time CT>` and try `git push -u origin claude/cool-edison-x9a8gv`. If the push is refused (403),
+   that's expected: say so in one line and stop. Don't retry, and don't look for a way around it.
 9. Finish with 5 lines: the top 4 staged picks, picks graded, ban-list changes, average CLV so far, and API quota left.
 
 ## Rules

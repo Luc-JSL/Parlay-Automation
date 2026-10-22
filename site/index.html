@@ -941,9 +941,23 @@ renderBoard();
 renderSlip();
 renderEntries();
 
+/* Opened outside claude.ai (for example http://localhost:8000/site/): read the latest picks from the repo's files. */
+async function loadLocalFeed() {
+  try {
+    const r = await fetch("../results/live_board.json", { cache: "no-store" });
+    if (!r.ok) return;
+    const d = await r.json();
+    const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
+    bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
+    if (ok.length) PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
+    if (d.updated) document.getElementById("updated").textContent = ("Board update: " + new Date(d.updated).toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT").toUpperCase();
+    renderBoard(); renderSlip();
+  } catch (e) {}
+}
+
 (async () => {
   const c = window.claude;
-  if (!c || !c.use) { setSync("Changes kept on this device only"); return; }
+  if (!c || !c.use) { setSync("Changes kept on this device only"); loadLocalFeed(); return; }
   const [s, db] = await Promise.all([c.use("sample").catch(() => null), c.use("db").catch(() => null)]);
   sampleFn = s;
   if (!s) document.getElementById("suggest").hidden = true;
