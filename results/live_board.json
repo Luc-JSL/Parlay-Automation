@@ -1,7 +1,7 @@
 {
- "updated": "2026-10-22T05:25:16Z",
+ "updated": "2026-10-22T05:55:23Z",
  "quota_remaining": "240",
- "scanned_games": 13,
+ "scanned_games": 0,
  "bans": [
   "anthony davis",
   "breece hall",
@@ -211,5 +211,6 @@
    "auto": true,
    "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. Not news-checked yet."
   }
- ]
+ ],
+ "specials_info": []
 }

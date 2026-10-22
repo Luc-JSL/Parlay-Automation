@@ -103,10 +103,11 @@ def main() -> None:
     budget = a.budget if a.budget is not None else auto_budget(remaining)
     now = datetime.now(timezone.utc)
 
-    old = []
+    old, specials_info = [], []
     if os.path.exists(OUT):
         with open(OUT) as f:
-            old = json.load(f).get("picks", [])
+            prev = json.load(f)
+        old, specials_info = prev.get("picks", []), prev.get("specials_info", [])
 
     queue = []  # (start, sport_key, label, markets, event)
     if budget > 0:
@@ -141,7 +142,8 @@ def main() -> None:
                 new.remove(f)
                 kept.append({**p, "p": f["p"], "books": f["books"]})
             continue
-        if p.get("game_id") in scanned or (p.get("sport"), p.get("game")) in scanned_games:
+        # PrizePicks specials aren't standard lines, so a rescan never re-finds them; keep them until game time.
+        if not p.get("special") and (p.get("game_id") in scanned or (p.get("sport"), p.get("game")) in scanned_games):
             continue
         kept.append(p)
     bans = load_bans()
@@ -150,7 +152,7 @@ def main() -> None:
     picks = sorted((p for p in merged if p["player"].strip().lower() not in bans), key=lambda p: -p["p"])[:30]
 
     board = {"updated": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "quota_remaining": fo.quota.get("remaining"),
-             "scanned_games": len(scanned), "bans": sorted(bans), "picks": picks}
+             "scanned_games": len(scanned), "bans": sorted(bans), "picks": picks, "specials_info": specials_info}
     with open(OUT, "w") as f:
         json.dump(board, f, indent=1)
     print(f"budget {budget}, spent ~{spent}, scanned {len(scanned)} games, kept {len(kept)} older picks, "

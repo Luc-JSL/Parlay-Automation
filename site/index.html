@@ -267,6 +267,11 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 .slip-list .gl { display: flex; margin-top: 6px; }
 .gv { display: block; font-size: 12px; font-weight: 600; margin-top: 4px; }
 .gv.ok { color: var(--more); } .gv.no { color: var(--less); } .gv.need { color: var(--gold); font-weight: 500; }
+.sp-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: #111217; background: var(--gold); border-radius: 4px; padding: 1px 5px; vertical-align: middle; text-transform: uppercase; }
+.src { font-size: 11px; font-weight: 500; color: var(--violet-hi); margin-left: 6px; }
+.who .src { display: block; margin-left: 0; }
+.spinfo { background: var(--glass); border: 1px solid rgba(250, 204, 21, .35); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+.spinfo b { font-size: 15px; } .spinfo p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
 .gob-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--more); border: 1px solid var(--more); border-radius: 4px; padding: 1px 4px; vertical-align: middle; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .toolbar .tabs { margin-bottom: 0; }
@@ -550,7 +555,8 @@ const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 /* Board edits: picks hidden, picks changed, picks added. Kept in the artifact's database so they
    survive reloads and Claude in the coding session can read them back. */
 let edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {} };
-let bans = new Set();  // lower-cased player names from the ban list, sent with the live feed
+let bans = new Set();
+let specialsInfo = [];  // PrizePicks promos that aren't a single pick (deposit matches, boosts), from the live feed  // lower-cased player names from the ban list, sent with the live feed
 let editsDoc = null;
 let writeChain = Promise.resolve();
 
@@ -588,7 +594,7 @@ function cardHTML(p) {
   return `<article class="card${sel ? " sel" : ""}" data-id="${esc(p.id)}">
     <div class="card-top">
       <div class="avatar" aria-hidden="true">${esc(p.tennis ? (p.team || "TEN") : initials(p.player))}</div>
-      <div class="who"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}</b><span>${esc(p.tennis || !p.team ? p.game : p.team + " · " + p.game)}</span></div>
+      <div class="who"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}${p.special ? ` <span class="sp-badge">${esc(p.special)}</span>` : ""}</b>${p.source ? `<span class="src">via ${esc(p.source)}</span>` : ""}<span>${esc(p.tennis || !p.team ? p.game : p.team + " · " + p.game)}</span></div>
       <span class="tag ${cls}">${label}</span>
     </div>
     <div class="line-row">
@@ -621,7 +627,7 @@ function rowHTML(p) {
   const sel = selected.has(p.id);
   return `<div class="prow${sel ? " sel" : ""}" data-row="${esc(p.id)}">
     <span class="sp">${esc(p.sport)}</span>
-    <span class="nm"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${esc(p.game)} · ${esc(p.when)}</span>${p.goblin ? `<label class="gl">Goblin line <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>${p.line !== p.stdLine ? `<span class="glnote">was ${esc(p.stdLine)} at ${pct(p.stdP)}</span>` : ""}` : ""}</span>
+    <span class="nm"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}${p.special ? ` <span class="sp-badge">${esc(p.special)}</span>` : ""}${p.source ? ` <span class="src">via ${esc(p.source)}</span>` : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${esc(p.game)} · ${esc(p.when)}</span>${p.goblin ? `<label class="gl">Goblin line <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>${p.line !== p.stdLine ? `<span class="glnote">was ${esc(p.stdLine)} at ${pct(p.stdP)}</span>` : ""}` : ""}</span>
     <span class="tag ${cls}">${label}</span>
     <span class="wp">${pct(p.p)}</span>
     <button class="gob${p.goblin ? " on" : ""}" type="button" aria-pressed="${!!p.goblin}" data-goblin="${esc(p.id)}" title="Tap if your app shows this as a Goblin">G</button>
@@ -643,7 +649,11 @@ function renderBoard() {
   };
   if (view === "list") {
     const list = all.filter(p => filter === "all" || p.sport === filter).sort((a, b) => b.p - a.p);
-    document.getElementById("board").innerHTML = `<div class="section-head"><h2>All picks</h2><p>Best first. Tap More or Less to add a pick to your slip. Tap G if your app shows it as a Goblin.</p></div>`
+    const specials = all.filter(p => p.special).sort((a, b) => b.p - a.p);
+    const specialsHTML = (specials.length || specialsInfo.length) ? `<div class="section-head"><h2>Specials</h2><p>PrizePicks promos found today, checked against the books.</p></div>`
+      + specialsInfo.map(x => `<div class="spinfo"><b>${esc(x.title)}</b>${x.verdict ? ` <span class="tag ${/worth|play|yes/i.test(x.verdict) ? "play" : "below"}">${esc(x.verdict)}</span>` : ""}<p>${esc(x.details || "")}${x.expires ? ` · Ends ${esc(x.expires)}` : ""}</p></div>`).join("")
+      + (specials.length ? `<div class="plist">${specials.map(rowHTML).join("")}</div>` : "") : "";
+    document.getElementById("board").innerHTML = specialsHTML + `<div class="section-head"><h2>All picks</h2><p>Best first. Tap More or Less to add a pick to your slip. Tap G if your app shows it as a Goblin.</p></div>`
       + (list.length ? `<div class="plist">${list.map(rowHTML).join("")}</div>` : `<p class="empty">No picks right now.</p>`);
   } else
   document.getElementById("board").innerHTML = groups.map(g => {
@@ -1082,6 +1092,7 @@ async function loadLocalFeed() {
     const d = snap.data() || {};
     const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && typeof p.player === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
     bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
+    specialsInfo = Array.isArray(d.specials_info) ? d.specials_info.filter(x => x && typeof x.title === "string").slice(0, 8) : [];
     if (!ok.length) { renderBoard(); renderSlip(); return; }
     PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", line: "", side: "More", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
     if (d.updated) {
