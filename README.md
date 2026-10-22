@@ -5,6 +5,25 @@ Research-driven parlay picks for **NBA, NFL, and Tennis (ATP/WTA)**.
 Each slate lives in `picks/YYYY-MM-DD.md` with the legs, the reasoning and sources
 behind each one, the odds at the time of writing, and what would invalidate the pick.
 
+## PrizePicks first
+
+Picks are built for **PrizePicks** (player stat More/Less, Power and Flex Play entries).
+Each pick on an entry has to hit about 54–59% just to break even:
+
+| Picks | Power | Flex |
+|---|---|---|
+| 2 | 57.7% | – |
+| 3 | 58.5% | 59.1% |
+| 4 | 56.2% | 56.9% |
+| 5 | 54.9% | 54.3% |
+| 6 | 54.7% | 54.2% |
+
+(From the payout table in `src/prizepicks.py`. Check the in-app payouts, which change.)
+
+So the process is: **find props where the PrizePicks line is softer than the sharp sportsbook line**,
+remove the sportsbook's margin to get a fair probability, and only play picks that clear the
+break-even rate for the entry size. 5–6 pick Flex entries have the lowest bar per pick.
+
 ## How picks are made
 
 1. **Slate scan** – every NBA / NFL / ATP / WTA event on the date.
@@ -25,6 +44,12 @@ Rules of thumb we follow:
 - Re-check injuries 60 minutes before lock and confirm the live price.
 
 ## Tools
+
+```bash
+python3 src/prizepicks.py breakeven               # break-even % per entry type
+python3 src/prizepicks.py devig -140 +115          # fair % of a sportsbook prop side
+python3 src/prizepicks.py ev 0.60 0.59 0.61 --stake 10   # EV of a 3-pick entry
+```
 
 ```bash
 # Combined odds, implied probability, and EV for a parlay
