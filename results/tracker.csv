@@ -8,3 +8,8 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,CLE@PHI,Evan Mobley,Rebounds,More,<=9.5 if Allen OUT else <=8.5,9.5 (preview; no price),0.59,,,
 2026-10-22,NBA,CLE@PHI,Joel Embiid,Points,Less,>=22.5,not found,0.58,,,
 2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Points,More,<=25.5,27.5 (preview; no price),0.58,,,lean
+2026-10-23,Tennis,WTA Ningbo QF,Alexandrova v Fernandez,Total Games,More,<=21.5,not found,0.60,,,
+2026-10-23,Tennis,ATP Brussels QF,Clement Chidekh,Total Games Won,More,<=7.5,not found,0.63,,,
+2026-10-23,Tennis,WTA Ningbo QF,Bouzkova v Bejlek,Total Games,More,<=20.5,not found,0.59,,,
+2026-10-23,Tennis,WTA Osaka QF,Krueger v Gibson,Total Games,More,<=20.5,not found,0.58,,,date unconfirmed
+2026-10-23,Tennis,ATP Almaty QF,Mannarino v Basilashvili,Total Games,More,<=22.5,not found,0.58,,,weakest
