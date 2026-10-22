@@ -604,7 +604,7 @@ try { const local = JSON.parse(localStorage.getItem("pl-edits") || "null"); if (
 const save = () => { try { localStorage.setItem("pl-slip", JSON.stringify([...selected])); } catch (e) {} };
 
 function cardHTML(p) {
-  const [cls, label] = tier(p.p);
+  const [cls, label] = p.stats_pick && p.p < 0.54 ? ["lean", "STATS"] : tier(p.p);
   const color = p.side === "More" ? "var(--more)" : "var(--less)";
   const sel = selected.has(p.id);
   const flag = p.goblin && p.side === "Less" ? `<span class="mine">Goblins are More only, so this Less pick can't be played as a Goblin</span>` : p.goblin ? `<span class="mine">Goblin in your app: pays less. Enter the app's payout in the slip.</span>` : p.auto ? `<span class="mine">Auto scan · not news-checked</span>` : p.mine ? `<span class="mine">Added by you · not checked vs books</span>` : p.edited ? `<span class="mine">Changed by you · not re-checked vs books</span>` : "";
@@ -640,7 +640,7 @@ function renderTabs(sports, all) {
 let view = "list";
 try { view = localStorage.getItem("pl-view") || "list"; } catch (e) {}
 function rowHTML(p) {
-  const [cls, label] = tier(p.p);
+  const [cls, label] = p.stats_pick && p.p < 0.54 ? ["lean", "STATS"] : tier(p.p);
   const sel = selected.has(p.id);
   return `<div class="prow${sel ? " sel" : ""}" data-row="${esc(p.id)}">
     <span class="sp">${esc(p.sport)}</span>

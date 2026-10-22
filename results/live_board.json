@@ -26,6 +26,24 @@
  ],
  "picks": [
   {
+   "game": "Patriots @ Bears",
+   "game_id": "new-england-patriots-chicago-bears",
+   "start": "2026-10-23T00:15:00Z",
+   "when": "Thu 7:15 PM CT",
+   "sport": "NFL",
+   "team": "",
+   "id": "nfl-caleb-williams-pass-yds-taco",
+   "player": "Caleb Williams",
+   "stat": "Pass Yds",
+   "side": "More",
+   "line": "215.5",
+   "special": "Taco",
+   "source": "@ZRob4444",
+   "books": "Books' alt line 214.5 at 67% (normal line 244.5)",
+   "p": 0.665,
+   "note": "PrizePicks Taco discount from 246.5. He threw 269 and 305 in his two healthy games. Risk: a torn hamstring on a short week. Check that the Taco is still in your app (usually one per entry)."
+  },
+  {
    "id": "chidekh",
    "sport": "Tennis",
    "player": "Clément Chidekh",
@@ -77,6 +95,40 @@
    "start": "2026-10-23T01:40:00Z"
   },
   {
+   "game": "Patriots @ Bears",
+   "game_id": "new-england-patriots-chicago-bears",
+   "start": "2026-10-23T00:15:00Z",
+   "when": "Thu 7:15 PM CT",
+   "sport": "NFL",
+   "team": "",
+   "id": "nfl-treveyon-henderson-rush-rec-yds",
+   "player": "TreVeyon Henderson",
+   "stat": "Rush+Rec Yds",
+   "side": "More",
+   "line": "30.5",
+   "source": "@KANEPROPS",
+   "books": "Books 30.5–32.5 (4)",
+   "p": 0.57,
+   "note": "Our check agrees: 57%. Over in 4 of 5 games (76, 29, 42, 38, 40), and he's off the injury report after his ankle sprain. Risk: Kiner and Stevenson share the work."
+  },
+  {
+   "game": "Nuggets @ Thunder",
+   "game_id": "denver-nuggets-oklahoma-city-thunder",
+   "start": "2026-10-23T01:40:00Z",
+   "when": "Thu 8:40 PM CT",
+   "sport": "NBA",
+   "team": "",
+   "id": "nba-aaron-gordon-pra",
+   "player": "Aaron Gordon",
+   "stat": "Pts+Rebs+Asts",
+   "side": "More",
+   "line": "22",
+   "source": "@ClipSetNBA",
+   "books": "Books 22.5/23.5 (4)",
+   "p": 0.558,
+   "note": "Our check agrees: 55.8%, and PrizePicks is a half point under the books. He averaged 24.7 PRA last season and 26.4 in his last 5 against OKC. Risk: soft-tissue issues in preseason."
+  },
+  {
    "id": "hart",
    "sport": "NBA",
    "player": "Isaiah Hartenstein",
@@ -123,61 +175,120 @@
    "books": "Books 17.5/18.5 (4)",
    "p": 0.542,
    "note": "Lean at 54%. Jarrett Allen is questionable (knee) and backups Diop and Tomlin are out, so Mobley would start at center if Allen sits. Check Allen's status before lock. https://x.com/camijustice/status/2113034008997117955"
+  },
+  {
+   "game": "Cavaliers @ 76ers",
+   "game_id": "cleveland-cavaliers-philadelphia-76ers",
+   "start": "2026-10-22T23:10:00Z",
+   "when": "Thu 6:10 PM CT",
+   "sport": "NBA",
+   "team": "",
+   "id": "nba-jaylen-brown-assists",
+   "player": "Jaylen Brown",
+   "stat": "Assists",
+   "side": "More",
+   "line": "3.5",
+   "source": "@SalvoBets",
+   "stats_pick": true,
+   "books": "Books 3.5 (4)",
+   "p": 0.533,
+   "note": "Stats pick: the books make it only 53.3%, but he had 6 assists in his Sixers debut and averaged 5.1 last season. Below break-even on price, so use it only if you trust the role change."
+  },
+  {
+   "game": "Cavaliers @ 76ers",
+   "game_id": "cleveland-cavaliers-philadelphia-76ers",
+   "start": "2026-10-22T23:10:00Z",
+   "when": "Thu 6:10 PM CT",
+   "sport": "NBA",
+   "team": "",
+   "id": "nba-joel-embiid-assists",
+   "player": "Joel Embiid",
+   "stat": "Assists",
+   "side": "More",
+   "line": "3.5",
+   "source": "@TurtleBetsDFS",
+   "stats_pick": true,
+   "books": "Books 3.5 (4)",
+   "p": 0.525,
+   "note": "Stats pick: the books make it 52.5%. He had 6 assists in the opener and averaged 3.9 last season, so the margin is modest. Same game as Jaylen Brown assists, so don't stack both."
+  },
+  {
+   "game": "Patriots @ Bears",
+   "game_id": "new-england-patriots-chicago-bears",
+   "start": "2026-10-23T00:15:00Z",
+   "when": "Thu 7:15 PM CT",
+   "sport": "NFL",
+   "team": "",
+   "id": "nfl-dandre-swift-receptions",
+   "player": "D'Andre Swift",
+   "stat": "Receptions",
+   "side": "More",
+   "line": "2.5",
+   "source": "@PropKitchen",
+   "stats_pick": true,
+   "books": "Books 2.5 (5)",
+   "p": 0.52,
+   "note": "Stats pick: the books make it 52%, but he had 4 catches in each of the 2 games without Kyle Monangai, who is out again tonight."
   }
  ],
  "specials_info": [],
  "x_feed": {
-  "checked": "2026-10-22T06:15:00Z",
+  "checked": "2026-10-22T06:50:00Z",
   "summary": [
-   "Bears: RB Kyle Monangai is ruled out for Thursday Night Football (@AdamSchefter, @RapSheet).",
-   "No injury news on X for the other players on the board.",
-   "Cappers: 105 posts read, and slip screenshots are now read too. 7 picks for tonight checked against the books. None cleared 54%, so none were added.",
-   "PrizePicks accounts: no discounted (Taco) lines or promos in the last 24 hours.",
-   "Ajay Mitchell More 2.5 rebounds was removed: PrizePicks is a full rebound under every book, so it's a Goblin in the app and needs 75%+ (it's 61%).",
-   "Alexandrova v Fernandez removed: the app has 20.5 (Goblin) and 22.5. At 22.5 the books make it a coin flip (More 49%, Less 51%), and the Goblin needs 75%."
+   "Read about 250 X posts with picks for tonight's games and priced 30 of them against the books, then checked game logs.",
+   "Added: Caleb Williams More 215.5 pass yds (Taco), TreVeyon Henderson More 30.5 rush+rec yds and Aaron Gordon More 22 PRA. All three clear 54% on price, and their stats back them up.",
+   "Stats picks (shown as STATS, below 54% on price): Jaylen Brown and Embiid More 3.5 assists, Swift More 2.5 receptions.",
+   "Cavs: Jarrett Allen is questionable (knee). Bears: Kyle Monangai is out.",
+   "Removed after repricing: Jalen Williams Less 5 rebounds (52.7%) and Jamal Murray Less 4 rebounds (50%)."
   ],
   "items": [
    {
-    "title": "Isaiah Hartenstein More 7.5 Points",
-    "handles": "@schmidt_bets",
-    "ok": true,
-    "verdict": "Agrees with our check: already on the board at 56.4%.",
-    "url": "https://x.com/schmidt_bets/status/2113131181101449723"
+    "title": "Rhamondre Stevenson Less 11 Rush Attempts",
+    "handles": "scan",
+    "ok": false,
+    "verdict": "The books make it 56%, but he had 13, 13 and 14 carries in his last 3 games. Stats say no, so it's skipped."
    },
    {
-    "title": "TNF 10X slip: Henry More 35.5 Rec Yds, Swift More 2.5 Recs, Douglas More 38.5 Rec Yds, Roschon Johnson More 7.5 Rec Yds",
-    "handles": "@DFFsports",
+    "title": "Cason Wallace More 11.5 Pts+Rebs",
+    "handles": "scan",
     "ok": false,
-    "verdict": "Read from the slip image. Books make the four legs 46%, 52%, 48% and 50%. None clears 54%, and a 4-pick Power needs 56%.",
-    "url": "https://x.com/DFFsports/status/2113139008419275104"
+    "verdict": "The books make it 56.6%, but he had 9 in the opener on 19 minutes. Stats lean under, so it's skipped."
    },
    {
-    "title": "Joel Embiid More 3.5 Assists",
-    "handles": "@picksbyangel, @TurtleBetsDFS, @TheBettingFloor",
+    "title": "SGA More 10.5 Rebs+Asts",
+    "handles": "@KBProps, @ISLANDBETS, @PonderingPicks",
     "ok": false,
-    "verdict": "Books make it 52.5% at 3.5 (4 books, margin removed), below the 54% bar.",
-    "url": "https://x.com/TurtleBetsDFS/status/2113110092065210497"
+    "verdict": "50.1% on price; he had 9 in the opener and averaged 10.9 last season. Coin flip."
    },
    {
-    "title": "D'Andre Swift More 2.5 Receptions",
-    "handles": "@PropKitchen, @ChronicBets, @DDOGGSTACKS",
+    "title": "Jaylen Brown More 19.5 Points",
+    "handles": "@FieldsFocus",
     "ok": false,
-    "verdict": "Books make it 52.0% (5 books), even with Monangai out. Below the bar.",
-    "url": "https://x.com/PropKitchen/status/2113147981121675361"
+    "verdict": "52.4%; he scored 19 in the opener in a smaller role next to Maxey and LeBron. Coin flip."
    },
    {
-    "title": "Efton Chism III More 19.5 Rec Yds",
-    "handles": "@austinsprops",
+    "title": "Aaron Gordon More 20.5 Pts+Rebs",
+    "handles": "@picksbyangel, @AnalyticsPicks",
     "ok": false,
-    "verdict": "Books have him at 16.5–18.5, so More 19.5 is only about 47%.",
-    "url": "https://x.com/austinsprops/status/2113128991712530888"
+    "verdict": "49.6% at PrizePicks' 20.5. We took his PRA at 22 instead (55.8%)."
    },
    {
-    "title": "Tennis: Bublik and Nakashima to win (Thu)",
-    "handles": "@propitlikeit",
+    "title": "Anfernee Simons More 8.5 Points",
+    "handles": "@ChronicBets, @FrannysPlays, @LuffyBetss",
     "ok": false,
-    "verdict": "Read from the slip image. These are win picks, not PrizePicks lines, so there's nothing to add.",
-    "url": "https://x.com/propitlikeit/status/2113060462954987832"
+    "verdict": "50.8%; he scored 13 off the bench in the opener. Not enough edge."
+   },
+   {
+    "title": "Douglas, Burden, A.J. Brown rec yds; Maye pass TDs",
+    "handles": "@DDOGGSTACKS, @billhpicks, @shawnybopicks, @PropKitchen",
+    "ok": false,
+    "verdict": "48–51% on price for all four, so none have an edge."
+   },
+   {
+    "title": "Mobley More 9 Rebs, Jokic More 12.5 Rebs",
+    "handles": "@FieldsFocus, @OnTappBets",
+    "ok": false,
+    "verdict": "48% and 51% at PrizePicks' lines, higher than the lines the cappers posted."
    }
   ]
  }

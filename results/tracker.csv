@@ -27,3 +27,9 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Rebounds,Less,4.5,4.5 (4),0.542,,,board scan; Allen status
 2026-10-22,NBA,CLE@PHI,Evan Mobley,Points,More,17.5,17.5/18.5 (4),0.542,,,board scan; Allen status
 2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebounds,Less,4,3.5/4.5 (3),0.54,,void,pulled before lock: books moved to 4.5 (50%)
+2026-10-22,NFL,NE@CHI,Caleb Williams,Pass Yds,More,215.5,Books' alt line 214.5 at 67% (normal line 244.5),0.665,,,via @ZRob4444
+2026-10-22,NFL,NE@CHI,TreVeyon Henderson,Rush+Rec Yds,More,30.5,Books 30.5–32.5 (4),0.57,,,via @KANEPROPS
+2026-10-22,NBA,DEN@OKC,Aaron Gordon,Pts+Rebs+Asts,More,22,Books 22.5/23.5 (4),0.558,,,via @ClipSetNBA
+2026-10-22,NBA,CLE@PHI,Jaylen Brown,Assists,More,3.5,Books 3.5 (4),0.533,,,stats pick; via @SalvoBets
+2026-10-22,NBA,CLE@PHI,Joel Embiid,Assists,More,3.5,Books 3.5 (4),0.525,,,stats pick; via @TurtleBetsDFS
+2026-10-22,NFL,NE@CHI,D'Andre Swift,Receptions,More,2.5,Books 2.5 (5),0.52,,,stats pick; via @PropKitchen
