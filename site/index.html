@@ -264,6 +264,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 .gl { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--more); margin-top: 4px; }
 .gl input { width: 64px; background: var(--panel-2); border: 1px solid var(--more); border-radius: 6px; color: var(--text); font-family: var(--f-mono); font-size: 12px; padding: 3px 6px; }
 .glnote { font-size: 11px; color: var(--muted); margin-left: 8px; }
+.slip-list .gl { display: flex; margin-top: 6px; }
 .gv { display: block; font-size: 12px; font-weight: 600; margin-top: 4px; }
 .gv.ok { color: var(--more); } .gv.no { color: var(--less); } .gv.need { color: var(--gold); font-weight: 500; }
 .gob-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--more); border: 1px solid var(--more); border-radius: 4px; padding: 1px 4px; vertical-align: middle; }
@@ -670,10 +671,11 @@ function renderSlip() {
     if (!p.goblin) return "";
     const c = goblinCheck(picks, p);
     if (!c) return "";
-    if (c.state === "need") return `<span class="gv need">Enter the Goblin line on this pick to check if it's worth it</span>`;
+    const box = `<label class="gl">Goblin line in app <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>`;
+    if (c.state === "need") return `${box}<span class="gv need">Type the Goblin line and press Enter to see if it's worth it.</span>`;
     return c.state === "yes"
-      ? `<span class="gv ok">✓ Goblin worth it: ${c.withG.toFixed(3)}x vs ${c.without.toFixed(3)}x with the normal ${esc(p.stdLine)} line</span>`
-      : `<span class="gv no">✗ Not worth it: play the normal ${esc(p.stdLine)} line instead (${c.without.toFixed(3)}x vs ${c.withG.toFixed(3)}x)</span>`;
+      ? `${box}<span class="gv ok">✓ Goblin worth it: ${c.withG.toFixed(3)}x vs ${c.without.toFixed(3)}x with the normal ${esc(p.stdLine)} line</span>`
+      : `${box}<span class="gv no">✗ Not worth it: play the normal ${esc(p.stdLine)} line instead (${c.without.toFixed(3)}x vs ${c.withG.toFixed(3)}x)</span>`;
   };
   document.getElementById("slip-list").innerHTML = picks.map(p => `<li>
       <span class="side ${p.side === "More" ? "more" : "less"}">${esc(p.side.toUpperCase())}</span>
@@ -830,6 +832,7 @@ document.getElementById("clear").onclick = () => { selected.clear(); rerender();
 document.getElementById("stake").oninput = renderSlip;
 document.getElementById("bankroll").oninput = renderSlip;
 document.getElementById("payout").oninput = renderSlip;
+document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest("[data-gline]")) e.target.blur(); });
 document.addEventListener("change", e => {
   const inp = e.target.closest("[data-gline]");
   if (!inp) return;
