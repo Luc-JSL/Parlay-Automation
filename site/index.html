@@ -220,6 +220,9 @@ h1 em { font-style: normal; color: transparent; background: linear-gradient(to r
 .advice b { color: var(--more); }
 .slip-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .ghost.played { border-color: var(--more); color: var(--more); }
+.ghost.step { color: var(--text); }
+.ghost:disabled { opacity: .4; cursor: default; }
+.step-note { font-size: 12px; color: var(--muted); margin: 0; }
 .payouts { display: grid; gap: 4px; font-size: 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
 .payouts .row { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); }
 .payouts .row b { font-family: var(--f-mono); color: var(--text); font-variant-numeric: tabular-nums; }
@@ -426,11 +429,14 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
           <div class="mode" id="m-power"><div class="k">Power slip</div><b>–</b><span>expected return</span></div>
           <div class="mode" id="m-flex"><div class="k">Flex slip</div><b>–</b><span>expected return</span></div>
         </div>
+        <p class="step-note" id="step-note" hidden></p>
         <div class="payouts" id="payouts" hidden></div>
         <p class="advice" id="advice" hidden></p>
         <p class="warn" id="warn" hidden></p>
         <div class="slip-actions">
           <button class="ghost primary" id="best" type="button">Load best 4</button>
+          <button class="ghost step" id="add1" type="button">+ Add 1</button>
+          <button class="ghost step" id="drop1" type="button">− Remove 1</button>
           <button class="ghost played" id="played-power" type="button" hidden>I played Power</button>
           <button class="ghost played" id="played-flex" type="button" hidden>I played Flex</button>
           <button class="ghost" id="clear" type="button">Clear slip</button>
@@ -477,10 +483,21 @@ let PICKS = [
 
 const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
 const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
+/* Picks that can go on an entry: above the lean bar, and not a Goblin on the Less side. */
+const playable = p => p.p >= 0.54 && !(p.goblin && p.side === "Less");
+/* The next best pick to add to `current`: a different game, at most 2 tennis Overs. */
+function nextBest(current) {
+  const cur = board().filter(p => current.has(p.id));
+  const games = new Set(cur.map(p => p.game_id || p.game));
+  let tennis = cur.filter(p => p.tennis).length;
+  const pool = board().filter(p => !current.has(p.id) && playable(p)).sort((a, b) => b.p - a.p);
+  return pool.find(p => !games.has(p.game_id || p.game) && !(p.tennis && tennis >= 2))
+    || pool.find(p => !(p.tennis && tennis >= 2)) || null;
+}
 function bestIds(k = 4) {
   const out = [], games = new Set();
   let tennis = 0;
-  for (const p of board().slice().sort((a, b) => b.p - a.p)) {
+  for (const p of board().filter(playable).sort((a, b) => b.p - a.p)) {
     const g = p.game_id || p.game;
     if (games.has(g) || (p.tennis && tennis >= 2)) continue;
     if (p.tennis) tennis++;
@@ -668,6 +685,8 @@ function renderSlip() {
   if (FLEX[n]) rows.push(`<div class="h">Flex · ${n} picks</div>`, ...Object.entries(FLEX[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="${m >= 1 ? "win" : "lose"}">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Fewer hits</span><b class="lose">${money(-stake)}</b></div>`);
   pay.hidden = rows.length === 0;
   pay.innerHTML = rows.join("");
+  document.getElementById("add1").disabled = n >= 6;
+  document.getElementById("drop1").disabled = n === 0;
   document.getElementById("played-power").hidden = !powerTable[n];
   document.getElementById("played-flex").hidden = !FLEX[n];
   const adv = document.getElementById("advice");
@@ -722,7 +741,32 @@ document.addEventListener("click", e => {
     renderBoard();
   }
 });
-document.getElementById("best").onclick = () => { selected.clear(); bestIds(4).forEach(id => selected.add(id)); rerender(); };
+function entryReturn(ids) {
+  const probs = board().filter(p => ids.has(p.id)).map(p => p.p), n = probs.length;
+  return Math.max(POWER[n] ? ret(probs, POWER[n]) : 0, FLEX[n] ? ret(probs, FLEX[n]) : 0);
+}
+function stepNote(text) { const el = document.getElementById("step-note"); el.hidden = !text; el.textContent = text || ""; }
+document.getElementById("best").onclick = () => { selected.clear(); bestIds(4).forEach(id => selected.add(id)); stepNote(""); rerender(); };
+document.getElementById("add1").onclick = () => {
+  if (selected.size >= 6) return stepNote("PrizePicks entries max out at 6 picks.");
+  const before = entryReturn(selected);
+  const p = nextBest(selected);
+  if (!p) return stepNote("No other playable pick left to add.");
+  selected.add(p.id);
+  const after = entryReturn(selected);
+  stepNote(`Added ${p.player} ${p.side} ${(p.cond ? p.cond + " " : "") + p.line} ${p.stat} (${pct(p.p)}). ` + (selected.size < 2 ? "" : after >= before ? `Best return went from ${before.toFixed(3)}x to ${after.toFixed(3)}x.` : `Best return dropped from ${before.toFixed(3)}x to ${after.toFixed(3)}x, so the smaller entry was better.`));
+  rerender();
+};
+document.getElementById("drop1").onclick = () => {
+  const cur = board().filter(p => selected.has(p.id));
+  if (!cur.length) return stepNote("");
+  const before = entryReturn(selected);
+  const weakest = cur.sort((a, b) => a.p - b.p)[0];
+  selected.delete(weakest.id);
+  const after = entryReturn(selected);
+  stepNote(`Removed ${weakest.player} (${pct(weakest.p)}), your weakest pick. ` + (selected.size < 2 ? "" : `Best return went from ${before.toFixed(3)}x to ${after.toFixed(3)}x.`));
+  rerender();
+};
 document.getElementById("clear").onclick = () => { selected.clear(); rerender(); };
 document.getElementById("stake").oninput = renderSlip;
 document.getElementById("bankroll").oninput = renderSlip;
