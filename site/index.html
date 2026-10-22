@@ -177,6 +177,37 @@ h1 em { font-style: normal; color: var(--violet-hi); }
 footer { border-top: 1px solid var(--line); margin-top: 40px; padding-block: 20px; color: var(--muted); font-size: 12px; }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
 
+
+/* chat */
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+.chat-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chat-head h2 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+.chat-head p { margin: 0; color: var(--muted); font-size: 13px; flex: 1 1 260px; }
+.log { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+.log:empty { display: none; }
+.msg { max-width: 85%; padding: 9px 12px; border-radius: 14px; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.me { align-self: flex-end; background: var(--violet); color: var(--ink); border-bottom-right-radius: 4px; }
+.msg.bot { align-self: flex-start; background: var(--panel-2); border-bottom-left-radius: 4px; }
+.msg.act { align-self: flex-start; background: none; border: 1px dashed var(--line); color: var(--muted); font-family: var(--f-mono); font-size: 11px; padding: 5px 10px; }
+.msg.err { align-self: flex-start; background: none; border: 1px solid var(--less); color: var(--less); }
+.suggest { display: flex; gap: 6px; flex-wrap: wrap; }
+.suggest button { background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.suggest button:hover { color: var(--text); border-color: var(--violet); }
+.composer { display: flex; gap: 8px; }
+.composer textarea {
+  flex: 1; min-width: 0; resize: none; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px;
+  color: var(--text); font: inherit; font-size: 14px; padding: 10px 12px; min-height: 44px; max-height: 140px;
+}
+.composer textarea::placeholder { color: var(--muted); }
+.send { border: 0; border-radius: 12px; padding: 0 16px; background: var(--violet); color: var(--ink); font-weight: 700; cursor: pointer; }
+.send:disabled { opacity: .5; cursor: default; }
+.sync { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.card .mine { font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: .06em; text-transform: uppercase; }
+.card .gone { background: none; border: 0; color: var(--muted); font-size: 12px; cursor: pointer; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; }
+.card .gone:hover { color: var(--less); }
+.hidden-row { margin-top: 14px; font-size: 13px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.hidden-row button { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+
 @media (max-width: 920px) {
   .hero { grid-template-columns: 1fr; }
   .main { grid-template-columns: 1fr; }
@@ -233,6 +264,24 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 
   <div class="main">
     <div>
+      <section class="chat" id="chat" aria-label="Chat with Claude">
+        <div class="chat-head">
+          <h2>Tell Claude what your app shows</h2>
+          <p>Say which picks aren't offered, what line you actually see, or ask for a different entry. Claude changes the board for you.</p>
+          <span class="sync" id="sync">Changes saved to this board</span>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+        <div class="suggest" id="suggest">
+          <button type="button">Ajay Mitchell isn't on my PrizePicks</button>
+          <button type="button">My line for Jaylen Brown assists is 4.5</button>
+          <button type="button">Build me the best 5-pick Flex</button>
+        </div>
+        <form class="composer" id="composer">
+          
+          <textarea id="chat-input" rows="1" aria-label="Message to Claude" placeholder="e.g. Chidekh games won is 9.5 in my app"></textarea>
+          <button class="send" id="send" type="submit">Send</button>
+        </form>
+      </section>
       <div class="tabs" role="tablist" aria-label="Sport">
         <button class="tab" role="tab" id="tab-all" data-sport="all" aria-selected="true">All <span class="n" id="n-all"></span></button>
         <button class="tab" role="tab" id="tab-nba" data-sport="NBA" aria-selected="false">NBA <span class="n" id="n-NBA"></span></button>
@@ -240,6 +289,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
         <button class="tab" role="tab" id="tab-tennis" data-sport="Tennis" aria-selected="false">Tennis <span class="n" id="n-Tennis"></span></button>
       </div>
       <div id="board"></div>
+      <div class="hidden-row" id="hidden-row" hidden></div>
 
       <section class="how" aria-label="How picks are made">
         <div><h4>Real lines</h4><p>Prop lines from PrizePicks and US sportsbooks come from The Odds API. Games that have already started are skipped.</p></div>
@@ -327,36 +377,67 @@ const BE4 = breakeven(4, POWER[4]);
 const tier = p => p >= 0.58 ? ["play", "PLAY"] : p >= 0.54 ? ["lean", "LEAN"] : ["below", "BELOW B/E"];
 const pct = p => (p * 100).toFixed(1).replace(/\.0$/, "") + "%";
 const initials = name => name.split(/\s+v\s+|\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toUpperCase();
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* Board edits: picks hidden, picks changed, picks added. Kept in the artifact's database so they
+   survive reloads and Claude in the coding session can read them back. */
+let edits = { removed: [], overrides: {}, added: [] };
+let editsDoc = null;
+let writeChain = Promise.resolve();
+
+function board() {
+  const base = PICKS.filter(p => !edits.removed.includes(p.id)).map(p => edits.overrides[p.id] ? { ...p, ...edits.overrides[p.id], edited: true } : p);
+  const extra = edits.added.filter(p => !edits.removed.includes(p.id)).map(p => ({ ...p, ...(edits.overrides[p.id] || {}), mine: true }));
+  return base.concat(extra);
+}
+const findPick = id => board().find(p => p.id === id);
+
+function persist() {
+  const snapshot = JSON.parse(JSON.stringify(edits));
+  setSync("Saving…");
+  writeChain = writeChain.then(async () => {
+    if (!editsDoc) { setSync("Changes kept on this device only"); try { localStorage.setItem("pl-edits", JSON.stringify(snapshot)); } catch (e) {} return; }
+    try { await editsDoc.set({ ...snapshot, updatedAt: new Date().toISOString() }); setSync("Changes saved to this board"); }
+    catch (e) { setSync("Couldn't save: " + (e && e.message || "unknown error")); }
+  });
+  return writeChain;
+}
+function setSync(t) { document.getElementById("sync").textContent = t; }
 
 const selected = new Set();
 let filter = "all";
-try { const saved = JSON.parse(localStorage.getItem("pl-slip") || "[]"); saved.forEach(id => PICKS.some(p => p.id === id) && selected.add(id)); } catch (e) {}
+try { const saved = JSON.parse(localStorage.getItem("pl-slip") || "[]"); saved.forEach(id => selected.add(id)); } catch (e) {}
+try { const local = JSON.parse(localStorage.getItem("pl-edits") || "null"); if (local) edits = { removed: [], overrides: {}, added: [], ...local }; } catch (e) {}
 const save = () => { try { localStorage.setItem("pl-slip", JSON.stringify([...selected])); } catch (e) {} };
 
 function cardHTML(p) {
   const [cls, label] = tier(p.p);
   const color = p.side === "More" ? "var(--more)" : "var(--less)";
   const sel = selected.has(p.id);
-  return `<article class="card${sel ? " sel" : ""}" data-id="${p.id}">
+  const flag = p.mine ? `<span class="mine">Added by you · not checked vs books</span>` : p.edited ? `<span class="mine">Changed by you · not re-checked vs books</span>` : "";
+  return `<article class="card${sel ? " sel" : ""}" data-id="${esc(p.id)}">
     <div class="card-top">
-      <div class="avatar" aria-hidden="true">${p.tennis ? p.team : initials(p.player)}</div>
-      <div class="who"><b>${p.player}</b><span>${p.tennis ? p.game : p.team + " · " + p.game}</span></div>
+      <div class="avatar" aria-hidden="true">${esc(p.tennis ? p.team : initials(p.player))}</div>
+      <div class="who"><b>${esc(p.player)}</b><span>${esc(p.tennis ? p.game : p.team + " · " + p.game)}</span></div>
       <span class="tag ${cls}">${label}</span>
     </div>
     <div class="line-row">
-      <div class="line">${p.cond ? `<span class="cond">play if</span>` : ""}<b>${p.cond ? p.cond + " " : ""}${p.line}</b><span>${p.stat} · ${p.books}</span></div>
+      <div class="line">${p.cond ? `<span class="cond">play if</span>` : ""}<b>${esc((p.cond ? p.cond + " " : "") + p.line)}</b><span>${esc(p.stat + " · " + p.books)}</span></div>
       <div class="prob"><b>${pct(p.p)}</b><span>est. hit rate</span></div>
     </div>
-    <div class="meter" style="--be:${(BE4 - 0.4) / 0.3 * 100}%" title="Marker shows the 4-pick Power break-even"><i style="width:${Math.min(100, (p.p - 0.4) / 0.3 * 100)}%;background:${color}"></i></div>
-    <p class="note">${p.note}</p>
+    <div class="meter" style="--be:${(BE4 - 0.4) / 0.3 * 100}%" title="Marker shows the 4-pick Power break-even"><i style="width:${Math.max(0, Math.min(100, (p.p - 0.4) / 0.3 * 100))}%;background:${color}"></i></div>
+    ${flag}
+    <p class="note">${esc(p.note)}</p>
     <div class="foot">
-      <span class="when">${p.when}</span>
-      <button class="pick-btn ${p.side.toLowerCase()}" type="button" aria-pressed="${sel}" data-id="${p.id}">${sel ? "✓ " : ""}${p.side}</button>
+      <span class="when">${esc(p.when)}</span>
+      <button class="gone" type="button" data-hide="${esc(p.id)}">Not in my app</button>
+      <button class="pick-btn ${p.side === "More" ? "more" : "less"}" type="button" aria-pressed="${sel}" data-id="${esc(p.id)}">${sel ? "✓ " : ""}${esc(p.side)}</button>
     </div>
   </article>`;
 }
 
 function renderBoard() {
+  const all = board();
   const groups = filter === "all" ? ["NBA", "NFL", "Tennis"] : [filter];
   const heads = {
     NBA: ["NBA", "Real PrizePicks lines vs. 2–3 books. Thursday tips at 7:10 and 9:40 PM ET."],
@@ -364,19 +445,29 @@ function renderBoard() {
     Tennis: ["Tennis", "No PrizePicks lines found. Play only when the app's line is at or under the number shown."]
   };
   document.getElementById("board").innerHTML = groups.map(g => {
-    const list = PICKS.filter(p => p.sport === g).sort((a, b) => b.p - a.p);
+    const list = all.filter(p => p.sport === g).sort((a, b) => b.p - a.p);
+    if (!list.length) return `<div class="section-head"><h2>${heads[g][0]}</h2><p>No picks left in this sport.</p></div>`;
     return `<div class="section-head"><h2>${heads[g][0]}</h2><p>${heads[g][1]}</p></div><div class="cards">${list.map(cardHTML).join("")}</div>`;
   }).join("");
+  ["all", "NBA", "NFL", "Tennis"].forEach(s => { document.getElementById("n-" + s).textContent = s === "all" ? all.length : all.filter(p => p.sport === s).length; });
+  document.getElementById("s-total").textContent = all.length;
+  document.getElementById("s-play").textContent = all.filter(p => p.p >= 0.58).length;
+  const hidden = PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id));
+  const row = document.getElementById("hidden-row");
+  row.hidden = hidden.length === 0;
+  row.innerHTML = hidden.length ? `Hidden: ${hidden.map(p => `<button type="button" data-restore="${esc(p.id)}">${esc(p.player)} ${esc(p.stat)} ↺</button>`).join("")}` : "";
 }
 
 function renderSlip() {
-  const picks = PICKS.filter(p => selected.has(p.id));
+  const ids = new Set(board().map(p => p.id));
+  [...selected].forEach(id => { if (!ids.has(id)) selected.delete(id); });
+  const picks = board().filter(p => selected.has(p.id));
   document.getElementById("count").textContent = picks.length;
   document.getElementById("slip-empty").hidden = picks.length > 0;
   document.getElementById("slip-list").innerHTML = picks.map(p => `<li>
-      <span class="side ${p.side.toLowerCase()}">${p.side.toUpperCase()}</span>
-      <span class="s"><b>${p.player}</b><span>${p.cond ? p.cond + " " : ""}${p.line} ${p.stat} · ${pct(p.p)}</span></span>
-      <button class="x" type="button" aria-label="Remove ${p.player}" data-id="${p.id}">×</button></li>`).join("");
+      <span class="side ${p.side === "More" ? "more" : "less"}">${esc(p.side.toUpperCase())}</span>
+      <span class="s"><b>${esc(p.player)}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${pct(p.p)}</span></span>
+      <button class="x" type="button" aria-label="Remove ${esc(p.player)}" data-id="${esc(p.id)}">×</button></li>`).join("");
   const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
   const probs = picks.map(p => p.p), n = probs.length;
   for (const [key, table] of [["power", POWER], ["flex", FLEX]]) {
@@ -391,7 +482,7 @@ function renderSlip() {
   }
   const warn = [];
   const games = {};
-  picks.forEach(p => { games[p.game_id] = (games[p.game_id] || 0) + 1; });
+  picks.forEach(p => { games[p.game_id || p.game] = (games[p.game_id || p.game] || 0) + 1; });
   if (Object.values(games).some(c => c > 1)) warn.push("Two or more picks share a game, so their results move together.");
   if (picks.filter(p => p.tennis).length > 2) warn.push("More than two tennis \"Over games\" picks stack the same risk.");
   if (picks.length > 6) warn.push("PrizePicks entries max out at 6 picks.");
@@ -399,12 +490,19 @@ function renderSlip() {
   w.hidden = warn.length === 0;
   w.textContent = warn.join(" ");
 }
+const rerender = () => { save(); renderBoard(); renderSlip(); };
 
-function toggle(id) { selected.has(id) ? selected.delete(id) : selected.add(id); save(); renderBoard(); renderSlip(); }
+function toggle(id) { selected.has(id) ? selected.delete(id) : selected.add(id); rerender(); }
+function hide(id) { if (!edits.removed.includes(id)) edits.removed.push(id); selected.delete(id); persist(); rerender(); }
+function restore(id) { edits.removed = edits.removed.filter(x => x !== id); persist(); rerender(); }
 
 document.addEventListener("click", e => {
   const btn = e.target.closest(".pick-btn, .x");
   if (btn) return toggle(btn.dataset.id);
+  const h = e.target.closest("[data-hide]");
+  if (h) return hide(h.dataset.hide);
+  const r = e.target.closest("[data-restore]");
+  if (r) return restore(r.dataset.restore);
   const tab = e.target.closest(".tab");
   if (tab) {
     filter = tab.dataset.sport;
@@ -412,17 +510,159 @@ document.addEventListener("click", e => {
     renderBoard();
   }
 });
-document.getElementById("best").onclick = () => { selected.clear(); BEST.forEach(id => selected.add(id)); save(); renderBoard(); renderSlip(); };
-document.getElementById("clear").onclick = () => { selected.clear(); save(); renderBoard(); renderSlip(); };
+document.getElementById("best").onclick = () => { selected.clear(); BEST.filter(id => findPick(id)).forEach(id => selected.add(id)); rerender(); };
+document.getElementById("clear").onclick = () => { selected.clear(); rerender(); };
 document.getElementById("stake").oninput = renderSlip;
 const head = document.getElementById("slip-head");
 const flip = () => { const s = document.getElementById("slip"); const open = s.classList.toggle("open"); head.setAttribute("aria-expanded", open); document.getElementById("toggle-hint").textContent = open ? "tap to close" : "tap to open"; };
 head.onclick = flip;
 head.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } };
 
-["all", "NBA", "NFL", "Tennis"].forEach(s => { document.getElementById("n-" + s).textContent = s === "all" ? PICKS.length : PICKS.filter(p => p.sport === s).length; });
-document.getElementById("s-total").textContent = PICKS.length;
-document.getElementById("s-play").textContent = PICKS.filter(p => p.p >= 0.58).length;
+/* ---------- chat ---------- */
+const chatLog = [];
+const logEl = document.getElementById("log");
+function addMsg(cls, text) {
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.textContent = text;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+  return div;
+}
+const compact = p => ({ id: p.id, sport: p.sport, player: p.player, game: p.game, stat: p.stat, side: p.side,
+  line: (p.cond ? "play if line " + p.cond + " " : "") + p.line, est_prob: p.p, books: p.books, when: p.when,
+  status: p.mine ? "added by user" : p.edited ? "changed by user" : "researched" });
+
+function instructions() {
+  return `You are the assistant inside "Parlay Lab", a PrizePicks More/Less picks board. The user tells you what their PrizePicks app actually shows, and you update the board with the tools.
+
+Board right now (est_prob = estimated chance the pick hits; researched picks came from real sportsbook odds with the margin removed, plus injury news):
+${JSON.stringify(board().map(compact))}
+Hidden picks: ${JSON.stringify(PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id)).map(p => p.id + " (" + p.player + " " + p.stat + ")"))}
+Picks in the user's entry slip: ${JSON.stringify([...selected])}
+
+Break-even hit rate per pick: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
+
+Rules:
+- If a pick isn't offered in the user's app, hide it with remove_picks.
+- If the user's line differs, use edit_pick with the new line and a new est_prob. Moving the line half a point AGAINST the pick lowers est_prob by about 4 points for low-count stats (rebounds, assists, threes, games won, receptions, TDs) and about 1.5–2 points for points, yards, and total games. Moving it in the pick's favor raises it by the same amount. For tennis "play if line <= X" picks, a line at or below X keeps the estimate; above X, lower it as above. Say plainly that the new number is an estimate, not re-checked against sportsbooks.
+- A whole-number line on a Less pick for a low-count stat can push; mention it.
+- Goblin and demon lines can only be played More.
+- You have no live odds, injury news, or web access. Never invent stats, lines, or injury statuses. If the user asks for something you can't know, say so and suggest re-running the research in the coding session.
+- For a pick the user adds, use their numbers; if they give no probability, use 0.50 and say it needs research.
+- To build an entry, pick the highest est_prob picks, avoid two picks from the same game where possible, and no more than two tennis "Over games" picks. Then call set_entry.
+- Keep replies short: 1–4 plain sentences, no markdown headings or tables.`;
+}
+
+const tools = [
+  { name: "remove_picks", description: "Hide picks from the board (for example, not offered in the user's app). Returns the hidden ids.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } } }, required: ["ids"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => findPick(id));
+      if (!ids.length) throw new Error("No matching pick ids on the board.");
+      ids.forEach(id => { if (!edits.removed.includes(id)) edits.removed.push(id); selected.delete(id); });
+      persist(); rerender(); addMsg("act", "Hid " + ids.join(", "));
+      return { hidden: ids };
+    } },
+  { name: "restore_picks", description: "Bring back hidden picks. Returns the restored ids.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } } }, required: ["ids"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => edits.removed.includes(id));
+      if (!ids.length) throw new Error("None of those ids are hidden.");
+      edits.removed = edits.removed.filter(x => !ids.includes(x));
+      persist(); rerender(); addMsg("act", "Restored " + ids.join(", "));
+      return { restored: ids };
+    } },
+  { name: "edit_pick", description: "Change a pick's line, side (More/Less), estimated hit rate (0-1), or note. Returns the updated pick.",
+    inputSchema: { type: "object", properties: { id: { type: "string" }, line: { type: "string", description: "The number shown in the app, e.g. \"4.5\"" }, side: { type: "string", enum: ["More", "Less"] }, est_prob: { type: "number" }, note: { type: "string" } }, required: ["id"] },
+    execute(input) {
+      const id = String(input.id);
+      if (!findPick(id)) throw new Error("No pick with id " + id);
+      const o = { ...(edits.overrides[id] || {}) };
+      if (input.line != null) { o.line = String(input.line); o.cond = ""; }
+      if (input.side === "More" || input.side === "Less") o.side = input.side;
+      if (input.est_prob != null) { const v = Number(input.est_prob); if (!(v > 0 && v < 1)) throw new Error("est_prob must be between 0 and 1"); o.p = Math.round(v * 1000) / 1000; }
+      if (input.note) o.note = String(input.note).slice(0, 400);
+      edits.overrides[id] = o;
+      persist(); rerender();
+      const p = findPick(id); addMsg("act", `Changed ${p.player} ${p.stat}: ${p.side} ${p.line}, ${pct(p.p)}`);
+      return compact(p);
+    } },
+  { name: "add_pick", description: "Add a pick the user sees in their app that isn't on the board. Returns the new pick with its id.",
+    inputSchema: { type: "object", properties: { sport: { type: "string", enum: ["NBA", "NFL", "Tennis"] }, player: { type: "string" }, game: { type: "string" }, stat: { type: "string" }, side: { type: "string", enum: ["More", "Less"] }, line: { type: "string" }, est_prob: { type: "number" }, note: { type: "string" }, when: { type: "string" } }, required: ["sport", "player", "stat", "side", "line"] },
+    execute(input) {
+      const sport = ["NBA", "NFL", "Tennis"].includes(input.sport) ? input.sport : "NBA";
+      const v = Number(input.est_prob); const p = v > 0 && v < 1 ? Math.round(v * 1000) / 1000 : 0.5;
+      const pick = { id: "u" + Date.now().toString(36), sport, player: String(input.player).slice(0, 60), team: sport === "Tennis" ? "TEN" : "", game: String(input.game || "").slice(0, 60),
+        when: String(input.when || "time not set").slice(0, 40), stat: String(input.stat).slice(0, 40), side: input.side === "Less" ? "Less" : "More", line: String(input.line).slice(0, 12),
+        books: "added from your app", p, note: String(input.note || "Added from chat. Not researched yet.").slice(0, 400), tennis: sport === "Tennis" };
+      edits.added.push(pick);
+      persist(); rerender(); addMsg("act", `Added ${pick.player} ${pick.stat} ${pick.side} ${pick.line}`);
+      return compact({ ...pick, mine: true });
+    } },
+  { name: "set_entry", description: "Replace the user's entry slip with these pick ids (2-6). Returns the slip with Power and Flex expected return per $1.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } } }, required: ["ids"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => findPick(id)).slice(0, 6);
+      if (ids.length < 2) throw new Error("Need at least 2 valid pick ids.");
+      selected.clear(); ids.forEach(id => selected.add(id)); rerender();
+      const probs = ids.map(id => findPick(id).p), n = ids.length;
+      addMsg("act", "Entry set: " + ids.map(id => findPick(id).player).join(", "));
+      return { ids, power_return: POWER[n] ? +ret(probs, POWER[n]).toFixed(3) : null, flex_return: FLEX[n] ? +ret(probs, FLEX[n]).toFixed(3) : null };
+    } },
+  { name: "reset_board", description: "Undo every change the user made: restore hidden picks, drop edits and added picks.",
+    execute() { edits = { removed: [], overrides: {}, added: [] }; persist(); rerender(); addMsg("act", "Board reset to the researched picks"); return "reset"; } }
+];
+
+let sampleFn = null, busy = false;
+const input = document.getElementById("chat-input");
+const sendBtn = document.getElementById("send");
+
+async function send(text) {
+  text = text.trim();
+  if (!text || busy) return;
+  if (!sampleFn) { addMsg("err", "Chat isn't available in this view. Open the board on claude.ai while signed in."); return; }
+  busy = true; sendBtn.disabled = true; input.value = "";
+  addMsg("me", text);
+  chatLog.push({ role: "user", content: text });
+  const bubble = addMsg("bot", "Thinking…");
+  const msgs = [{ role: "user", content: instructions() + "\n\nReply \"Ready.\" to confirm." }, { role: "assistant", content: "Ready." }, ...chatLog.slice(-12)];
+  try {
+    const res = await sampleFn(msgs, { tools, onText: ({ text }) => { bubble.textContent = text || "Thinking…"; logEl.scrollTop = logEl.scrollHeight; } });
+    const reply = (res.text || "").split(/\n\n(?=\S)/).pop().trim() || "Done.";
+    bubble.textContent = res.text?.trim() || "Done.";
+    chatLog.push({ role: "assistant", content: reply });
+  } catch (e) {
+    bubble.remove();
+    chatLog.pop();
+    const code = e && e.code;
+    addMsg("err", code === "not_granted" ? "Chat needs your permission. Allow it from the artifact's Permissions menu, then try again."
+      : code === "rate_limited" ? "Too many messages at once. Wait a minute and try again."
+      : "That didn't go through: " + (e && e.message || "unknown error"));
+  } finally { busy = false; sendBtn.disabled = false; input.focus(); }
+}
+document.getElementById("composer").addEventListener("submit", e => { e.preventDefault(); send(input.value); });
+input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input.value); } });
+input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(140, input.scrollHeight) + "px"; });
+document.getElementById("suggest").addEventListener("click", e => { const b = e.target.closest("button"); if (b) send(b.textContent); });
+
 renderBoard();
 renderSlip();
+
+(async () => {
+  const c = window.claude;
+  if (!c || !c.use) { setSync("Changes kept on this device only"); return; }
+  const [s, db] = await Promise.all([c.use("sample").catch(() => null), c.use("db").catch(() => null)]);
+  sampleFn = s;
+  if (!s) document.getElementById("suggest").hidden = true;
+  if (!db) { setSync("Changes kept on this device only"); return; }
+  editsDoc = db.doc("board/edits");
+  editsDoc.onSnapshot(snap => {
+    if (!snap.exists) return;
+    const d = snap.data() || {};
+    edits = { removed: Array.isArray(d.removed) ? d.removed.map(String) : [], overrides: d.overrides && typeof d.overrides === "object" ? d.overrides : {},
+      added: Array.isArray(d.added) ? d.added : [] };
+    renderBoard(); renderSlip();
+  }, () => setSync("Couldn't load saved changes"));
+})();
 </script>
