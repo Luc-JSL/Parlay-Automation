@@ -264,6 +264,8 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 .gl { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--more); margin-top: 4px; }
 .gl input { width: 64px; background: var(--panel-2); border: 1px solid var(--more); border-radius: 6px; color: var(--text); font-family: var(--f-mono); font-size: 12px; padding: 3px 6px; }
 .glnote { font-size: 11px; color: var(--muted); margin-left: 8px; }
+.gv { display: block; font-size: 12px; font-weight: 600; margin-top: 4px; }
+.gv.ok { color: var(--more); } .gv.no { color: var(--less); } .gv.need { color: var(--gold); font-weight: 500; }
 .gob-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--more); border: 1px solid var(--more); border-radius: 4px; padding: 1px 4px; vertical-align: middle; }
 .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
 .toolbar .tabs { margin-bottom: 0; }
@@ -664,9 +666,18 @@ function renderSlip() {
   const picks = board().filter(p => selected.has(p.id));
   document.getElementById("count").textContent = picks.length;
   document.getElementById("slip-empty").hidden = picks.length > 0;
+  const verdict = p => {
+    if (!p.goblin) return "";
+    const c = goblinCheck(picks, p);
+    if (!c) return "";
+    if (c.state === "need") return `<span class="gv need">Enter the Goblin line on this pick to check if it's worth it</span>`;
+    return c.state === "yes"
+      ? `<span class="gv ok">✓ Goblin worth it: ${c.withG.toFixed(3)}x vs ${c.without.toFixed(3)}x with the normal ${esc(p.stdLine)} line</span>`
+      : `<span class="gv no">✗ Not worth it: play the normal ${esc(p.stdLine)} line instead (${c.without.toFixed(3)}x vs ${c.withG.toFixed(3)}x)</span>`;
+  };
   document.getElementById("slip-list").innerHTML = picks.map(p => `<li>
       <span class="side ${p.side === "More" ? "more" : "less"}">${esc(p.side.toUpperCase())}</span>
-      <span class="s"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">G</span>' : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} <span class="wp" style="color:${p.side === "More" ? "var(--more)" : "var(--less)"}">${pct(p.p)} win prob</span></span></span>
+      <span class="s"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">G</span>' : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} <span class="wp" style="color:${p.side === "More" ? "var(--more)" : "var(--less)"}">${pct(p.p)} win prob</span></span>${verdict(p)}</span>
       <button class="x" type="button" aria-label="Remove ${esc(p.player)}" data-id="${esc(p.id)}">×</button></li>`).join("");
   const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
   const probs = picks.map(p => p.p), n = probs.length;
@@ -741,13 +752,26 @@ function goblinize(p) {
   return out;
 }
 /* Payout tables for the picks on an entry: standard, scaled down for Goblins, or the app's exact Power payout. */
-function entryTables(picks) {
+function entryTables(picks, useCustom = true) {
   const n = picks.length, g = picks.filter(p => p.goblin).length;
-  const custom = parseFloat(document.getElementById("payout").value);
+  const custom = useCustom ? parseFloat(document.getElementById("payout").value) : NaN;
   const scale = row => row && Object.fromEntries(Object.entries(row).map(([k, m]) => [k, Math.round(m * GOBLIN_CUT ** g * 100) / 100]));
   const power = { ...POWER, [n]: custom > 1 ? { [n]: custom } : (g ? scale(POWER[n]) : POWER[n]) };
   const flex = { ...FLEX, [n]: g ? scale(FLEX[n]) : FLEX[n] };
   return { power, flex, g, exact: custom > 1 };
+}
+/* Best expected return (per $1) of an entry, taking the better of Power and Flex. */
+function bestReturn(picks, useCustom = true) {
+  const n = picks.length, T = entryTables(picks, useCustom), probs = picks.map(p => p.p);
+  return Math.max(T.power[n] ? ret(probs, T.power[n]) : 0, T.flex[n] ? ret(probs, T.flex[n]) : 0);
+}
+/* Is this Goblin worth it? Compare the entry as is with the same entry using the player's normal line. */
+function goblinCheck(picks, g) {
+  if (picks.length < 2) return null;
+  if (g.line === g.stdLine) return { state: "need" };
+  const alt = picks.map(x => x.id === g.id ? { ...x, goblin: false, line: x.stdLine, p: x.stdP } : x);
+  const withG = bestReturn(picks), without = bestReturn(alt, false);
+  return { state: withG >= without ? "yes" : "no", withG, without };
 }
 function toggleGoblin(id) {
   const g = new Set(edits.goblins || []);
