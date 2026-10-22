@@ -3,3 +3,8 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NFL,NE@CHI,Luther Burden III,Rec Yds,More,<=51.5,O55.5 -114,0.51,,,threshold-dependent
 2026-10-22,NFL,NE@CHI,Drake Maye,Pass Yds,Less,>=263.5,U251.5 -114,0.51,,,threshold-dependent
 2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,More,<=16.5,analyst lean 20+,,,,threshold-dependent
+2026-10-22,NBA,DEN@OKC,Nikola Jokic,Assists,More,<=8.5,9.5 (preview; no price),0.60,,,
+2026-10-22,NBA,DEN@OKC,Shai Gilgeous-Alexander,Points,More,<=27.5,29.5 (preview; no price),0.59,,,
+2026-10-22,NBA,CLE@PHI,Evan Mobley,Rebounds,More,<=9.5 if Allen OUT else <=8.5,9.5 (preview; no price),0.59,,,
+2026-10-22,NBA,CLE@PHI,Joel Embiid,Points,Less,>=22.5,not found,0.58,,,
+2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Points,More,<=25.5,27.5 (preview; no price),0.58,,,lean
