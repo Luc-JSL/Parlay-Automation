@@ -55,6 +55,11 @@ python3 src/prizepicks.py ev 0.60 0.59 0.61 --stake 10   # EV of a 3-pick entry
 # Combined odds, implied probability, and EV for a parlay
 python3 src/parlay_calc.py -160 -300 1.38 --true-probs 0.60 0.74 0.70
 
+# X/Twitter injury + lineup news (needs TWITTERAPI_IO_KEY from https://twitterapi.io)
+python3 src/fetch_news.py insiders nba --hours 12 --grep injury
+python3 src/fetch_news.py search "Mahomes ankle" --hours 48
+python3 src/fetch_news.py user ShamsCharania
+
 # Live odds (needs a free key from https://the-odds-api.com in ODDS_API_KEY)
 python3 src/fetch_odds.py basketball_nba
 python3 src/fetch_odds.py americanfootball_nfl
@@ -68,7 +73,7 @@ python3 src/fetch_odds.py americanfootball_nfl
 | NBA stats | [balldontlie](https://www.balldontlie.io) / NBA.com | `BALLDONTLIE_API_KEY` env var |
 | NFL stats / injuries | ESPN public endpoints, nflverse | no key needed (network allow-list) |
 | Tennis stats / H2H | Tennis Abstract, ATP/WTA sites | no key needed (network allow-list) |
-| Breaking news (X/Twitter) | X API (paid tier for search) | `X_BEARER_TOKEN` env var |
+| Breaking news (X/Twitter) | [twitterapi.io](https://twitterapi.io) | `TWITTERAPI_IO_KEY` env var, `src/fetch_news.py` |
 
 Never commit API keys. Store them as environment variables / secrets.
 

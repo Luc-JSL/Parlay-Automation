@@ -9,7 +9,9 @@ Every scheduled run follows this file. Work on branch `claude/sports-parlay-pick
 3. **Research the next slate** (today + tomorrow, US Eastern dates) for NBA, NFL, ATP/WTA tennis:
    - Injury reports, starting lineups, rest/back-to-back, tennis withdrawals and fatigue
    - Sportsbook player-prop lines and prices (`python3 src/fetch_odds.py ...` if `ODDS_API_KEY` is set)
-   - News from beat writers / X, recent form, matchups, head-to-head
+   - News from beat writers / X: `python3 src/fetch_news.py insiders <nba|nfl|tennis> --hours 12 --grep injury`,
+     plus `search "<player> injury"` for each pick's player (if `TWITTERAPI_IO_KEY` is set). Cite the post URL.
+   - Recent form, matchups, head-to-head
 4. **Pick only what clears break-even.** De-vig sportsbook props with
    `python3 src/prizepicks.py devig`. A pick needs an estimated **≥ 58%** hit rate.
    Record the PrizePicks line threshold where it becomes a play. Never invent stats, lines, or statuses.
