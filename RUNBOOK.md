@@ -27,15 +27,16 @@ artifact database document `board/live` (collection `board`, doc id `live`).
 4. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
    and research as "play if line ≤ X" (`"cond": "≤"`, `"tennis": true`, `"team": "ATP"` or `"WTA"`), each with
    a `start` time. Skip tennis if you can't find match odds.
-5. **Publish to the board.** Save the final JSON to `results/live_board.json`. Then, with the ArtifactData tool, `get`
-   `board/live` to read its `version`, and `set` it from that file (`file_path`) with `if_version`.
+5. **Stage, don't publish.** Save the final JSON to `results/live_board.json` and commit it. **Do not write to the board**
+   (`board/live`). The user asks for board updates themselves. When they do, the session they ask
+   publishes the staged file: ArtifactData `get` of `board/live` to read its `version`, then `set` from the file with `if_version`.
    Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
-   `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`. If ArtifactData isn't available, say so in the summary.
+   `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`.
 6. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
    and `result` (W/L/P/void) from box scores. Append every pick that is new to the board this run, without duplicating rows.
    Update `results/SUMMARY.md` with the record, the hit rate by sport, and calibration by probability bucket.
 7. Commit `Board update <date> <time CT>` and `git push -u origin claude/cool-edison-x9a8gv`.
-8. Finish with 3 lines: the top 4 picks right now, picks graded, and API quota left.
+8. Finish with 3 lines: the top 4 staged picks, picks graded, and API quota left.
 
 ## Rules
 - A PLAY needs ≥ 58% (≥ 59.5% for a 4-pick Power at 8x). 54–58% is a LEAN for 5–6 pick Flex only.
