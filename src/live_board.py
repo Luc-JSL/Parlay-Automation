@@ -8,7 +8,7 @@ Usage (needs ODDS_API_KEY):
 
 Writes results/live_board.json. Picks from games not rescanned this run are kept until their
 game starts, so a small budget still leaves a full board. College sports are excluded
-(PrizePicks doesn't offer them in Arkansas).
+(PrizePicks doesn't offer them in Arkansas). Players on results/ban_list.json are left out.
 """
 import argparse
 import calendar
@@ -23,6 +23,15 @@ sys.path.insert(0, os.path.dirname(__file__))
 import fetch_odds as fo  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(__file__), "..", "results", "live_board.json")
+BANS = os.path.join(os.path.dirname(__file__), "..", "results", "ban_list.json")
+
+
+def load_bans() -> set[str]:
+    """Lower-cased names of players on the ban list (results/ban_list.json)."""
+    if not os.path.exists(BANS):
+        return set()
+    with open(BANS) as f:
+        return {p["name"].strip().lower() for p in json.load(f).get("players", [])}
 CENTRAL = ZoneInfo("America/Chicago")
 RUNS_PER_DAY = 3
 
@@ -105,14 +114,17 @@ def main() -> None:
 
     kept = [p for p in old if p.get("game_id") not in scanned and p.get("start")
             and datetime.fromisoformat(p["start"].replace("Z", "+00:00")) > now]
-    picks = sorted({p["id"]: p for p in kept + new}.values(), key=lambda p: -p["p"])[:30]
+    bans = load_bans()
+    merged = {p["id"]: p for p in kept + new}.values()
+    banned = [p for p in merged if p["player"].strip().lower() in bans]
+    picks = sorted((p for p in merged if p["player"].strip().lower() not in bans), key=lambda p: -p["p"])[:30]
 
     board = {"updated": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "quota_remaining": fo.quota.get("remaining"),
-             "scanned_games": len(scanned), "picks": picks}
+             "scanned_games": len(scanned), "bans": sorted(bans), "picks": picks}
     with open(OUT, "w") as f:
         json.dump(board, f, indent=1)
     print(f"budget {budget}, spent ~{spent}, scanned {len(scanned)} games, kept {len(kept)} older picks, "
-          f"{len(picks)} on board, quota left {fo.quota.get('remaining')}")
+          f"{len(picks)} on board, {len(banned)} hidden by ban list, quota left {fo.quota.get('remaining')}")
     for p in picks[:15]:
         print(f"  {p['p']:.1%} {p['sport']:4} {p['player']} {p['stat']} {p['side']} {p['line']}  ({p['game']}, {p['when']})")
 

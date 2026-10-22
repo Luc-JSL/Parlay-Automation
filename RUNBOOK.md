@@ -13,30 +13,36 @@ artifact database document `board/live` (collection `board`, doc id `live`).
 
 ## Each run (keep it short; aim for under 20 minutes)
 1. `git pull origin claude/cool-edison-x9a8gv`
-2. **Scan.** Run `python3 src/live_board.py`. It spends a fair share of this month's Odds API quota,
+2. **Ban list (morning run only, the one before noon CT).** Keep `results/ban_list.json` current. Search Reddit, X,
+   TikTok and YouTube for players bettors call parlay killers or "never bet on". Add a player only when current stats
+   back it up: volatile minutes or snaps, a role change, active injury, blowout benching, or retirement risk in tennis.
+   Remove a player when that reason no longer holds, for example a stable role for 2+ weeks or a return from injury.
+   Each entry needs `name` (sportsbook spelling), `sport`, `team`, a `reason` (one sentence), `mentions`, and `sources`.
+   Note the adds and removes in the summary. `live_board.py` hides these players automatically.
+3. **Scan.** Run `python3 src/live_board.py`. It spends a fair share of this month's Odds API quota,
    scans the soonest games in NBA, NFL, NHL and MLB, keeps only standard PrizePicks lines
    (no Goblins or Demons), and writes `results/live_board.json`. Picks from games it didn't rescan are kept
    until their game starts. If the quota is at 0, run it with `--budget 0` to drop games that have started.
-3. **News check the top picks.** For the 6–8 highest picks that start within 12 hours, search for injury news,
+4. **News check the top picks.** For the 6–8 highest picks that start within 12 hours, search for injury news,
    expected minutes or role, and lineup changes. Then for each pick:
    - Drop it if a key status is unknown close to lock, or the news cuts against it.
    - Adjust `p` by at most about 3 points, and only with a concrete reason.
    - Rewrite `note` in one or two plain sentences with the reason, and delete `"auto": true` once checked.
 
    Never invent stats, lines, or statuses.
-4. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
+5. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
    and research as "play if line ≤ X" (`"cond": "≤"`, `"tennis": true`, `"team": "ATP"` or `"WTA"`), each with
    a `start` time. Skip tennis if you can't find match odds.
-5. **Stage, don't publish.** Save the final JSON to `results/live_board.json` and commit it. **Do not write to the board**
+6. **Stage, don't publish.** Save the final JSON to `results/live_board.json` and commit it. **Do not write to the board**
    (`board/live`). The user asks for board updates themselves. When they do, the session they ask
    publishes the staged file: ArtifactData `get` of `board/live` to read its `version`, then `set` from the file with `if_version`.
    Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
    `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`.
-6. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
+7. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
    and `result` (W/L/P/void) from box scores. Append every pick that is new to the board this run, without duplicating rows.
    Update `results/SUMMARY.md` with the record, the hit rate by sport, and calibration by probability bucket.
-7. Commit `Board update <date> <time CT>` and `git push -u origin claude/cool-edison-x9a8gv`.
-8. Finish with 3 lines: the top 4 staged picks, picks graded, and API quota left.
+8. Commit `Board update <date> <time CT>` and `git push -u origin claude/cool-edison-x9a8gv`.
+9. Finish with 4 lines: the top 4 staged picks, picks graded, ban-list changes, and API quota left.
 
 ## Rules
 - A PLAY needs ≥ 58% (≥ 59.5% for a 4-pick Power at 8x). 54–58% is a LEAN for 5–6 pick Flex only.

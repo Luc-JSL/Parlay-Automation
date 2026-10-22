@@ -1,7 +1,8 @@
 {
- "updated": "2026-10-22T05:03:39Z",
+ "updated": "2026-10-22T05:11:26Z",
  "quota_remaining": "304",
- "scanned_games": 5,
+ "scanned_games": 0,
+ "bans": [],
  "picks": [
   {
    "id": "alexfer",

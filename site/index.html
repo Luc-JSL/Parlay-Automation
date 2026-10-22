@@ -390,11 +390,12 @@ const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": 
 /* Board edits: picks hidden, picks changed, picks added. Kept in the artifact's database so they
    survive reloads and Claude in the coding session can read them back. */
 let edits = { removed: [], overrides: {}, added: [] };
+let bans = new Set();  // lower-cased player names from the ban list, sent with the live feed
 let editsDoc = null;
 let writeChain = Promise.resolve();
 
 function board() {
-  const base = PICKS.filter(p => !edits.removed.includes(p.id)).map(p => edits.overrides[p.id] ? { ...p, ...edits.overrides[p.id], edited: true } : p);
+  const base = PICKS.filter(p => !edits.removed.includes(p.id) && !bans.has(String(p.player).toLowerCase())).map(p => edits.overrides[p.id] ? { ...p, ...edits.overrides[p.id], edited: true } : p);
   const extra = edits.added.filter(p => !edits.removed.includes(p.id)).map(p => ({ ...p, ...(edits.overrides[p.id] || {}), mine: true }));
   return base.concat(extra);
 }
@@ -561,6 +562,7 @@ Board right now (est_prob = estimated chance the pick hits; researched picks cam
 ${JSON.stringify(board().map(compact))}
 Hidden picks: ${JSON.stringify(PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id)).map(p => p.id + " (" + p.player + " " + p.stat + ")"))}
 Picks in the user's entry slip: ${JSON.stringify([...selected])}
+Ban list (players hidden from the board; never suggest them): ${JSON.stringify([...bans])}
 
 The user's PrizePicks app currently pays 8x on a 4-pick Power (not 10x), so a 4-pick Power needs 59.5% per pick; prefer Flex or 5-6 pick entries unless picks clear that. Break-even hit rate per pick at the default table: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
 
@@ -681,7 +683,8 @@ renderSlip();
     if (!snap.exists) return;
     const d = snap.data() || {};
     const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && typeof p.player === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
-    if (!ok.length) return;
+    bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
+    if (!ok.length) { renderBoard(); renderSlip(); return; }
     PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", line: "", side: "More", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
     if (d.updated) {
       const t = new Date(d.updated);
