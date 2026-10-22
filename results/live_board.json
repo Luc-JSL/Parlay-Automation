@@ -139,6 +139,40 @@
    "when": "Thu 7:00 PM CT"
   },
   {
+   "game": "Nuggets @ Thunder",
+   "game_id": "denver-nuggets-oklahoma-city-thunder",
+   "start": "2026-10-23T01:30:00Z",
+   "when": "Thu 8:30 PM CT",
+   "sport": "NBA",
+   "team": "",
+   "id": "nba-jalen-williams-points-less",
+   "player": "Jalen Williams",
+   "stat": "Points",
+   "side": "Less",
+   "line": "19",
+   "books": "Books 15.5–19.5 (12)",
+   "p": 0.534,
+   "stats_pick": true,
+   "note": "Stats pick: 53% on price. Under 19 in 24 of 38 games last season and 6 of his last 10 (12 in the opener)."
+  },
+  {
+   "game": "Nuggets @ Thunder",
+   "game_id": "denver-nuggets-oklahoma-city-thunder",
+   "start": "2026-10-23T01:30:00Z",
+   "when": "Thu 8:30 PM CT",
+   "sport": "NBA",
+   "team": "",
+   "id": "nba-jokic-assists",
+   "player": "Nikola Jokic",
+   "stat": "Assists",
+   "side": "More",
+   "line": "9",
+   "books": "Books 7.5–10.5 (9)",
+   "p": 0.534,
+   "stats_pick": true,
+   "note": "Stats pick: 53% on price (11% push chance at 9). 10+ assists in 45 of 72 games last season and 2 of 3 vs OKC."
+  },
+  {
    "books": "Books 23.5 (2)",
    "game": "Cavaliers @ 76ers",
    "game_id": "cleveland-cavaliers-philadelphia-76ers",
@@ -157,7 +191,7 @@
    "when": "Thu 6:10 PM CT"
   }
  ],
- "quota_remaining": 52,
+ "quota_remaining": 38,
  "scanned_games": 0,
  "specials_info": [],
  "updated": "2026-10-22T22:47:00Z",
@@ -187,12 +221,12 @@
    }
   ],
   "summary": [
+   "5:55 PM NBA check: read 16 capper slip images and about 200 posts. Every Nuggets @ Thunder capper pick prices at 33–53% (Gordon, SGA, Jokic rebs, Chet, McCain, Ajay). No profitable NBA-only slip tonight.",
    "5:45 PM lock check: Jarrett Allen is playing. Patriots CB Christian Gonzalez is questionable (illness).",
    "Lines moved: Maxey assists to 5.5 (47%), Henderson rush+rec to 32.5 (48%), Mobley Less 9 reb down to 52%. All three removed.",
    "Still good: Rodrigues Less 2 SOG (58%), Zacha Less 2 SOG (57%), Caldwell-Pope More 5.5 pts (55%).",
    "Donovan Mitchell rebounds and Barbashev SOG weren't in PrizePicks' feed; check your app.",
-   "Insiders (12h): no injury news touching board picks (Rapoport: JJ McCarthy starts for Giants Sunday; Cobolli beat Wawrinka 6-2 first set).",
-   "Player news checked for 8 top picks: nothing ruling out or limiting any of them."
+   "Insiders (12h): no injury news touching board picks (Rapoport: JJ McCarthy starts for Giants Sunday; Cobolli beat Wawrinka 6-2 first set)."
   ]
  }
 }
