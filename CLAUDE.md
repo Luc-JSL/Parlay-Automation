@@ -22,7 +22,7 @@ The repo's working branch is **`claude/loving-heisenberg-pfretk`**.
   - **From X** section: what the last X check found (`x_feed` in `board/live`): injury news, capper picks checked with
     an ADDED/SKIPPED verdict, and promos.
   - **Entry slip:**
-    - Load best 4, **+ Add 1 / − Remove 1**, bankroll and stake fields, and a "Power payout in app" override.
+    - Load best entry (searches 2–6 pick entries from different games for the best expected return, Goblin cuts included), **+ Add 1 / − Remove 1**, bankroll and stake fields, and a "Power payout in app" override.
     - Power vs Flex expected return, a payout breakdown per outcome, and a quarter-Kelly stake suggestion (max 2% of bankroll).
     - Same-game warning.
   - **Goblin (G) button** per pick:
