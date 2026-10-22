@@ -35,12 +35,14 @@ DEFAULT_MARKETS = {
 # Rough standard deviation of each stat, sd = a + b * line. Used only to move a sportsbook
 # fair probability from the book's line to a nearby PrizePicks line.
 SD = {
-    "player_points": (2.5, 0.18), "player_rebounds": (1.2, 0.20), "player_assists": (1.0, 0.20),
-    "player_threes": (0.8, 0.25), "player_points_rebounds_assists": (3.5, 0.15),
-    "player_pass_yds": (20, 0.15), "player_pass_tds": (0.4, 0.40), "player_rush_yds": (8, 0.30),
-    "player_reception_yds": (8, 0.35), "player_receptions": (0.8, 0.30),
+    "player_points": (2.5, 0.18), "player_points_rebounds_assists": (3.5, 0.15),
+    "player_pass_yds": (20, 0.15), "player_rush_yds": (8, 0.30), "player_reception_yds": (8, 0.35),
 }
-
+# Low count stats use a negative binomial with variance = DISPERSION * mean instead. A normal
+# curve is too narrow for these and overstates the chance of landing exactly on a whole line.
+COUNT_MARKETS = {"player_rebounds", "player_assists", "player_threes", "player_pass_tds",
+                 "player_receptions"}
+DISPERSION = 1.4
 quota = {}
 
 
@@ -73,13 +75,33 @@ def to_prob(american: float) -> float:
     return 100 / (american + 100) if american > 0 else -american / (-american + 100)
 
 
+def nb_pmf(mean: float, upto: int) -> list[float]:
+    """Negative binomial P(X = 0..upto) with variance DISPERSION * mean."""
+    p = 1 / DISPERSION
+    r = mean / (DISPERSION - 1)
+    pmf = [p ** r]
+    for x in range(upto):
+        pmf.append(pmf[-1] * (x + r) / (x + 1) * (1 - p))
+    return pmf
+
+
 def over_prob_at(p_over: float, book_line: float, line: float, market: str) -> tuple[float, float]:
-    """Fair P(over), P(under) at `line`, given fair P(over) at `book_line`. Normal model."""
+    """Fair P(over), P(under) at `line`, given fair P(over) at `book_line`."""
+    p_over = min(max(p_over, 0.01), 0.99)
+    if market in COUNT_MARKETS:
+        def p_above(mean: float, x: float) -> float:  # P(X > x)
+            return 1 - sum(nb_pmf(mean, int(x // 1))[: int(x // 1) + 1])
+        lo, hi = 0.01, 4 * max(book_line, line) + 10
+        for _ in range(60):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if p_above(mid, book_line) < p_over else (lo, mid)
+        mean = (lo + hi) / 2
+        over = p_above(mean, line)
+        under = 1 - over - (nb_pmf(mean, int(line))[int(line)] if float(line).is_integer() else 0)
+        return over, under
     a, b = SD.get(market, (1.0, 0.25))
     sd = a + b * max(book_line, line)
-    n = NormalDist()
-    p_over = min(max(p_over, 0.01), 0.99)
-    mu = book_line - sd * n.inv_cdf(1 - p_over)
+    mu = book_line - sd * NormalDist().inv_cdf(1 - p_over)
     dist = NormalDist(mu, sd)
     if float(line).is_integer():  # whole-number line: a push is possible
         return 1 - dist.cdf(line + 0.5), dist.cdf(line - 0.5)
