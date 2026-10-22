@@ -95,6 +95,8 @@ A PLAY is 58% or better. A LEAN is 54–58% (5–6 pick Flex only). Avoid stacki
 - `python3 src/prizepicks.py breakeven | devig A B | ev p1 p2 ... [--payout X]`
 - `python3 src/twitter.py news "<player>" | insiders [--sport NBA] | cappers | specials | search "<query>"`
 - `python3 src/clv.py` (CLV and calibration into `SUMMARY.md`)
+- `python3 src/stats.py nba|nfl "<player>" <stat> <line> More|Less [--opp ABBR] [--json]` (ESPN game logs: hit rates this season, last 10, last season, vs opponent)
+- Network: ESPN, basketball-reference, hockey-reference, tennisabstract and pbs.twimg.com (X images) are allowed. NBA.com and pro-football-reference block bots.
 
 ## Lessons learned (don't repeat)
 - One-sided PrizePicks lines are Goblins/Demons. They looked like 70%+ edges, and the scanner now skips them.
@@ -105,3 +107,4 @@ A PLAY is 58% or better. A LEAN is 54–58% (5–6 pick Flex only). Avoid stacki
 - "Parlay progressions" and ladders don't change EV, and they raise the risk of going broke. Don't recommend them.
 - Many cappers sell picks and have unverified records. Use X for news; our math decides.
 - After republishing the board, the user may need **Ctrl + Shift + R** to see the new version.
+- Tacos keep full payout (seen on a slip: 3-pick Power with a Taco paid 6x). Goblins cut it. Don't confuse the two.

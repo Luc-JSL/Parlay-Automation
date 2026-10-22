@@ -41,7 +41,7 @@
    "source": "@ZRob4444",
    "books": "Books' alt line 214.5 at 67% (normal line 244.5)",
    "p": 0.665,
-   "note": "PrizePicks Taco discount from 246.5. He threw 269 and 305 in his two healthy games. Risk: a torn hamstring on a short week. Check that the Taco is still in your app (usually one per entry)."
+   "note": "PrizePicks Taco, discounted from 246.5. A Taco keeps full payout (a 3-pick Power still pays 6x). He passed 215.5 in 7 of his last 10 (269 and 305 in his two healthy games this year). Risk: a torn hamstring on a short week. One Taco per entry."
   },
   {
    "id": "chidekh",
@@ -91,7 +91,7 @@
    "books": "Books 3.5 (4)",
    "p": 0.58,
    "game_id": "denver-nuggets-oklahoma-city-thunder",
-   "note": "3.8 rebounds per game last season, next to Jokic and Gordon. OKC is an 8-point favorite, so a blowout could cut his minutes.",
+   "note": "Books 58%. Stats are a coin flip: 29 of 60 under last season (avg 3.8) on a new team. OKC is an 8-point favorite, so a blowout could cut his minutes.",
    "start": "2026-10-23T01:40:00Z"
   },
   {
@@ -109,7 +109,7 @@
    "source": "@KANEPROPS",
    "books": "Books 30.5–32.5 (4)",
    "p": 0.57,
-   "note": "Our check agrees: 57%. Over in 4 of 5 games (76, 29, 42, 38, 40), and he's off the injury report after his ankle sprain. Risk: Kiner and Stevenson share the work."
+   "note": "Our check agrees: 57%. Over in 4 of 5 this season and 16 of 21 last season (ESPN game logs). Off the injury report after his ankle sprain. Risk: Kiner and Stevenson share the work."
   },
   {
    "game": "Nuggets @ Thunder",
@@ -126,7 +126,7 @@
    "source": "@ClipSetNBA",
    "books": "Books 22.5/23.5 (4)",
    "p": 0.558,
-   "note": "Our check agrees: 55.8%, and PrizePicks is a half point under the books. He averaged 24.7 PRA last season and 26.4 in his last 5 against OKC. Risk: soft-tissue issues in preseason."
+   "note": "Our check agrees: 55.8%, and PrizePicks is a half point under the books. 23 of 39 over last season (avg 24.2), but only 5 of his last 10 (avg 21.1). Risk: soft-tissue issues in preseason."
   },
   {
    "id": "hart",
@@ -141,7 +141,7 @@
    "books": "Books 7.5/8.5 (4)",
    "p": 0.55,
    "game_id": "denver-nuggets-oklahoma-city-thunder",
-   "note": "PrizePicks matches the low end of the books. No injury news on X for OKC's bigs as of 1 AM CT. A blowout would cut his minutes, which hurts More.",
+   "note": "Books 55%. 40 of 62 over last season (avg 9.2), but only 4 points in 17 minutes (foul trouble) in the opener. Also on @Reboundr_'s Taco slip.",
    "start": "2026-10-23T01:40:00Z"
   },
   {
@@ -158,41 +158,7 @@
    "line": "4.5",
    "books": "Books 4.5 (4)",
    "p": 0.542,
-   "note": "Lean only (5–6 pick Flex). Drop it if Jarrett Allen is ruled out: with Diop and Tomlin also out, the guards would grab more boards."
-  },
-  {
-   "id": "nba-evan-mobley-points",
-   "sport": "NBA",
-   "player": "Evan Mobley",
-   "team": "",
-   "game": "Cavaliers @ 76ers",
-   "game_id": "cleveland-cavaliers-philadelphia-76ers",
-   "start": "2026-10-22T23:10:00Z",
-   "when": "Thu 6:10 PM CT",
-   "stat": "Points",
-   "side": "More",
-   "line": "17.5",
-   "books": "Books 17.5/18.5 (4)",
-   "p": 0.542,
-   "note": "Lean at 54%. Jarrett Allen is questionable (knee) and backups Diop and Tomlin are out, so Mobley would start at center if Allen sits. Check Allen's status before lock. https://x.com/camijustice/status/2113034008997117955"
-  },
-  {
-   "game": "Cavaliers @ 76ers",
-   "game_id": "cleveland-cavaliers-philadelphia-76ers",
-   "start": "2026-10-22T23:10:00Z",
-   "when": "Thu 6:10 PM CT",
-   "sport": "NBA",
-   "team": "",
-   "id": "nba-jaylen-brown-assists",
-   "player": "Jaylen Brown",
-   "stat": "Assists",
-   "side": "More",
-   "line": "3.5",
-   "source": "@SalvoBets",
-   "stats_pick": true,
-   "books": "Books 3.5 (4)",
-   "p": 0.533,
-   "note": "Stats pick: the books make it only 53.3%, but he had 6 assists in his Sixers debut and averaged 5.1 last season. Below break-even on price, so use it only if you trust the role change."
+   "note": "Lean (54%). Under in 49 of 91 last season (avg 4.4). Drop it if Jarrett Allen is ruled out: with Diop and Tomlin also out, the guards would grab more rebounds."
   },
   {
    "game": "Cavaliers @ 76ers",
@@ -210,85 +176,85 @@
    "stats_pick": true,
    "books": "Books 3.5 (4)",
    "p": 0.525,
-   "note": "Stats pick: the books make it 52.5%. He had 6 assists in the opener and averaged 3.9 last season, so the margin is modest. Same game as Jaylen Brown assists, so don't stack both."
+   "note": "Stats pick: the books make it 52.5%, but he had 4+ assists in 8 of his last 10 (6 in the opener). Only 25 of 45 last season and 0 of 2 vs Cleveland, so it's not a lock."
   },
   {
-   "game": "Patriots @ Bears",
-   "game_id": "new-england-patriots-chicago-bears",
-   "start": "2026-10-23T00:15:00Z",
-   "when": "Thu 7:15 PM CT",
-   "sport": "NFL",
+   "game": "Cavaliers @ 76ers",
+   "game_id": "cleveland-cavaliers-philadelphia-76ers",
+   "start": "2026-10-22T23:10:00Z",
+   "when": "Thu 6:10 PM CT",
+   "sport": "NBA",
    "team": "",
-   "id": "nfl-dandre-swift-receptions",
-   "player": "D'Andre Swift",
-   "stat": "Receptions",
+   "id": "nba-jaylen-brown-pa",
+   "player": "Jaylen Brown",
+   "stat": "Pts+Asts",
    "side": "More",
-   "line": "2.5",
-   "source": "@PropKitchen",
+   "line": "23.5",
+   "source": "@ShadowPicksHQ",
    "stats_pick": true,
-   "books": "Books 2.5 (5)",
+   "books": "Books 23.5 (2)",
    "p": 0.52,
-   "note": "Stats pick: the books make it 52%, but he had 4 catches in each of the 2 games without Kyle Monangai, who is out again tonight."
+   "note": "Stats pick: the books make it 52%, but he cleared 23.5 in 71 of 81 games last season, 8 of his last 10, and 3 of 3 vs Cleveland (25 in his Sixers debut). Risk: a smaller role next to Maxey, LeBron and Embiid."
   }
  ],
  "specials_info": [],
  "x_feed": {
-  "checked": "2026-10-22T06:50:00Z",
+  "checked": "2026-10-22T07:40:00Z",
   "summary": [
-   "Read about 250 X posts with picks for tonight's games and priced 30 of them against the books, then checked game logs.",
-   "Added: Caleb Williams More 215.5 pass yds (Taco), TreVeyon Henderson More 30.5 rush+rec yds and Aaron Gordon More 22 PRA. All three clear 54% on price, and their stats back them up.",
-   "Stats picks (shown as STATS, below 54% on price): Jaylen Brown and Embiid More 3.5 assists, Swift More 2.5 receptions.",
-   "Cavs: Jarrett Allen is questionable (knee). Bears: Kyle Monangai is out.",
-   "Removed after repricing: Jalen Williams Less 5 rebounds (52.7%) and Jamal Murray Less 4 rebounds (50%)."
+   "Checked 44 picks from about 40 X accounts against the books and ESPN game logs. Added only picks where both agree, or where the stats are strong and the price is close.",
+   "Added: Caleb Williams More 215.5 pass yds (Taco, 67%, full payout), Henderson More 30.5 rush+rec yds (57%), Gordon More 22 PRA (55.8%).",
+   "Stats picks (STATS, 52–53% on price): Jaylen Brown More 23.5 pts+asts (71 of 81 last season), Embiid More 3.5 assists (8 of last 10).",
+   "Removed: Mobley More 17.5 pts (4 of last 10, 1 of 4 vs PHI), Swift More 2.5 recs (3 of 6 this season), Jalen Williams and Murray rebounds (repriced below 54%).",
+   "Cavs: Jarrett Allen is questionable (knee). Bears: Kyle Monangai is out."
   ],
   "items": [
    {
-    "title": "Rhamondre Stevenson Less 11 Rush Attempts",
+    "title": "Rhamondre Stevenson Less 11 Rush Att",
     "handles": "scan",
     "ok": false,
-    "verdict": "The books make it 56%, but he had 13, 13 and 14 carries in his last 3 games. Stats say no, so it's skipped."
+    "verdict": "The books make it 56%, but he had 11+ carries in 4 of 6 games this year (avg 12.9 in his last 10). Stats say no."
    },
    {
-    "title": "Cason Wallace More 11.5 Pts+Rebs",
-    "handles": "scan",
+    "title": "Anfernee Simons More 8.5 Pts",
+    "handles": "@ChronicBets, @FrannysPlays +2",
     "ok": false,
-    "verdict": "The books make it 56.6%, but he had 9 in the opener on 19 minutes. Stats lean under, so it's skipped."
+    "verdict": "Stats look great (8 of last 10), but that was as a starter. He comes off the bench now, and the books make it 50.8%. No edge."
    },
    {
-    "title": "SGA More 10.5 Rebs+Asts",
-    "handles": "@KBProps, @ISLANDBETS, @PonderingPicks",
+    "title": "SGA More 10.5 Rebs+Asts / More 6.5 Ast",
+    "handles": "@KBProps, @ISLANDBETS, @NextLevelBets_",
     "ok": false,
-    "verdict": "50.1% on price; he had 9 in the opener and averaged 10.9 last season. Coin flip."
+    "verdict": "About 50% on price. He hit 7 of his last 10 and 3 of 3 vs Denver, but only 52% of games last season. Coin flip."
    },
    {
-    "title": "Jaylen Brown More 19.5 Points",
-    "handles": "@FieldsFocus",
+    "title": "Jaylen Brown More 19.5 Pts",
+    "handles": "@FieldsFocus, @PrizePickChamp",
     "ok": false,
-    "verdict": "52.4%; he scored 19 in the opener in a smaller role next to Maxey and LeBron. Coin flip."
+    "verdict": "52.4%. We took his pts+asts at 23.5 instead (71 of 81 last season), which holds up better with his new role."
    },
    {
-    "title": "Aaron Gordon More 20.5 Pts+Rebs",
-    "handles": "@picksbyangel, @AnalyticsPicks",
+    "title": "Gordon More 20.5 PR / 14.5 Pts / 8.5 RA",
+    "handles": "@picksbyangel, @AnalyticsPicks +4",
     "ok": false,
-    "verdict": "49.6% at PrizePicks' 20.5. We took his PRA at 22 instead (55.8%)."
+    "verdict": "49–50% at PrizePicks' lines, and 5 of his last 10. We took PRA at 22 instead (55.8%)."
    },
    {
-    "title": "Anfernee Simons More 8.5 Points",
-    "handles": "@ChronicBets, @FrannysPlays, @LuffyBetss",
+    "title": "Jokic More 12.5 Reb, Mobley More 9 Reb, Chet More 8 Reb",
+    "handles": "@OnTappBets, @FieldsFocus, @KANEPROPS",
     "ok": false,
-    "verdict": "50.8%; he scored 13 off the bench in the opener. Not enough edge."
+    "verdict": "PrizePicks' lines are higher than the ones the cappers posted: 51%, 37% and 37%. Mobley hit 9+ in only 2 of his last 10."
    },
    {
-    "title": "Douglas, Burden, A.J. Brown rec yds; Maye pass TDs",
-    "handles": "@DDOGGSTACKS, @billhpicks, @shawnybopicks, @PropKitchen",
+    "title": "Douglas, Burden, A.J. Brown, Henry rec yds; Maye pass TDs/yds",
+    "handles": "@DDOGGSTACKS, @billhpicks, @PropKitchen +5",
     "ok": false,
-    "verdict": "48–51% on price for all four, so none have an edge."
+    "verdict": "46–51% on price, and 2 of 6 to 4 of 6 this season. No edge."
    },
    {
-    "title": "Mobley More 9 Rebs, Jokic More 12.5 Rebs",
-    "handles": "@FieldsFocus, @OnTappBets",
+    "title": "Donovan Mitchell More 5 Ast, Maxey More 5.5 Ast",
+    "handles": "@sayy_les, @KANEPROPS, @RedHottLocks",
     "ok": false,
-    "verdict": "48% and 51% at PrizePicks' lines, higher than the lines the cappers posted."
+    "verdict": "32% and 47% at PrizePicks' lines (higher than the cappers' 4.5). Mitchell hit 1 of his last 10."
    }
   ]
  }
