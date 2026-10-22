@@ -725,9 +725,9 @@ function renderSlip() {
 const rerender = () => { save(); renderBoard(); renderSlip(); };
 
 /* Goblins: a lower line (More only) that is easier to hit and pays less. PrizePicks doesn't publish the
-   payout formula; reported examples range from about 8% to 30% less per Goblin, so the estimate uses 25%
-   per Goblin pick until the user types the payout the app shows. */
-const GOBLIN_CUT = 0.75;
+   payout formula. The user's app paid 4.5x instead of 5x on a 3-pick Power with one Goblin, so the estimate
+   uses 10% less per Goblin pick until the user types the payout the app shows. Deeper Goblins cut more. */
+const GOBLIN_CUT = 0.9;
 const COUNT_STATS = /rebound|assist|3-pt|three|pass td|reception|games won|shots|ks\b|strikeout|total bases|^hits|goals|blocks|steals/i;
 function goblinize(p) {
   const std = parseFloat(p.line);
