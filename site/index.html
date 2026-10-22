@@ -6,17 +6,19 @@
 <style>
 /* Layout: app-style board. Sticky top bar, hero slip summary, sport tabs, grid of player cards, entry slip docked right (bottom sheet on phones). Single dark theme on purpose. */
 :root {
-  --ink: #0d0a18;          /* page ground, violet-black */
-  --panel: #171228;        /* card surface */
-  --panel-2: #211a38;      /* raised surface */
-  --line: #2f2650;         /* hairlines */
-  --text: #f3f0ff;
-  --muted: #a69cc8;
-  --violet: #8b5cf6;       /* accent */
-  --violet-hi: #b39bff;
-  --more: #3ee6a3;         /* More side */
-  --less: #ff7a8a;         /* Less side */
-  --gold: #ffcf5c;         /* PLAY tag */
+  --ink: #111217;          /* page ground */
+  --panel: #181a21;        /* panels */
+  --panel-2: #1e222b;      /* cards inside panels */
+  --line: #2b303c;         /* borders */
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --violet: #facc15;       /* accent: PRO yellow */
+  --violet-hi: #fde047;
+  --more: #34d399;         /* More side */
+  --less: #fb7185;         /* Less side */
+  --gold: #facc15;         /* PLAY tag */
+  --more-grad: linear-gradient(to right, #00c6ff, #0072ff);
+  --less-grad: linear-gradient(to right, #f857a6, #ff5858);
   --f-display: "Bricolage Grotesque", "Arial Black", system-ui, sans-serif;
   --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -51,6 +53,13 @@ button { font: inherit; color: inherit; }
 }
 .bar .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+.brand { font-size: 16px; letter-spacing: -0.01em; }
+.brand .lab { color: var(--violet); }
+.pro { background: linear-gradient(45deg, #facc15, #f59e0b); color: #111217; font-weight: 900; font-size: 11px; letter-spacing: .08em; padding: 3px 7px; border-radius: 5px; }
+.live { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 11px; color: var(--muted); text-transform: uppercase; }
+.live i { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
 .brand-mark {
   width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
   background: var(--violet); color: var(--ink); font-size: 15px;
@@ -70,14 +79,19 @@ h1 {
 }
 h1 em { font-style: normal; color: var(--violet-hi); }
 .lede { color: var(--muted); max-width: 58ch; margin: 0; }
-.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-.stat { background: var(--panel); padding: 14px 16px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column-reverse; }
+.stat span { font-size: 10px !important; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.stat b { font-weight: 900; }
+#s-play { color: var(--more); }
 .stat b { display: block; font-family: var(--f-mono); font-size: 24px; font-variant-numeric: tabular-nums; }
 .stat span { font-size: 12px; color: var(--muted); }
 
 /* break-even strip */
 .be { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 22px; }
-.be div { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--muted); }
+.be div { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--muted); font-family: var(--f-mono); }
+.be div:first-child { background: var(--violet); border-color: var(--violet); color: #111217; font-weight: 700; }
+.be div:first-child b { color: #111217; }
 .be b { font-family: var(--f-mono); color: var(--text); font-size: 14px; margin-left: 6px; font-variant-numeric: tabular-nums; }
 
 /* main grid */
@@ -114,7 +128,7 @@ h1 em { font-style: normal; color: var(--violet-hi); }
   border-radius: 6px; padding: 3px 7px; white-space: nowrap;
 }
 .tag.play { background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--gold); }
-.tag.lean { background: color-mix(in srgb, var(--violet) 22%, transparent); color: var(--violet-hi); }
+.tag.lean { background: color-mix(in srgb, #60a5fa 18%, transparent); color: #93c5fd; }
 .tag.below { background: var(--panel-2); color: var(--muted); }
 
 .line-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
@@ -136,19 +150,26 @@ h1 em { font-style: normal; color: var(--violet-hi); }
 }
 .pick-btn.more { background: color-mix(in srgb, var(--more) 16%, transparent); color: var(--more); }
 .pick-btn.less { background: color-mix(in srgb, var(--less) 16%, transparent); color: var(--less); }
-.card.sel .pick-btn.more { background: var(--more); color: var(--ink); }
-.card.sel .pick-btn.less { background: var(--less); color: var(--ink); }
+.card.sel .pick-btn.more { background: var(--more-grad); color: #fff; }
+.card.sel .pick-btn.less { background: var(--less-grad); color: #fff; }
 
 /* slip */
 .slip {
   position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px);
   background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px;
 }
+.slip-title { font-family: var(--f-body); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #e5e7eb; }
+.slip h3 { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
 .slip h3 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
 .slip h3 .count { font-family: var(--f-mono); font-size: 13px; background: var(--violet); color: var(--ink); border-radius: 999px; padding: 2px 9px; }
 .slip-body { display: flex; flex-direction: column; gap: 14px; }
 .slip-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.slip-list li { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border-radius: 12px; padding: 8px 10px; font-size: 13px; }
+.slip-list li { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+.slip-list li:hover { border-color: #4b5563; }
+.side { padding: 2px 6px; border-radius: 4px; letter-spacing: .05em; align-self: flex-start; }
+.side.more { background: color-mix(in srgb, var(--more) 12%, transparent); }
+.side.less { background: color-mix(in srgb, var(--less) 12%, transparent); }
+.slip-list .wp { font-family: var(--f-mono); font-weight: 700; margin-left: 4px; }
 .slip-list li .s { min-width: 0; flex: 1; }
 .slip-list li .s b { display: block; font-size: 13px; }
 .slip-list li .s span { color: var(--muted); font-size: 12px; }
@@ -158,7 +179,9 @@ h1 em { font-style: normal; color: var(--violet-hi); }
 .empty { color: var(--muted); font-size: 13px; margin: 0; }
 .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .mode { background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
-.mode .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.mode { border: 1px solid var(--line); background: linear-gradient(to bottom, rgba(31,41,55,.4), transparent); }
+.mode .k { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); }
+.mode b { font-weight: 900; }
 .mode b { display: block; font-family: var(--f-mono); font-size: 20px; font-variant-numeric: tabular-nums; }
 .mode span { font-size: 11px; color: var(--muted); }
 .mode.good b { color: var(--more); } .mode.bad b { color: var(--less); }
@@ -188,7 +211,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 .log { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
 .log:empty { display: none; }
 .msg { max-width: 85%; padding: 9px 12px; border-radius: 14px; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
-.msg.me { align-self: flex-end; background: var(--violet); color: var(--ink); border-bottom-right-radius: 4px; }
+.msg.me { align-self: flex-end; background: var(--violet); color: #111217; border-bottom-right-radius: 4px; }
 .msg.bot { align-self: flex-start; background: var(--panel-2); border-bottom-left-radius: 4px; }
 .msg.act { align-self: flex-start; background: none; border: 1px dashed var(--line); color: var(--muted); font-family: var(--f-mono); font-size: 11px; padding: 5px 10px; }
 .msg.err { align-self: flex-start; background: none; border: 1px solid var(--less); color: var(--less); }
@@ -230,10 +253,9 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 
 <header class="bar">
   <div class="wrap">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">PL</span>Parlay Lab</div>
+    <div class="brand"><span class="pro">PRO</span><span>PARLAY<span class="lab">LAB</span></span></div>
     <div class="bar-meta">
-      <span class="chip">Auto-updating board</span>
-      <span class="chip" id="updated">Updated Thu 12:00 AM CT</span>
+      <span class="live"><i aria-hidden="true"></i><span id="updated">BOARD UPDATE: THU 12:00 AM CT</span></span>
     </div>
   </div>
 </header>
@@ -246,9 +268,9 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
       <p class="lede">Each NBA and NFL card is a real PrizePicks line checked against 2–6 sportsbooks, with the books' margin removed, then checked against injury news. Tennis cards show the line a pick needs, because no PrizePicks tennis lines were found. Tap picks to build an entry and see its expected return.</p>
     </div>
     <div class="stats" aria-label="Board summary">
-      <div class="stat"><b id="s-total">12</b><span>picks on board</span></div>
-      <div class="stat"><b id="s-play">5</b><span>clear 58%</span></div>
-      <div class="stat"><b>0–0</b><span>graded record</span></div>
+      <div class="stat"><b id="s-total">12</b><span>Picks found</span></div>
+      <div class="stat"><b id="s-play">5</b><span>Clear the line</span></div>
+      <div class="stat"><b>0–0</b><span>Graded</span></div>
     </div>
   </section>
 
@@ -297,7 +319,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     </div>
 
     <aside class="slip" id="slip" aria-label="Entry slip">
-      <h3 id="slip-head" role="button" tabindex="0" aria-expanded="false">Your entry <span class="count" id="count">0</span><span class="toggle-hint" id="toggle-hint">tap to open</span></h3>
+      <h3 id="slip-head" role="button" tabindex="0" aria-expanded="false"><span class="count" id="count">0</span><span class="slip-title">Current entry slip</span><span class="toggle-hint" id="toggle-hint">tap to open</span></h3>
       <div class="slip-body">
         <ul class="slip-list" id="slip-list"></ul>
         <p class="empty" id="slip-empty">Tap More or Less on 2–6 picks. The slip shows the expected return for Power and Flex entries.</p>
@@ -305,14 +327,14 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
           <label for="stake">Stake $</label><input id="stake" type="number" min="1" step="1" value="10">
           <label for="payout">Power payout in app</label><input id="payout" type="number" min="1" step="0.25" placeholder="auto"></div>
         <div class="modes">
-          <div class="mode" id="m-power"><div class="k">Power</div><b>–</b><span>expected return</span></div>
-          <div class="mode" id="m-flex"><div class="k">Flex</div><b>–</b><span>expected return</span></div>
+          <div class="mode" id="m-power"><div class="k">Power slip</div><b>–</b><span>expected return</span></div>
+          <div class="mode" id="m-flex"><div class="k">Flex slip</div><b>–</b><span>expected return</span></div>
         </div>
         <p class="advice" id="advice" hidden></p>
         <p class="warn" id="warn" hidden></p>
         <div class="slip-actions">
           <button class="ghost primary" id="best" type="button">Load best 4</button>
-          <button class="ghost" id="clear" type="button">Clear</button>
+          <button class="ghost" id="clear" type="button">Clear slip</button>
         </div>
       </div>
     </aside>
@@ -448,7 +470,7 @@ function cardHTML(p) {
     </div>
     <div class="line-row">
       <div class="line">${p.cond ? `<span class="cond">play if</span>` : ""}<b>${esc((p.cond ? p.cond + " " : "") + p.line)}</b><span>${esc(p.stat + " · " + p.books)}</span></div>
-      <div class="prob"><b>${pct(p.p)}</b><span>est. hit rate</span></div>
+      <div class="prob"><b>${pct(p.p)}</b><span>win prob</span></div>
     </div>
     <div class="meter" style="--be:${(BE4 - 0.4) / 0.3 * 100}%" title="Marker shows the 4-pick Power break-even"><i style="width:${Math.max(0, Math.min(100, (p.p - 0.4) / 0.3 * 100))}%;background:${color}"></i></div>
     ${flag}
@@ -502,7 +524,7 @@ function renderSlip() {
   document.getElementById("slip-empty").hidden = picks.length > 0;
   document.getElementById("slip-list").innerHTML = picks.map(p => `<li>
       <span class="side ${p.side === "More" ? "more" : "less"}">${esc(p.side.toUpperCase())}</span>
-      <span class="s"><b>${esc(p.player)}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${pct(p.p)}</span></span>
+      <span class="s"><b>${esc(p.player)}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} <span class="wp" style="color:${p.side === "More" ? "var(--more)" : "var(--less)"}">${pct(p.p)} win prob</span></span></span>
       <button class="x" type="button" aria-label="Remove ${esc(p.player)}" data-id="${esc(p.id)}">×</button></li>`).join("");
   const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
   const probs = picks.map(p => p.p), n = probs.length;
@@ -716,7 +738,7 @@ renderSlip();
     PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", line: "", side: "More", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
     if (d.updated) {
       const t = new Date(d.updated);
-      if (!isNaN(t)) document.getElementById("updated").textContent = "Updated " + t.toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT";
+      if (!isNaN(t)) document.getElementById("updated").textContent = ("Board update: " + t.toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT").toUpperCase();
     }
     renderBoard(); renderSlip();
   }, () => {});
