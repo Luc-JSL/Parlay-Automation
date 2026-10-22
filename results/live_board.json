@@ -70,8 +70,8 @@
    "stat": "Rebounds",
    "side": "Less",
    "line": "4",
-   "books": "Books 3.5 (3)",
-   "p": 0.568,
+   "books": "Books 3.5 (4)",
+   "p": 0.58,
    "game_id": "denver-nuggets-oklahoma-city-thunder",
    "note": "3.8 rebounds per game last season, next to Jokic and Gordon. OKC is an 8-point favorite, so a blowout could cut his minutes.",
    "start": "2026-10-23T01:40:00Z"
@@ -86,26 +86,10 @@
    "stat": "Points",
    "side": "More",
    "line": "7.5",
-   "books": "Books 7.5/8.5 (3)",
-   "p": 0.564,
+   "books": "Books 7.5/8.5 (4)",
+   "p": 0.55,
    "game_id": "denver-nuggets-oklahoma-city-thunder",
    "note": "PrizePicks matches the low end of the books. No injury news on X for OKC's bigs as of 1 AM CT. A blowout would cut his minutes, which hurts More.",
-   "start": "2026-10-23T01:40:00Z"
-  },
-  {
-   "id": "jwill",
-   "sport": "NBA",
-   "player": "Jalen Williams",
-   "team": "OKC",
-   "game": "Nuggets @ Thunder",
-   "when": "Thu 8:40 PM CT",
-   "stat": "Rebounds",
-   "side": "Less",
-   "line": "5",
-   "books": "Books 4.5 (3)",
-   "p": 0.546,
-   "game_id": "denver-nuggets-oklahoma-city-thunder",
-   "note": "4.6 rebounds per game last season, but 7 in the opener. Drop it if Holmgren or Hartenstein is out.",
    "start": "2026-10-23T01:40:00Z"
   },
   {
@@ -139,22 +123,6 @@
    "books": "Books 17.5/18.5 (4)",
    "p": 0.542,
    "note": "Lean at 54%. Jarrett Allen is questionable (knee) and backups Diop and Tomlin are out, so Mobley would start at center if Allen sits. Check Allen's status before lock. https://x.com/camijustice/status/2113034008997117955"
-  },
-  {
-   "id": "nba-jamal-murray-rebounds",
-   "sport": "NBA",
-   "player": "Jamal Murray",
-   "team": "",
-   "game": "Nuggets @ Thunder",
-   "game_id": "denver-nuggets-oklahoma-city-thunder",
-   "start": "2026-10-23T01:40:00Z",
-   "when": "Thu 8:40 PM CT",
-   "stat": "Rebounds",
-   "side": "Less",
-   "line": "4",
-   "books": "Books 3.5/4.5 (3)",
-   "p": 0.54,
-   "note": "Auto scan: PrizePicks line vs. 3 sportsbooks with the margin removed. No injury or minutes news on X as of 1 AM CT. Lean only: fill a 5–6 pick Flex."
   }
  ],
  "specials_info": [],

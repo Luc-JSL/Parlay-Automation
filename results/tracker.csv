@@ -11,7 +11,7 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,DEN@OKC,Ajay Mitchell,Rebounds,More,2.5,O3.5 (2 books),0.60,,void,dropped: 2.5 was a More-only discounted line (Goblin)
 2026-10-22,NBA,CLE@PHI,Jaylen Brown,Assists,Less,4,3.5 (3 books),0.57,,void,pulled before lock: PrizePicks moved the line to 3.5
 2026-10-22,NBA,DEN@OKC,Cameron Johnson,Rebounds,Less,4,3.5 (3 books),0.565,,,blowout risk helps
-2026-10-22,NBA,DEN@OKC,Jalen Williams,Rebounds,Less,5,4.5 (3 books),0.546,,,drop if Holmgren/Hartenstein out
+2026-10-22,NBA,DEN@OKC,Jalen Williams,Rebounds,Less,5,4.5 (3 books),0.546,,void,pulled before lock: repriced to 52.7%
 2026-10-22,NFL,NE@CHI,Rhamondre Stevenson,Rush Yds,Less,42.5,41.5-44.5,0.55,,,lean; Henderson back to full practice
 2026-10-22,NFL,NE@CHI,Efton Chism III,Rec Yds,Less,19.5,16.5-18.5,0.55,,,lean; 0 catches with A.J. Brown back
 2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,Less,19.5,19.5-21.5,0.53,,,"below break-even; hamstring, 4 carries/3 yds W6"
@@ -26,4 +26,4 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,DEN@OKC,Ajay Mitchell,Rebounds,More,2.5,3.5 (2),0.611,,void,pulled: likely Goblin (line 1 under every book) and below the 75% Goblin bar
 2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Rebounds,Less,4.5,4.5 (4),0.542,,,board scan; Allen status
 2026-10-22,NBA,CLE@PHI,Evan Mobley,Points,More,17.5,17.5/18.5 (4),0.542,,,board scan; Allen status
-2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebounds,Less,4,3.5/4.5 (3),0.54,,,board scan; news-checked on X
+2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebounds,Less,4,3.5/4.5 (3),0.54,,void,pulled before lock: books moved to 4.5 (50%)
