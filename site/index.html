@@ -117,7 +117,8 @@ h1 em { font-style: normal; color: transparent; background: linear-gradient(to r
 .stat span { font-size: 12px; color: var(--muted); }
 
 /* break-even strip */
-.be { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 22px; }
+.be { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 22px; scrollbar-width: none; }
+.be::-webkit-scrollbar { display: none; }
 .be div { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--muted); font-family: var(--f-mono); }
 .be div:first-child { background: linear-gradient(to right, #9333ea, #4f46e5) !important; border-color: rgba(192, 132, 252, .3) !important; color: #fff; font-weight: 700; box-shadow: 0 0 15px rgba(147, 51, 234, .3); }
 .be div:first-child b { color: #fff; }
@@ -316,6 +317,11 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 @media (max-width: 920px) {
   .hero { grid-template-columns: 1fr; }
   .main { grid-template-columns: 1fr; }
+  .slip { position: static; order: -1; }
+  .how { grid-template-columns: 1fr; }
+}
+/* Phones: the slip becomes a bottom sheet that opens on tap. */
+@media (max-width: 640px) {
   .slip {
     position: fixed; top: auto; left: 0; right: 0; bottom: 0; border-radius: 20px 20px 0 0; z-index: 6;
     padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -324,9 +330,8 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
   }
   .slip:not(.open) .slip-body { display: none; }
   .slip h3 { cursor: pointer; }
-  .how { grid-template-columns: 1fr; }
 }
-@media (min-width: 921px) { .toggle-hint { display: none; } }
+@media (min-width: 641px) { .toggle-hint { display: none; } }
 .toggle-hint { margin-left: auto; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
