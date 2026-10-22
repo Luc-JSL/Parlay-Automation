@@ -75,70 +75,36 @@
    "when": "Thu 6:10 PM CT"
   },
   {
-   "game": "Cavaliers @ 76ers",
-   "game_id": "cleveland-cavaliers-philadelphia-76ers",
-   "start": "2026-10-22T23:10:00Z",
-   "when": "Thu 6:10 PM CT",
-   "sport": "NBA",
-   "team": "",
-   "id": "nba-kcp-points",
-   "player": "Kentavious Caldwell-Pope",
-   "stat": "Points",
-   "side": "More",
-   "line": "5.5",
-   "books": "Books 4.5–8.5 (9)",
-   "p": 0.568,
-   "note": "57%. Scored 6+ in 7 of his last 10 and 34 of 51 last season, including 10 in his Sixers debut. Risk: a bench role in a deep rotation."
-  },
-  {
-   "id": "nhl-pavel-zacha-sog",
-   "sport": "NHL",
-   "player": "Pavel Zacha",
-   "team": "",
+   "books": "Books 1.5 (4)",
    "game": "Predators @ Bruins",
    "game_id": "nashville-predators-boston-bruins",
-   "start": "2026-10-22T23:00:00Z",
-   "when": "Thu 6:00 PM CT",
-   "stat": "Shots on Goal",
-   "side": "Less",
+   "id": "nhl-pavel-zacha-sog",
    "line": "2",
-   "books": "Books 1.5 (4)",
-   "p": 0.558,
-   "note": "56% (a 23% push chance at exactly 2). 0 or 1 shot in 6 of 9 this season, 47 of 84 last season, and 2 of 2 vs Nashville."
-  },
-  {
-   "books": "Books 31.5/32.5 (4)",
-   "game": "Patriots @ Bears",
-   "game_id": "new-england-patriots-chicago-bears",
-   "id": "nfl-treveyon-henderson-rush-rec-yds",
-   "line": "30.5",
-   "note": "55% (books moved up to 31.5–32.5). Over in 4 of 5 this season. No injury designation. The Bears are without LB Sanborn, T.J. Edwards is doubtful and Montez Sweat is suspended.",
-   "p": 0.551,
-   "player": "TreVeyon Henderson",
-   "side": "More",
-   "source": "@KANEPROPS",
-   "sport": "NFL",
-   "start": "2026-10-23T00:15:00Z",
-   "stat": "Rush+Rec Yds",
+   "note": "56% (a 23% push chance at exactly 2). 0 or 1 shot in 6 of 9 this season, 47 of 84 last season, and 2 of 2 vs Nashville.",
+   "p": 0.566,
+   "player": "Pavel Zacha",
+   "side": "Less",
+   "sport": "NHL",
+   "start": "2026-10-22T23:00:00Z",
+   "stat": "Shots on Goal",
    "team": "",
-   "when": "Thu 7:15 PM CT"
+   "when": "Thu 6:00 PM CT"
   },
   {
+   "books": "Books 4.5–8.5 (9)",
    "game": "Cavaliers @ 76ers",
    "game_id": "cleveland-cavaliers-philadelphia-76ers",
-   "start": "2026-10-22T23:10:00Z",
-   "when": "Thu 6:10 PM CT",
-   "sport": "NBA",
-   "team": "",
-   "id": "nba-tyrese-maxey-assists",
-   "player": "Tyrese Maxey",
-   "stat": "Assists",
+   "id": "nba-kcp-points",
+   "line": "5.5",
+   "note": "57%. Scored 6+ in 7 of his last 10 and 34 of 51 last season, including 10 in his Sixers debut. Risk: a bench role in a deep rotation.",
+   "p": 0.552,
+   "player": "Kentavious Caldwell-Pope",
    "side": "More",
-   "line": "5",
-   "books": "Books 4.5–6.5 (8)",
-   "p": 0.543,
-   "source": "@RedHottLocks",
-   "note": "54% (lean). Had 6+ assists in 55 of 85 games last season (65%). 5 in the opener would be a push at this whole-number line."
+   "sport": "NBA",
+   "start": "2026-10-22T23:10:00Z",
+   "stat": "Points",
+   "team": "",
+   "when": "Thu 6:10 PM CT"
   },
   {
    "books": "Books 4.5 (4)",
@@ -146,7 +112,7 @@
    "game_id": "cleveland-cavaliers-philadelphia-76ers",
    "id": "nba-donovan-mitchell-rebounds",
    "line": "4.5",
-   "note": "54%. Jarrett Allen expects to play (Chris Fedor), which helps the Less. Under in 49 of 91 last season. PrizePicks' 4.5 wasn't in the noon feed, so check your app still shows 4.5. It's a Less pick, so it can't be a Goblin.",
+   "note": "54% at noon. PrizePicks' line wasn't in the 5:45 PM feed, so check your app still shows Less 4.5. Allen is playing, which helps the Less.",
    "p": 0.542,
    "player": "Donovan Mitchell",
    "side": "Less",
@@ -157,36 +123,20 @@
    "when": "Thu 6:10 PM CT"
   },
   {
-   "game": "Cavaliers @ 76ers",
-   "game_id": "cleveland-cavaliers-philadelphia-76ers",
-   "start": "2026-10-22T23:10:00Z",
-   "when": "Thu 6:10 PM CT",
-   "sport": "NBA",
-   "team": "",
-   "id": "nba-evan-mobley-rebounds-less",
-   "player": "Evan Mobley",
-   "stat": "Rebounds",
-   "side": "Less",
-   "line": "9",
-   "books": "Books 7.5–10.5 (9)",
-   "p": 0.54,
-   "note": "54% (lean). Under 9 in 8 of his last 10 and 3 of 4 vs Philly. Jarrett Allen is expected to play, which keeps rebounds split. Cappers took More 8.5; PrizePicks has 9."
-  },
-  {
-   "id": "nhl-ivan-barbashev-sog",
-   "sport": "NHL",
-   "player": "Ivan Barbashev",
-   "team": "",
+   "books": "Books 1.5 (4)",
    "game": "Golden Knights @ Blues",
    "game_id": "vegas-golden-knights-st-louis-blues",
-   "start": "2026-10-23T00:00:00Z",
-   "when": "Thu 7:00 PM CT",
-   "stat": "Shots on Goal",
-   "side": "Less",
+   "id": "nhl-ivan-barbashev-sog",
    "line": "1.5",
-   "books": "Books 1.5 (4)",
+   "note": "54% (lean). PrizePicks' line wasn't in the 5:45 PM feed, so check your app still shows Less 1.5. 0 or 1 shot in 7 of 11 this season.",
    "p": 0.54,
-   "note": "54% (lean). 0 or 1 shot in 7 of 11 this season and 3 of 3 vs St. Louis."
+   "player": "Ivan Barbashev",
+   "side": "Less",
+   "sport": "NHL",
+   "start": "2026-10-23T00:00:00Z",
+   "stat": "Shots on Goal",
+   "team": "",
+   "when": "Thu 7:00 PM CT"
   },
   {
    "books": "Books 23.5 (2)",
@@ -207,68 +157,42 @@
    "when": "Thu 6:10 PM CT"
   }
  ],
- "quota_remaining": "144",
- "scanned_games": 1,
+ "quota_remaining": 52,
+ "scanned_games": 0,
  "specials_info": [],
- "updated": "2026-10-22T14:39:34Z",
+ "updated": "2026-10-22T22:47:00Z",
  "x_feed": {
-  "checked": "2026-10-22T20:05:00Z",
+  "checked": "2026-10-22T20:40:16Z",
   "items": [
    {
-    "title": "Ville Husso More 27.5 Saves",
-    "handles": "@NateDFS15, @AIPICKX",
+    "handles": "@WyzeProps",
     "ok": false,
-    "verdict": "51% on price. NJ shoots a lot, but the books already price that."
+    "title": "James Harden FGA More 12.5",
+    "url": "https://x.com/WyzeProps/status/2113298728195129723",
+    "verdict": "Not in this scan's lines and no book price to check, so not added."
    },
    {
-    "title": "Mikhail Sergachev More 1.5 SOG",
-    "handles": "@betonjmont, @PixFromTheSix",
+    "handles": "@PropHolliday",
     "ok": false,
-    "verdict": "PrizePicks has 2, not 1.5: More 2 is 52% with a 23% push chance."
+    "title": "Chet Holmgren Points More 14.5",
+    "url": "https://x.com/PropHolliday/status/2113323462853083274",
+    "verdict": "Not scanned this run, so no fair rate to check; not added."
    },
    {
-    "title": "Svechnikov / Pastrnak / Kyle Connor SOG",
-    "handles": "@tkbpicks, @ThePropDen, @Frost_Props",
+    "handles": "@NHLPropKing",
     "ok": false,
-    "verdict": "48.5%, 47% and 30% at PrizePicks' lines (Connor is 3, not 2.5)."
-   },
-   {
-    "title": "Luther Burden More 4.5 Receptions",
-    "handles": "@__LordPenguin (212 likes), @TurtleBetsDFS",
-    "ok": false,
-    "verdict": "No PrizePicks receptions line for Burden in the feed. His rec yds More 57.5 is 49%."
-   },
-   {
-    "title": "A.J. Brown More 5 Receptions",
-    "handles": "@NoExpertFS, @ethical443612",
-    "ok": false,
-    "verdict": "51.6% with a 15% push chance at 5."
-   },
-   {
-    "title": "Hunter Henry More 2.5 Receptions",
-    "handles": "@TurtleBetsDFS",
-    "ok": false,
-    "verdict": "No PrizePicks receptions line in the feed. His rec yds is 46%."
-   },
-   {
-    "title": "Jaylon Tyson More 8.5 Points",
-    "handles": "@efficientstats, @DanaWhiteparlay",
-    "ok": false,
-    "verdict": "55% on price, but he scored 9+ in only 6 of his last 25. Stats say no."
-   },
-   {
-    "title": "Colby Donovan More 2.5 Tackles (soccer)",
-    "handles": "@enil2u (Taco slip)",
-    "ok": false,
-    "verdict": "Can't price soccer props. The Taco on that slip is the Caleb Williams one, which is already on the board."
+    "title": "Predators/Bruins Over 5.5",
+    "url": "https://x.com/NHLPropKing/status/2113237527725506905",
+    "verdict": "Game total, not a PrizePicks player prop; not applicable."
    }
   ],
   "summary": [
-   "2:30 PM check: read about 560 X posts across NBA, NFL, NHL, soccer, tennis, esports, WNBA and MLB. No WNBA or MLB games today.",
-   "Added (books and ESPN game logs agree): Pavel Zacha Less 2 SOG (56%), Ivan Barbashev Less 1.5 SOG (54%). Evan Rodrigues Less 2 SOG is now 58%.",
-   "Capper picks checked and skipped: Husso More 27.5 saves (51%), Sergachev More 2 SOG (52%), LeBron More 6.5 reb (53%; 28 of 73 last season), Harden More 11.5 reb+ast (1 of last 10), Jaylon Tyson More 8.5 pts (6 of last 25), Jaylen Brown More 30.5 PRA (53%), TNF receptions and attempts (about 50%).",
-   "Soccer and esports picks can't be priced: no PrizePicks lines for them in our odds feed.",
-   "@PrizePicksTacos' -600 lists are deep Goblin lines with cut payouts; skipped. The Caleb Williams Taco is still the only live Taco."
+   "5:45 PM lock check: Jarrett Allen is playing. Patriots CB Christian Gonzalez is questionable (illness).",
+   "Lines moved: Maxey assists to 5.5 (47%), Henderson rush+rec to 32.5 (48%), Mobley Less 9 reb down to 52%. All three removed.",
+   "Still good: Rodrigues Less 2 SOG (58%), Zacha Less 2 SOG (57%), Caldwell-Pope More 5.5 pts (55%).",
+   "Donovan Mitchell rebounds and Barbashev SOG weren't in PrizePicks' feed; check your app.",
+   "Insiders (12h): no injury news touching board picks (Rapoport: JJ McCarthy starts for Giants Sunday; Cobolli beat Wawrinka 6-2 first set).",
+   "Player news checked for 8 top picks: nothing ruling out or limiting any of them."
   ]
  }
 }
