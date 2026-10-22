@@ -8,7 +8,9 @@ Every scheduled run follows this file. Work on branch `claude/sports-parlay-pick
    look up the box score and fill in `actual` and `result` (W/L/P/void). DNP/retired = void.
 3. **Research the next slate** (today + tomorrow, US Eastern dates) for NBA, NFL, ATP/WTA tennis:
    - Injury reports, starting lineups, rest/back-to-back, tennis withdrawals and fatigue
-   - Sportsbook player-prop lines and prices (`python3 src/fetch_odds.py ...` if `ODDS_API_KEY` is set)
+   - Real PrizePicks lines vs. sportsbook fair odds: `python3 src/fetch_odds.py edges basketball_nba` and
+     `... edges americanfootball_nfl` (if `ODDS_API_KEY` is set). Start from its `fair` %, then adjust for news the market
+     hasn't priced. Each scan costs ~10 requests per game, so scan once per run.
    - News from beat writers / X, recent form, matchups, head-to-head
 4. **Pick only what clears break-even.** De-vig sportsbook props with
    `python3 src/prizepicks.py devig`. A pick needs an estimated **≥ 58%** hit rate.

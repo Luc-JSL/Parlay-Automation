@@ -56,9 +56,15 @@ python3 src/prizepicks.py ev 0.60 0.59 0.61 --stake 10   # EV of a 3-pick entry
 python3 src/parlay_calc.py -160 -300 1.38 --true-probs 0.60 0.74 0.70
 
 # Live odds (needs a free key from https://the-odds-api.com in ODDS_API_KEY)
+# Only games that haven't started are shown.
 python3 src/fetch_odds.py basketball_nba
-python3 src/fetch_odds.py americanfootball_nfl
+python3 src/fetch_odds.py events americanfootball_nfl       # upcoming events + ids (free)
+
+# PrizePicks edge scanner: real PrizePicks lines vs. de-vigged sportsbook consensus
+python3 src/fetch_odds.py edges basketball_nba --hours 36 --min 0.56 --json /tmp/nba.json
 ```
+
+`edges` costs (markets x 2 regions) API requests per event, about 10 per NBA/NFL game.
 
 ## Data sources / connectors
 
