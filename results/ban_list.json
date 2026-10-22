@@ -1,0 +1,192 @@
+{
+ "updated": "2026-10-22",
+ "note": "mentions = distinct news/fantasy/betting sources flagging the risk; Reddit was unreachable, so community ban lists could not be counted.",
+ "players": [
+  {
+   "name": "Joel Embiid",
+   "sport": "NBA",
+   "team": "Philadelphia 76ers",
+   "reason": "The 76ers plan to hold him to about 30 minutes early in the season after he played only 38 regular-season games in 2025-26, but he played 33 in the opener, so his minutes are unpredictable.",
+   "mentions": 4,
+   "sources": [
+    "https://www.newsweek.com/sports/nba/lebron-james-joel-embiid-set-for-limited-minutes-to-begin-season-report-12596212"
+   ]
+  },
+  {
+   "name": "LeBron James",
+   "sport": "NBA",
+   "team": "Philadelphia 76ers",
+   "reason": "Reported plan of about 30 minutes a game and expected staggered rest nights with Embiid.",
+   "mentions": 3,
+   "sources": [
+    "https://heavy.com/sports/nba/philadelphia-76ers/76ers-to-put-lebron-james-and-joel-embiid-on-minutes-restriction/"
+   ]
+  },
+  {
+   "name": "Kawhi Leonard",
+   "sport": "NBA",
+   "team": "Toronto Raptors",
+   "reason": "Toronto has a stated load-management plan, and he played only 24 minutes in an opening-night blowout.",
+   "mentions": 4,
+   "sources": [
+    "https://www.rotowire.com/basketball/headlines/kawhi-leonard-news-load-management-plan-in-place-532887"
+   ]
+  },
+  {
+   "name": "Anthony Davis",
+   "sport": "NBA",
+   "team": "Washington Wizards",
+   "reason": "New to Washington after nine months without a real game; reports say a minutes restriction is likely.",
+   "mentions": 2,
+   "sources": [
+    "https://www.washingtontimes.com/news/2026/oct/21/anthony-davis-scores-34-points-washington-debut-leading-wizards/"
+   ]
+  },
+  {
+   "name": "Ja Morant",
+   "sport": "NBA",
+   "team": "Portland Trail Blazers",
+   "reason": "Played 20 games in 2025-26 before an elbow shutdown; new team and role; 23 minutes in a blowout debut.",
+   "mentions": 2,
+   "sources": [
+    "https://www.cbssports.com/nba/news/ja-morant-trade-grades-trail-blazers-grizzlies/"
+   ]
+  },
+  {
+   "name": "Domantas Sabonis",
+   "sport": "NBA",
+   "team": "Sacramento Kings",
+   "reason": "Season-ending knee surgery last season, then sat several October preseason games for undisclosed reasons.",
+   "mentions": 2,
+   "sources": [
+    "https://www.rotowire.com/basketball/headlines/domantas-sabonis-injury-unavailable-tuesday-534315"
+   ]
+  },
+  {
+   "name": "Lamar Jackson",
+   "sport": "NFL",
+   "team": "Baltimore Ravens",
+   "reason": "Left ankle sprain on Oct. 4, missed two games, Week 7 practice status conflicting; could sit or play hobbled.",
+   "mentions": 3,
+   "sources": [
+    "https://www.cbssports.com/nfl/news/nfl-week-7-injury-report-ravens-lamar-jackson-jets-breece-hall/"
+   ]
+  },
+  {
+   "name": "Saquon Barkley",
+   "sport": "NFL",
+   "team": "Philadelphia Eagles",
+   "reason": "Missed two games with a hamstring injury; listed doubtful on one Week 7 report; backup QB starting.",
+   "mentions": 3,
+   "sources": [
+    "https://www.rotoballer.com/when-is-saquon-barkley-coming-back-week-7-fantasy-football-injury-return-update-2026-2/1970357"
+   ]
+  },
+  {
+   "name": "Breece Hall",
+   "sport": "NFL",
+   "team": "New York Jets",
+   "reason": "Did not practice Wednesday; listed questionable to doubtful for Week 7.",
+   "mentions": 2,
+   "sources": [
+    "https://www.cbssports.com/nfl/news/nfl-week-7-injury-report-ravens-lamar-jackson-jets-breece-hall/"
+   ]
+  },
+  {
+   "name": "Kyle Pitts",
+   "sport": "NFL",
+   "team": "Atlanta Falcons",
+   "reason": "Recent output leans on touchdowns; analysts expect as many slow games as big ones.",
+   "mentions": 4,
+   "sources": [
+    "https://www.fantasypros.com/nfl/players/kyle-pitts.php"
+   ],
+   "aliases": [
+    "Kyle Pitts Sr."
+   ]
+  },
+  {
+   "name": "Luther Burden III",
+   "sport": "NFL",
+   "team": "Chicago Bears",
+   "reason": "Snap share has swung between 39% and 77%; ran 18 routes in Week 6 to Odunze's 36.",
+   "mentions": 2,
+   "sources": [
+    "https://www.footballguys.com/article/2026-rest-of-season-rankings-week07"
+   ],
+   "aliases": [
+    "Luther Burden"
+   ]
+  },
+  {
+   "name": "Cole Kmet",
+   "sport": "NFL",
+   "team": "Chicago Bears",
+   "reason": "Snap share has swung between 42% and 73%.",
+   "mentions": 1,
+   "sources": [
+    "https://www.footballguys.com/article/2026-rest-of-season-rankings-week07"
+   ]
+  },
+  {
+   "name": "Harold Fannin Jr.",
+   "sport": "NFL",
+   "team": "Cleveland Browns",
+   "reason": "2 catches for 13 yards over two full games; output depends on touchdowns.",
+   "mentions": 1,
+   "sources": [
+    "https://sports.yahoo.com/articles/fantasy-football-tight-end-rankings-131445119.html"
+   ]
+  },
+  {
+   "name": "Mackenzie Blackwood",
+   "sport": "NHL",
+   "team": "Colorado Avalanche",
+   "reason": "Colorado's goalie workload could flip with Wedgewood at any point, so a surprise backup start can sink a saves prop.",
+   "mentions": 1,
+   "sources": [
+    "https://www.dailyfaceoff.com/news/ranking-all-32-goalie-tandems-trios-2026-27-nhl-season-best-worst-list"
+   ]
+  },
+  {
+   "name": "Scott Wedgewood",
+   "sport": "NHL",
+   "team": "Colorado Avalanche",
+   "reason": "Same unsettled Colorado tandem as Blackwood; starter uncertain night to night.",
+   "mentions": 1,
+   "sources": [
+    "https://www.dailyfaceoff.com/news/ranking-all-32-goalie-tandems-trios-2026-27-nhl-season-best-worst-list"
+   ]
+  },
+  {
+   "name": "Marta Kostyuk",
+   "sport": "Tennis",
+   "team": "WTA",
+   "reason": "Retired mid-match in Ningbo on Oct. 21 with a recurring wrist injury.",
+   "mentions": 2,
+   "sources": [
+    "https://www.espn.com/tennis/story/_/id/50237865/kostyuk-retires-ningbo-match-hands-muchova-wta-finals-slot"
+   ]
+  },
+  {
+   "name": "Paula Badosa",
+   "sport": "Tennis",
+   "team": "WTA",
+   "reason": "Chronic back plus hip and thigh issues; retired mid-match twice in 2026.",
+   "mentions": 3,
+   "sources": [
+    "https://justwomenssports.com/reads/paula-badosa-iasi-open-retirement-2026/"
+   ]
+  },
+  {
+   "name": "Matteo Berrettini",
+   "sport": "Tennis",
+   "team": "ATP",
+   "reason": "Retired from his Roland Garros 2026 quarterfinal with a hip injury, after an abdominal retirement in 2025.",
+   "mentions": 2,
+   "sources": [
+    "https://www.atptour.com/en/news/berrettini-roland-garros-2026-qf-reaction"
+   ]
+  }
+ ]
+}

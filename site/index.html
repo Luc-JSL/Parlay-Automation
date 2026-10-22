@@ -1,0 +1,1119 @@
+<title>Parlay Lab Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: app-style board. Sticky top bar, hero slip summary, sport tabs, grid of player cards, entry slip docked right (bottom sheet on phones). Single dark theme on purpose. */
+:root {
+  --ink: #06070d;          /* page ground */
+  --panel: #10121c;        /* glass panels */
+  --panel-2: #0a0b12;      /* inner cards */
+  --line: #2a2148;         /* purple-tinted borders */
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --violet: #a855f7;       /* accent: neon purple */
+  --violet-hi: #c084fc;
+  --on-accent: #ffffff;
+  --more: #00e676;         /* More side */
+  --less: #fb7185;         /* Less side */
+  --gold: #facc15;         /* PLAY tag */
+  --more-grad: linear-gradient(to right, #00c6ff, #0072ff);
+  --less-grad: linear-gradient(to right, #f857a6, #ff5858);
+  --glass: linear-gradient(135deg, rgba(20, 22, 33, .85) 0%, rgba(13, 15, 23, .95) 100%);
+  --f-display: "Orbitron", "Arial Black", system-ui, sans-serif;
+  --f-body: "Rajdhani", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .05;
+  background-image: linear-gradient(to right, #808080 1px, transparent 1px), linear-gradient(to bottom, #808080 1px, transparent 1px); background-size: 24px 24px; }
+main, header, footer { position: relative; z-index: 1; }
+.card, .slip, .chat, .stat, .plist, .entry, .profit-strip div, .be div, .tab, .viewswitch button { background: var(--glass) !important; border-color: rgba(92, 59, 191, .25) !important; }
+.card:hover, .chat:hover, .plist:hover, .entry:hover { border-color: rgba(92, 59, 191, .45) !important; box-shadow: 0 0 20px rgba(92, 59, 191, .15); }
+.slip { border-top: 2px solid rgba(168, 85, 247, .6) !important; box-shadow: 0 20px 50px rgba(0, 0, 0, .7); }
+body {
+  font-size: 16px;
+  background-color: var(--ink);
+  background-image: radial-gradient(at 0% 0%, rgba(92, 59, 191, .10) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(0, 230, 118, .06) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--ink);
+}
+.wrap {
+  max-width: 1240px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--violet-hi); outline-offset: 2px; }
+
+/* top bar */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--ink) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.bar .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+.brand { font-size: 16px; letter-spacing: -0.01em; }
+.brand { font-family: var(--f-display); font-weight: 900; font-size: 19px; letter-spacing: .06em; color: #fff; }
+.brand .lab { color: var(--violet-hi); text-shadow: 0 0 10px rgba(168, 85, 247, .6); }
+.bar { border-bottom: 1px solid rgba(92, 59, 191, .25); box-shadow: inset 4px 0 0 #a855f7; }
+.ping { position: relative; width: 12px; height: 12px; display: inline-block; }
+.ping i { position: absolute; inset: 0; border-radius: 50%; background: #a855f7; }
+.ping i:first-child { background: #c084fc; animation: ping 1.4s cubic-bezier(0, 0, .2, 1) infinite; }
+@keyframes ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+.sync-pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-display); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: #d8b4fe; border: 1px solid rgba(88, 28, 135, .6); background: rgba(59, 7, 100, .2); padding: 3px 8px; border-radius: 4px; }
+.sync-pill i { width: 4px; height: 4px; border-radius: 50%; background: #c084fc; animation: pulse 2s infinite; }
+@media (max-width: 600px) { .sync-pill { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ping i:first-child, .sync-pill i { animation: none; } }
+.pro { background: linear-gradient(45deg, #facc15, #f59e0b); color: #111217; font-weight: 900; font-size: 11px; letter-spacing: .08em; padding: 3px 7px; border-radius: 5px; }
+.live { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); font-size: 10px; letter-spacing: .12em; border-left: 1px solid #1f2937; padding-left: 12px; color: var(--muted); text-transform: uppercase; }
+.live i { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .live i { animation: none; } }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+  background: var(--violet); color: var(--ink); font-size: 15px;
+}
+.bar-meta { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.chip {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; color: var(--muted); white-space: nowrap;
+}
+
+/* hero */
+.hero { padding-block: 36px 20px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 28px; align-items: end; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet-hi); }
+h1 {
+  font-family: var(--f-display); font-weight: 800; font-size: clamp(36px, 6vw, 64px);
+  line-height: 0.98; letter-spacing: -0.035em; margin: 10px 0 14px; text-wrap: balance;
+}
+h1 { text-transform: uppercase; font-weight: 900; letter-spacing: -0.01em; font-size: clamp(28px, 4.6vw, 46px); line-height: 1.02; }
+h1 em { font-style: normal; color: transparent; background: linear-gradient(to right, #c084fc, #34d399); -webkit-background-clip: text; background-clip: text; }
+.eyebrow { display: inline-block; font-family: var(--f-display) !important; font-weight: 700; color: #c084fc !important; background: rgba(59, 7, 100, .3); border: 1px solid rgba(88, 28, 135, .4); border-radius: 4px; padding: 4px 10px; letter-spacing: .15em !important; font-size: 11px !important; }
+.lede { font-size: 15px; }
+.lede { color: var(--muted); max-width: 58ch; margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column-reverse; }
+.stat span { font-size: 10px !important; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.stat b { font-weight: 900; }
+#s-play { color: var(--more); text-shadow: 0 0 10px rgba(0, 230, 118, .6); }
+.stat { position: relative; overflow: hidden; }
+.stat::after { content: attr(data-n); position: absolute; right: -4px; bottom: -10px; font-family: var(--f-display); font-weight: 900; font-size: 40px; opacity: .08; }
+.stat b { font-family: var(--f-display) !important; }
+.stat span { font-family: var(--f-display); font-size: 9px !important; letter-spacing: .12em !important; }
+.stat:nth-child(2) { border-bottom: 2px solid rgba(16, 185, 129, .5) !important; }
+.stat b { display: block; font-family: var(--f-mono); font-size: 24px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 12px; color: var(--muted); }
+
+/* break-even strip */
+.be { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 22px; scrollbar-width: none; }
+.be::-webkit-scrollbar { display: none; }
+.be div { flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 12px; color: var(--muted); font-family: var(--f-mono); }
+.be div:first-child { background: linear-gradient(to right, #9333ea, #4f46e5) !important; border-color: rgba(192, 132, 252, .3) !important; color: #fff; font-weight: 700; box-shadow: 0 0 15px rgba(147, 51, 234, .3); }
+.be div:first-child b { color: #fff; }
+.be b { font-family: var(--f-mono); color: var(--text); font-size: 14px; margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+/* main grid */
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start; padding-bottom: 120px; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer;
+  font-weight: 600; font-size: 14px; display: flex; gap: 8px; align-items: center;
+}
+.tab .n { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.tab[aria-selected="true"] { background: linear-gradient(to right, #9333ea, #4f46e5) !important; border-color: rgba(192, 132, 252, .4) !important; color: #fff; }
+.tab[aria-selected="true"] .n { color: #e9d5ff; }
+
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 22px 0 12px; flex-wrap: wrap; }
+.section-head h2 { font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: -0.02em; margin: 0; }
+.section-head p { margin: 0; color: var(--muted); font-size: 13px; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 14px;
+  display: flex; flex-direction: column; gap: 12px; position: relative; transition: border-color .15s, transform .15s;
+}
+.card.sel { border-color: var(--violet); box-shadow: 0 0 0 1px var(--violet) inset; }
+.card-top { display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 12px; flex: 0 0 auto; display: grid; place-items: center;
+  background: var(--panel-2); font-family: var(--f-display); font-weight: 800; font-size: 15px; color: var(--violet-hi);
+}
+.who { min-width: 0; }
+.who b { display: block; font-size: 15px; line-height: 1.2; }
+.who span { font-size: 12px; color: var(--muted); }
+.tag {
+  margin-left: auto; align-self: flex-start; font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 6px; padding: 3px 7px; white-space: nowrap;
+}
+.tag.play { background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--gold); }
+.tag.lean { background: color-mix(in srgb, #60a5fa 18%, transparent); color: #93c5fd; }
+.tag.below { background: var(--panel-2); color: var(--muted); }
+
+.line-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.line b { font-family: var(--f-mono); font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+.line .cond { font-family: var(--f-mono); font-size: 13px; color: var(--muted); margin-right: 4px; }
+.line span { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.prob { text-align: right; }
+.prob b { font-family: var(--f-mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+.prob span { display: block; font-size: 11px; color: var(--muted); }
+.meter { height: 4px; background: var(--panel-2); border-radius: 4px; position: relative; overflow: hidden; }
+.meter i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; }
+.meter::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--text); opacity: .5; left: var(--be); }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.foot { display: flex; align-items: center; gap: 8px; }
+.when { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.pick-btn {
+  margin-left: auto; border: 0; border-radius: 10px; padding: 9px 14px; cursor: pointer; font-weight: 700; font-size: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.pick-btn.more { background: color-mix(in srgb, var(--more) 16%, transparent); color: var(--more); }
+.pick-btn.less { background: color-mix(in srgb, var(--less) 16%, transparent); color: var(--less); }
+.card.sel .pick-btn.more { background: var(--more-grad); color: #fff; }
+.card.sel .pick-btn.less { background: var(--less-grad); color: #fff; }
+
+/* slip */
+.slip {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 72px);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 14px;
+}
+.slip-title { font-family: var(--f-body); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #e5e7eb; }
+.slip h3 { border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+.slip h3 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; }
+.slip h3 .count { font-family: var(--f-display); font-size: 12px; background: linear-gradient(to right, #a855f7, #6366f1); color: #fff; border-radius: 4px; padding: 2px 8px; }
+.slip-body { display: flex; flex-direction: column; gap: 14px; }
+.slip-list { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.slip-list li { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+.slip-list li:hover { border-color: #4b5563; }
+.side { padding: 2px 6px; border-radius: 4px; letter-spacing: .05em; align-self: flex-start; }
+.side.more { background: color-mix(in srgb, var(--more) 12%, transparent); }
+.side.less { background: color-mix(in srgb, var(--less) 12%, transparent); }
+.slip-list .wp { font-family: var(--f-mono); font-weight: 700; margin-left: 4px; }
+.slip-list li .s { min-width: 0; flex: 1; }
+.slip-list li .s b { display: block; font-size: 13px; }
+.slip-list li .s span { color: var(--muted); font-size: 12px; }
+.side { font-family: var(--f-mono); font-size: 11px; font-weight: 700; }
+.side.more { color: var(--more); } .side.less { color: var(--less); }
+.x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 2px 4px; }
+.empty { color: var(--muted); font-size: 13px; margin: 0; }
+.modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mode { background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
+.mode { border: 1px solid var(--line); background: linear-gradient(to bottom, rgba(31,41,55,.4), transparent); }
+.mode .k { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); }
+.mode b { font-weight: 900; }
+.mode b { display: block; font-family: var(--f-mono); font-size: 20px; font-variant-numeric: tabular-nums; }
+.mode span { font-size: 11px; color: var(--muted); }
+.mode.good b { color: var(--more); } .mode.bad b { color: var(--less); }
+.warn { font-size: 12px; color: var(--gold); margin: 0; }
+.advice { font-size: 13px; margin: 0; background: var(--panel-2); border-radius: 12px; padding: 10px 12px; }
+.advice b { color: var(--more); }
+.slip-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.ghost.played { border-color: var(--more); color: var(--more); }
+.ghost.step { color: var(--text); }
+.ghost:disabled { opacity: .4; cursor: default; }
+.step-note { font-size: 12px; color: var(--muted); margin: 0; }
+.payouts { display: grid; gap: 4px; font-size: 12px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+.payouts .row { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); }
+.payouts .row b { font-family: var(--f-mono); color: var(--text); font-variant-numeric: tabular-nums; }
+.payouts .row b.win { color: var(--more); }
+.payouts .row b.lose { color: var(--less); }
+.payouts .h { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.entries { margin-top: 36px; }
+.profit-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 12px; }
+.profit-strip div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.profit-strip span { display: block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.profit-strip b { font-family: var(--f-mono); font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.entry { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 8px; }
+.entry .what { flex: 1 1 260px; min-width: 0; }
+.entry .what b { display: block; font-size: 14px; }
+.entry .what span { font-size: 12px; color: var(--muted); }
+.entry .money { font-family: var(--f-mono); font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.entry .settle { display: flex; gap: 6px; flex-wrap: wrap; }
+.entry .settle button { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 12px; cursor: pointer; color: var(--text); }
+.entry .settle button:hover { border-color: var(--violet); }
+.pos { color: var(--more); } .neg { color: var(--less); }
+@media (max-width: 600px) { .profit-strip { grid-template-columns: 1fr 1fr; } }
+.ghost { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
+.ghost.primary { border-color: var(--violet); color: var(--violet-hi); }
+.stake { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.stake input { width: 80px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 6px 8px; font-family: var(--f-mono); }
+
+/* how it works */
+.how { margin-top: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.how div { border-top: 2px solid var(--violet); padding-top: 12px; }
+.how h4 { margin: 0 0 6px; font-family: var(--f-display); font-size: 17px; }
+.how p { margin: 0; color: var(--muted); font-size: 14px; }
+footer { border-top: 1px solid var(--line); margin-top: 40px; padding-block: 20px; color: var(--muted); font-size: 12px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+
+
+/* goblin + list view */
+.gob { background: none; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.gob.on { border-color: var(--more); color: var(--more); background: color-mix(in srgb, var(--more) 10%, transparent); }
+.gl { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--more); margin-top: 4px; }
+.gl input { width: 64px; background: var(--panel-2); border: 1px solid var(--more); border-radius: 6px; color: var(--text); font-family: var(--f-mono); font-size: 12px; padding: 3px 6px; }
+.glnote { font-size: 11px; color: var(--muted); margin-left: 8px; }
+.slip-list .gl { display: flex; margin-top: 6px; }
+.gv { display: block; font-size: 12px; font-weight: 600; margin-top: 4px; }
+.gv.ok { color: var(--more); } .gv.no { color: var(--less); } .gv.need { color: var(--gold); font-weight: 500; }
+.sp-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: #111217; background: var(--gold); border-radius: 4px; padding: 1px 5px; vertical-align: middle; text-transform: uppercase; }
+.src { font-size: 11px; font-weight: 500; color: var(--violet-hi); margin-left: 6px; }
+.who .src { display: block; margin-left: 0; }
+.spinfo { background: var(--glass); border: 1px solid rgba(250, 204, 21, .35); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+.spinfo b { font-size: 15px; } .spinfo p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+.gob-badge { font-family: var(--f-mono); font-size: 9px; font-weight: 700; letter-spacing: .08em; color: var(--more); border: 1px solid var(--more); border-radius: 4px; padding: 1px 4px; vertical-align: middle; }
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.toolbar .tabs { margin-bottom: 0; }
+.viewswitch { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.viewswitch button { background: var(--panel); border: 0; padding: 7px 14px; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; }
+.viewswitch button[aria-pressed="true"] { background: linear-gradient(to right, #9333ea, #4f46e5) !important; color: #fff; }
+.plist { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--panel); }
+.prow { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto 64px auto auto; align-items: center; gap: 12px; padding: 11px 14px; border-top: 1px solid var(--line); }
+.prow:first-child { border-top: 0; }
+.prow:hover { background: var(--panel-2); }
+.prow.sel { background: color-mix(in srgb, var(--violet) 10%, var(--panel)); box-shadow: inset 3px 0 0 var(--violet); }
+.prow .sp { font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--violet-hi); text-transform: uppercase; }
+.prow .nm { min-width: 0; }
+.prow .nm b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow .nm > span { display: block; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.prow .wp { font-family: var(--f-mono); font-weight: 700; font-size: 15px; text-align: right; font-variant-numeric: tabular-nums; }
+.prow .pick-btn { margin-left: 0; padding: 7px 12px; min-width: 72px; justify-content: center; }
+.prow.sel .pick-btn.more { background: var(--more-grad); color: #fff; }
+.prow.sel .pick-btn.less { background: var(--less-grad); color: #fff; }
+@media (max-width: 640px) {
+  .prow { grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px 10px; }
+  .prow .sp, .prow .tag { display: none; }
+  .prow .nm { grid-column: 1 / -1; }
+  .prow .wp { text-align: left; }
+}
+
+/* chat */
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+.chat-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.chat-head h2 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+.chat-head p { margin: 0; color: var(--muted); font-size: 13px; flex: 1 1 260px; }
+.log { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+.log:empty { display: none; }
+.msg { max-width: 85%; padding: 9px 12px; border-radius: 14px; font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.me { align-self: flex-end; background: linear-gradient(to right, #9333ea, #4f46e5); color: #fff; border-bottom-right-radius: 4px; }
+.msg.bot { align-self: flex-start; background: var(--panel-2); border-bottom-left-radius: 4px; }
+.msg.act { align-self: flex-start; background: none; border: 1px dashed var(--line); color: var(--muted); font-family: var(--f-mono); font-size: 11px; padding: 5px 10px; }
+.msg.err { align-self: flex-start; background: none; border: 1px solid var(--less); color: var(--less); }
+.suggest { display: flex; gap: 6px; flex-wrap: wrap; }
+.suggest button { background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.suggest button:hover { color: var(--text); border-color: var(--violet); }
+.composer { display: flex; gap: 8px; }
+.composer textarea {
+  flex: 1; min-width: 0; resize: none; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px;
+  color: var(--text); font: inherit; font-size: 14px; padding: 10px 12px; min-height: 44px; max-height: 140px;
+}
+.composer textarea::placeholder { color: var(--muted); }
+.send { border: 0; border-radius: 12px; padding: 0 16px; background: linear-gradient(to right, #9333ea, #4f46e5); color: #fff; font-weight: 700; cursor: pointer; }
+.send:disabled { opacity: .5; cursor: default; }
+.sync { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.card .mine { font-family: var(--f-mono); font-size: 10px; color: var(--gold); letter-spacing: .06em; text-transform: uppercase; }
+.card .gone { background: none; border: 0; color: var(--muted); font-size: 12px; cursor: pointer; padding: 4px 0; text-decoration: underline; text-underline-offset: 3px; }
+.card .gone:hover { color: var(--less); }
+.hidden-row { margin-top: 14px; font-size: 13px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.hidden-row button { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+
+@media (max-width: 920px) {
+  .hero { grid-template-columns: 1fr; }
+  .main { grid-template-columns: 1fr; }
+  .slip { position: static; order: -1; }
+  .how { grid-template-columns: 1fr; }
+}
+/* Phones: the slip becomes a bottom sheet that opens on tap. */
+@media (max-width: 640px) {
+  .slip {
+    position: fixed; top: auto; left: 0; right: 0; bottom: 0; border-radius: 20px 20px 0 0; z-index: 6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    max-height: 70vh; overflow-y: auto; box-shadow: 0 -12px 40px rgba(0,0,0,.5);
+  }
+  .slip:not(.open) .slip-body { display: none; }
+  .slip h3 { cursor: pointer; }
+}
+@media (min-width: 641px) { .toggle-hint { display: none; } }
+.toggle-hint { margin-left: auto; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="brand"><span class="ping" aria-hidden="true"><i></i><i></i></span><span>PARLAY<span class="lab">LAB</span></span></div>
+    <div class="bar-meta">
+      <span class="sync-pill"><i aria-hidden="true"></i>Auto-sync active</span><span class="live"><span id="updated">BOARD UPDATE: THU 12:00 AM CT</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">PrizePicks More / Less board</div>
+      <h1>Only take picks that beat the <em>break-even line</em>.</h1>
+      <p class="lede">Each NBA and NFL card is a real PrizePicks line checked against 2–6 sportsbooks, with the books' margin removed, then checked against injury news. Tennis cards show the line a pick needs, because no PrizePicks tennis lines were found. Tap picks to build an entry and see its expected return.</p>
+    </div>
+    <div class="stats" aria-label="Board summary">
+      <div class="stat" data-n="01"><b id="s-total">12</b><span>Picks found</span></div>
+      <div class="stat" data-n="02"><b id="s-play">5</b><span>Clear the line</span></div>
+      <div class="stat" data-n="03"><b id="s-profit">$0.00</b><span>Total profit</span></div>
+    </div>
+  </section>
+
+  <div class="be" aria-label="Break-even hit rate per pick">
+    <div>2 Power<b>57.7%</b></div>
+    <div>3 Power<b>55.0%</b></div>
+    <div>3 Flex<b>59.1%</b></div>
+    
+    <div>4 Power<b>56.2%</b></div>
+    <div>4 Flex<b>56.9%</b></div>
+    <div>5 Power<b>54.9%</b></div>
+    <div>5 Flex<b>54.3%</b></div>
+    <div>6 Power<b>54.7%</b></div>
+    <div>6 Flex<b>54.2%</b></div>
+  </div>
+
+  <div class="main">
+    <div>
+      <section class="chat" id="chat" aria-label="Chat with Claude">
+        <div class="chat-head">
+          <h2>Tell Claude what your app shows</h2>
+          <p>Say which picks aren't offered, what line you actually see, or ask for a different entry. Claude changes the board for you.</p>
+          <span class="sync" id="sync">Changes saved to this board</span>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+        <div class="suggest" id="suggest">
+          <button type="button">Ajay Mitchell isn't on my PrizePicks</button>
+          <button type="button">My line for Jaylen Brown assists is 4.5</button>
+          <button type="button">Build me the best 5-pick Flex</button>
+        </div>
+        <form class="composer" id="composer">
+          
+          <textarea id="chat-input" rows="1" aria-label="Message to Claude" placeholder="e.g. Chidekh games won is 9.5 in my app"></textarea>
+          <button class="send" id="send" type="submit">Send</button>
+        </form>
+      </section>
+      <div class="toolbar"><div class="tabs" role="tablist" aria-label="Sport" id="tabs"></div>
+        <div class="viewswitch" role="group" aria-label="View"><button type="button" data-view="list">List</button><button type="button" data-view="cards">Cards</button></div></div>
+      <div id="board"></div>
+      <div class="hidden-row" id="hidden-row" hidden></div>
+
+      <section class="entries" aria-label="My entries and profit">
+        <div class="section-head"><h2>My entries &amp; profit</h2><p>Tap "I played Power" or "I played Flex" in the slip, then mark each entry when it settles.</p></div>
+        <div class="profit-strip">
+          <div><span>Total profit</span><b id="p-total">$0.00</b></div>
+          <div><span>Open entries: max profit</span><b id="p-open">$0.00</b></div>
+          <div><span>Record</span><b id="p-record">0–0</b></div>
+        </div>
+        <div id="entries"><p class="empty">No entries logged yet.</p></div>
+      </section>
+
+      <section class="how" aria-label="How picks are made">
+        <div><h4>Real lines</h4><p>Prop lines from PrizePicks and US sportsbooks come from The Odds API. Games that have already started are skipped.</p></div>
+        <div><h4>Fair odds</h4><p>Each book's margin is removed, and its line is converted to the PrizePicks number. Ties on whole-number lines are counted as pushes.</p></div>
+        <div><h4>News check</h4><p>Injury reports, minutes and roles, and the game's spread. A pick is dropped when its status is unclear close to lock.</p></div>
+      </section>
+    </div>
+
+    <aside class="slip" id="slip" aria-label="Entry slip">
+      <h3 id="slip-head" role="button" tabindex="0" aria-expanded="false"><span class="count" id="count">0</span><span class="slip-title">Current entry slip</span><span class="toggle-hint" id="toggle-hint">tap to open</span></h3>
+      <div class="slip-body">
+        <ul class="slip-list" id="slip-list"></ul>
+        <p class="empty" id="slip-empty">Tap More or Less on 2–6 picks. The slip shows the expected return for Power and Flex entries.</p>
+        <div class="stake"><label for="bankroll">Bankroll $</label><input id="bankroll" type="number" min="1" step="1" value="100">
+          <label for="stake">Stake $</label><input id="stake" type="number" min="1" step="1" value="10">
+          <label for="payout">Power payout in app</label><input id="payout" type="number" min="1" step="0.25" placeholder="auto"></div>
+        <div class="modes">
+          <div class="mode" id="m-power"><div class="k">Power slip</div><b>–</b><span>expected return</span></div>
+          <div class="mode" id="m-flex"><div class="k">Flex slip</div><b>–</b><span>expected return</span></div>
+        </div>
+        <p class="step-note" id="step-note" hidden></p>
+        <div class="payouts" id="payouts" hidden></div>
+        <p class="advice" id="advice" hidden></p>
+        <p class="warn" id="warn" hidden></p>
+        <div class="slip-actions">
+          <button class="ghost primary" id="best" type="button">Load best 4</button>
+          <button class="ghost step" id="add1" type="button">+ Add 1</button>
+          <button class="ghost step" id="drop1" type="button">− Remove 1</button>
+          <button class="ghost played" id="played-power" type="button" hidden>I played Power</button>
+          <button class="ghost played" id="played-flex" type="button" hidden>I played Flex</button>
+          <button class="ghost" id="clear" type="button">Clear slip</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Picks are estimates, not guarantees. Check the line and payout in the app before you enter. Play within limits.</span>
+    <span>Not affiliated with PrizePicks.</span>
+  </div>
+</footer>
+
+<script>
+let PICKS = [
+  { id: "hart", sport: "NBA", player: "Isaiah Hartenstein", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Points", side: "More", line: "7.5", books: "Books 7.5–8.5 (3)", p: 0.58, game_id: "denokc",
+    note: "PrizePicks matches the low end of the books. Not yet checked against news: a blowout would cut his minutes, which hurts More." },
+  { id: "jbrown", sport: "NBA", player: "Jaylen Brown", team: "PHI", game: "CLE @ PHI", when: "Thu 7:10 PM ET", stat: "Assists", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.57, game_id: "cleph",
+    note: "Scoring-first role next to LeBron, Maxey and Embiid. Drop it if one of them sits. He had 6 assists in the opener." },
+  { id: "cjohn", sport: "NBA", player: "Cameron Johnson", team: "DEN", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.565, game_id: "denokc",
+    note: "3.8 rebounds per game last season, next to Jokic and Gordon. OKC is an 8-point favorite, so a blowout could cut his minutes." },
+  { id: "jwill", sport: "NBA", player: "Jalen Williams", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "5", books: "Books 4.5 (3)", p: 0.546, game_id: "denokc",
+    note: "4.6 rebounds per game last season, but 7 in the opener. Drop it if Holmgren or Hartenstein is out." },
+  { id: "stev", sport: "NFL", player: "Rhamondre Stevenson", team: "NE", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rush Yds", side: "Less", line: "42.5", books: "Books 41.5–44.5 (6)", p: 0.55, game_id: "nechi",
+    note: "Henderson is back at full practice and Kiner has the hot hand. Both starting guards are out. He ran 14 times for 36 yards last week." },
+  { id: "chism", sport: "NFL", player: "Efton Chism III", team: "NE", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rec Yds", side: "Less", line: "19.5", books: "Books 16.5–18.5 (5)", p: 0.55, game_id: "nechi",
+    note: "0 catches on 1 target in A.J. Brown's return. The Bears allow the most 30+ yard passes in the league, so one long catch beats it." },
+  { id: "caleb", sport: "NFL", player: "Caleb Williams", team: "CHI", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rush Yds", side: "Less", line: "19.5", books: "Books 19.5–21.5 (6)", p: 0.53, game_id: "nechi",
+    note: "Grade 2 hamstring strain. He ran 4 times for 3 yards in his first game back. This is below break-even." },
+  { id: "love", sport: "NFL", player: "Colston Loveland", team: "CHI", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rec Yds", side: "More", line: "41.5", books: "Books 41.5–45.5 (6)", p: 0.52, game_id: "nechi",
+    note: "6 catches for 65 yards on 88% of snaps last week. Nothing here the books don't already price in. Use it only to fill a slot." },
+  { id: "alexfer", sport: "Tennis", player: "Alexandrova v Fernandez", team: "WTA", game: "Ningbo QF", when: "Fri 12:00 AM ET", stat: "Total Games", side: "More", line: "20.5", cond: "≤", books: "PP line not found", p: 0.63, game_id: "ningbo1", tennis: true,
+    note: "The moneyline is close (-138/+114), and their last 3 meetings went three sets. 57% at 21.5. Fernandez has played almost 6 hours to get here." },
+  { id: "chidekh", sport: "Tennis", player: "Clément Chidekh", team: "ATP", game: "Brussels QF v Cerundolo", when: "Fri · time TBD", stat: "Games Won", side: "More", line: "8.5", cond: "≤", books: "PP line not found", p: 0.63, game_id: "brussels", tennis: true,
+    note: "About a 40% underdog, so a three-set loss still gets him 9+ games. 70% at 7.5, a lean at 9.5." },
+  { id: "machac", sport: "Tennis", player: "Machac v Khachanov", team: "ATP", game: "Almaty R16", when: "Thu 4:00 AM ET", stat: "Total Games", side: "More", line: "21.5", cond: "≤", books: "Polymarket O21.5 ~61%", p: 0.60, game_id: "almaty", tennis: true,
+    note: "Locks first, at 4 AM. Machac has had an injury-filled 2026, so there's a risk he retires mid-match." },
+  { id: "bouz", sport: "Tennis", player: "Bouzková v Bejlek", team: "WTA", game: "Ningbo QF", when: "Fri 1:00 AM ET", stat: "Total Games", side: "More", line: "19.5", cond: "≤", books: "Books O/U 21.5 -113/-118", p: 0.60, game_id: "ningbo2", tennis: true,
+    note: "The books have 21.5 as a coin flip, so it's only 55% at 20.5. Alternate: Krueger v Gibson (Osaka) More at 19.5 or lower." }
+];
+
+const POWER = { 2: { 2: 3 }, 3: { 3: 6 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
+const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
+/* Picks that can go on an entry: above the lean bar, and not a Goblin on the Less side. */
+const playable = p => p.p >= 0.54 && !(p.goblin && p.side === "Less");
+/* The next best pick to add to `current`: a different game, at most 2 tennis Overs. */
+function nextBest(current) {
+  const cur = board().filter(p => current.has(p.id));
+  const games = new Set(cur.map(p => p.game_id || p.game));
+  let tennis = cur.filter(p => p.tennis).length;
+  const pool = board().filter(p => !current.has(p.id) && playable(p)).sort((a, b) => b.p - a.p);
+  return pool.find(p => !games.has(p.game_id || p.game) && !(p.tennis && tennis >= 2))
+    || pool.find(p => !(p.tennis && tennis >= 2)) || null;
+}
+function bestIds(k = 4) {
+  const out = [], games = new Set();
+  let tennis = 0;
+  for (const p of board().filter(playable).sort((a, b) => b.p - a.p)) {
+    const g = p.game_id || p.game;
+    if (games.has(g) || (p.tennis && tennis >= 2)) continue;
+    if (p.tennis) tennis++;
+    out.push(p.id); games.add(g);
+    if (out.length === k) break;
+  }
+  return out;
+}
+
+function dist(probs) {
+  let d = [1];
+  for (const p of probs) {
+    const n = new Array(d.length + 1).fill(0);
+    d.forEach((q, k) => { n[k] += q * (1 - p); n[k + 1] += q * p; });
+    d = n;
+  }
+  return d;
+}
+const ret = (probs, table) => { const d = dist(probs); return Object.entries(table).reduce((s, [k, m]) => s + (d[k] || 0) * m, 0); };
+function breakeven(n, table) {
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (ret(Array(n).fill(mid), table) < 1) lo = mid; else hi = mid; }
+  return hi;
+}
+const BE4 = breakeven(4, { 4: 10 });
+
+/* Kelly fraction for one entry: maximize expected log growth over the possible hit counts. */
+function kelly(probs, row) {
+  const d = dist(probs);
+  let best = 0, bestG = 0;
+  for (let f = 0.0005; f < 0.5; f += 0.0005) {
+    let g = 0;
+    d.forEach((q, k) => { const m = row[k] || 0; g += q * Math.log(Math.max(1e-9, 1 - f + f * m)); });
+    if (g > bestG) { bestG = g; best = f; }
+  }
+  return best;
+}
+
+const tier = p => p >= 0.58 ? ["play", "PLAY"] : p >= 0.54 ? ["lean", "LEAN"] : ["below", "BELOW B/E"];
+const pct = p => (p * 100).toFixed(1).replace(/\.0$/, "") + "%";
+const initials = name => name.split(/\s+v\s+|\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toUpperCase();
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* Board edits: picks hidden, picks changed, picks added. Kept in the artifact's database so they
+   survive reloads and Claude in the coding session can read them back. */
+let edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {} };
+let bans = new Set();
+let specialsInfo = [];  // PrizePicks promos that aren't a single pick (deposit matches, boosts), from the live feed  // lower-cased player names from the ban list, sent with the live feed
+let editsDoc = null;
+let writeChain = Promise.resolve();
+
+function board() {
+  const base = PICKS.filter(p => !edits.removed.includes(p.id) && !bans.has(String(p.player).toLowerCase())).map(p => edits.overrides[p.id] ? { ...p, ...edits.overrides[p.id], edited: true } : p);
+  const extra = edits.added.filter(p => !edits.removed.includes(p.id)).map(p => ({ ...p, ...(edits.overrides[p.id] || {}), mine: true }));
+  const gob = new Set(edits.goblins || []);
+  return base.concat(extra).map(p => gob.has(p.id) ? goblinize(p) : p);
+}
+const findPick = id => board().find(p => p.id === id);
+
+function persist() {
+  const snapshot = JSON.parse(JSON.stringify(edits));
+  setSync("Saving…");
+  writeChain = writeChain.then(async () => {
+    if (!editsDoc) { setSync("Changes kept on this device only"); try { localStorage.setItem("pl-edits", JSON.stringify(snapshot)); } catch (e) {} return; }
+    try { await editsDoc.set({ ...snapshot, updatedAt: new Date().toISOString() }); setSync("Changes saved to this board"); }
+    catch (e) { setSync("Couldn't save: " + (e && e.message || "unknown error")); }
+  });
+  return writeChain;
+}
+function setSync(t) { document.getElementById("sync").textContent = t; }
+
+const selected = new Set();
+let filter = "all";
+try { const saved = JSON.parse(localStorage.getItem("pl-slip") || "[]"); saved.forEach(id => selected.add(id)); } catch (e) {}
+try { const local = JSON.parse(localStorage.getItem("pl-edits") || "null"); if (local) edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {}, ...local }; } catch (e) {}
+const save = () => { try { localStorage.setItem("pl-slip", JSON.stringify([...selected])); } catch (e) {} };
+
+function cardHTML(p) {
+  const [cls, label] = tier(p.p);
+  const color = p.side === "More" ? "var(--more)" : "var(--less)";
+  const sel = selected.has(p.id);
+  const flag = p.goblin && p.side === "Less" ? `<span class="mine">Goblins are More only, so this Less pick can't be played as a Goblin</span>` : p.goblin ? `<span class="mine">Goblin in your app: pays less. Enter the app's payout in the slip.</span>` : p.auto ? `<span class="mine">Auto scan · not news-checked</span>` : p.mine ? `<span class="mine">Added by you · not checked vs books</span>` : p.edited ? `<span class="mine">Changed by you · not re-checked vs books</span>` : "";
+  return `<article class="card${sel ? " sel" : ""}" data-id="${esc(p.id)}">
+    <div class="card-top">
+      <div class="avatar" aria-hidden="true">${esc(p.tennis ? (p.team || "TEN") : initials(p.player))}</div>
+      <div class="who"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}${p.special ? ` <span class="sp-badge">${esc(p.special)}</span>` : ""}</b>${p.source ? `<span class="src">via ${esc(p.source)}</span>` : ""}<span>${esc(p.tennis || !p.team ? p.game : p.team + " · " + p.game)}</span></div>
+      <span class="tag ${cls}">${label}</span>
+    </div>
+    <div class="line-row">
+      <div class="line">${p.cond ? `<span class="cond">play if</span>` : ""}<b>${esc((p.cond ? p.cond + " " : "") + p.line)}</b><span>${esc(p.stat + " · " + p.books)}</span></div>
+      <div class="prob"><b>${pct(p.p)}</b><span>win prob</span></div>
+    </div>
+    <div class="meter" style="--be:${(BE4 - 0.4) / 0.3 * 100}%" title="Marker shows the 4-pick Power break-even"><i style="width:${Math.max(0, Math.min(100, (p.p - 0.4) / 0.3 * 100))}%;background:${color}"></i></div>
+    ${flag}
+    ${p.goblin ? `<label class="gl">Goblin line <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>${p.line !== p.stdLine ? `<span class="glnote">was ${esc(p.stdLine)} at ${pct(p.stdP)}</span>` : ""}` : ""}
+    <p class="note">${esc(p.note)}</p>
+    <div class="foot">
+      <span class="when">${esc(p.when)}</span>
+      <button class="gone" type="button" data-hide="${esc(p.id)}">Not in my app</button>
+      <button class="gob${p.goblin ? " on" : ""}" type="button" aria-pressed="${!!p.goblin}" data-goblin="${esc(p.id)}" title="Tap if your app shows this as a Goblin">${p.goblin ? "Goblin ✓" : "Goblin?"}</button>
+      <button class="pick-btn ${p.side === "More" ? "more" : "less"}" type="button" aria-pressed="${sel}" data-id="${esc(p.id)}">${sel ? "✓ " : ""}${esc(p.side)}</button>
+    </div>
+  </article>`;
+}
+
+const ORDER = ["NBA", "NFL", "NHL", "MLB", "Soccer", "Tennis"];
+function renderTabs(sports, all) {
+  const tabs = ["all", ...sports];
+  if (filter !== "all" && !sports.includes(filter)) filter = "all";
+  document.getElementById("tabs").innerHTML = tabs.map(s => `<button class="tab" role="tab" data-sport="${esc(s)}" aria-selected="${s === filter}">${s === "all" ? "All" : esc(s)} <span class="n">${s === "all" ? all.length : all.filter(p => p.sport === s).length}</span></button>`).join("");
+}
+let view = "list";
+try { view = localStorage.getItem("pl-view") || "list"; } catch (e) {}
+function rowHTML(p) {
+  const [cls, label] = tier(p.p);
+  const sel = selected.has(p.id);
+  return `<div class="prow${sel ? " sel" : ""}" data-row="${esc(p.id)}">
+    <span class="sp">${esc(p.sport)}</span>
+    <span class="nm"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">GOBLIN</span>' : ""}${p.special ? ` <span class="sp-badge">${esc(p.special)}</span>` : ""}${p.source ? ` <span class="src">via ${esc(p.source)}</span>` : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} · ${esc(p.game)} · ${esc(p.when)}</span>${p.goblin ? `<label class="gl">Goblin line <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>${p.line !== p.stdLine ? `<span class="glnote">was ${esc(p.stdLine)} at ${pct(p.stdP)}</span>` : ""}` : ""}</span>
+    <span class="tag ${cls}">${label}</span>
+    <span class="wp">${pct(p.p)}</span>
+    <button class="gob${p.goblin ? " on" : ""}" type="button" aria-pressed="${!!p.goblin}" data-goblin="${esc(p.id)}" title="Tap if your app shows this as a Goblin">G</button>
+    <button class="pick-btn ${p.side === "More" ? "more" : "less"}" type="button" aria-pressed="${sel}" data-id="${esc(p.id)}">${sel ? "✓ " : ""}${esc(p.side)}</button>
+  </div>`;
+}
+function renderBoard() {
+  const all = board();
+  document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", b.dataset.view === view));
+  const sports = [...new Set(all.map(p => p.sport))].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b));
+  const groups = filter === "all" ? sports : [filter];
+  const heads = {
+    NHL: ["NHL", "Real PrizePicks lines vs. the books, refreshed automatically."],
+    MLB: ["MLB", "Real PrizePicks lines vs. the books, refreshed automatically."],
+    Soccer: ["Soccer", "Real PrizePicks lines vs. the books."],
+    NBA: ["NBA", "Real PrizePicks lines vs. the books. Times are Central."],
+    NFL: ["NFL", "Real PrizePicks lines vs. the books. Use 54–57% picks only to fill a 5–6 pick Flex."],
+    Tennis: ["Tennis", "No PrizePicks lines found. Play only when the app's line is at or under the number shown."]
+  };
+  if (view === "list") {
+    const list = all.filter(p => filter === "all" || p.sport === filter).sort((a, b) => b.p - a.p);
+    const specials = all.filter(p => p.special).sort((a, b) => b.p - a.p);
+    const specialsHTML = (specials.length || specialsInfo.length) ? `<div class="section-head"><h2>Specials</h2><p>PrizePicks promos found today, checked against the books.</p></div>`
+      + specialsInfo.map(x => `<div class="spinfo"><b>${esc(x.title)}</b>${x.verdict ? ` <span class="tag ${/worth|play|yes/i.test(x.verdict) ? "play" : "below"}">${esc(x.verdict)}</span>` : ""}<p>${esc(x.details || "")}${x.expires ? ` · Ends ${esc(x.expires)}` : ""}</p></div>`).join("")
+      + (specials.length ? `<div class="plist">${specials.map(rowHTML).join("")}</div>` : "") : "";
+    document.getElementById("board").innerHTML = specialsHTML + `<div class="section-head"><h2>All picks</h2><p>Best first. Tap More or Less to add a pick to your slip. Tap G if your app shows it as a Goblin.</p></div>`
+      + (list.length ? `<div class="plist">${list.map(rowHTML).join("")}</div>` : `<p class="empty">No picks right now.</p>`);
+  } else
+  document.getElementById("board").innerHTML = groups.map(g => {
+    const list = all.filter(p => p.sport === g).sort((a, b) => b.p - a.p);
+    if (!list.length) return `<div class="section-head"><h2>${(heads[g] || [g])[0]}</h2><p>No picks left in this sport.</p></div>`;
+    const h = heads[g] || [g, ""];
+    return `<div class="section-head"><h2>${h[0]}</h2><p>${h[1]}</p></div><div class="cards">${list.map(cardHTML).join("")}</div>`;
+  }).join("");
+  renderTabs(sports, all);
+  document.getElementById("s-total").textContent = all.length;
+  document.getElementById("s-play").textContent = all.filter(p => p.p >= 0.58).length;
+  const hidden = PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id));
+  const row = document.getElementById("hidden-row");
+  row.hidden = hidden.length === 0;
+  row.innerHTML = hidden.length ? `Hidden: ${hidden.map(p => `<button type="button" data-restore="${esc(p.id)}">${esc(p.player)} ${esc(p.stat)} ↺</button>`).join("")}` : "";
+}
+
+function renderSlip() {
+  const ids = new Set(board().map(p => p.id));
+  [...selected].forEach(id => { if (!ids.has(id)) selected.delete(id); });
+  const picks = board().filter(p => selected.has(p.id));
+  document.getElementById("count").textContent = picks.length;
+  document.getElementById("slip-empty").hidden = picks.length > 0;
+  const verdict = p => {
+    if (!p.goblin) return "";
+    const c = goblinCheck(picks, p);
+    if (!c) return "";
+    const box = `<label class="gl">Goblin line in app <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>`;
+    if (c.state === "need") return `${box}<span class="gv need">Type the Goblin line and press Enter to see if it's worth it.</span>`;
+    return c.state === "yes"
+      ? `${box}<span class="gv ok">✓ Goblin worth it: ${c.withG.toFixed(3)}x vs ${c.without.toFixed(3)}x with the normal ${esc(p.stdLine)} line</span>`
+      : `${box}<span class="gv no">✗ Not worth it: play the normal ${esc(p.stdLine)} line instead (${c.without.toFixed(3)}x vs ${c.withG.toFixed(3)}x)</span>`;
+  };
+  document.getElementById("slip-list").innerHTML = picks.map(p => `<li>
+      <span class="side ${p.side === "More" ? "more" : "less"}">${esc(p.side.toUpperCase())}</span>
+      <span class="s"><b>${esc(p.player)}${p.goblin ? ' <span class="gob-badge">G</span>' : ""}</b><span>${esc((p.cond ? p.cond + " " : "") + p.line + " " + p.stat)} <span class="wp" style="color:${p.side === "More" ? "var(--more)" : "var(--less)"}">${pct(p.p)} win prob</span></span>${verdict(p)}</span>
+      <button class="x" type="button" aria-label="Remove ${esc(p.player)}" data-id="${esc(p.id)}">×</button></li>`).join("");
+  const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
+  const probs = picks.map(p => p.p), n = probs.length;
+  const T = entryTables(picks), powerTable = T.power, flexTable = T.flex;
+  for (const [key, table] of [["power", powerTable], ["flex", flexTable]]) {
+    const el = document.getElementById("m-" + key);
+    const b = el.querySelector("b"), s = el.querySelector("span");
+    el.classList.remove("good", "bad");
+    if (!table[n]) { b.textContent = "–"; s.textContent = key === "flex" ? "needs 3–6 picks" : "needs 2–6 picks"; continue; }
+    const r = ret(probs, table[n]), ev = (r - 1) * stake;
+    b.textContent = (ev >= 0 ? "+" : "−") + "$" + Math.abs(ev).toFixed(2);
+    s.textContent = `${r.toFixed(3)}x · break-even ${pct(breakeven(n, table[n]))}/pick`;
+    el.classList.add(r >= 1 ? "good" : "bad");
+  }
+  const pay = document.getElementById("payouts");
+  const money = v => (v >= 0 ? "+" : "−") + "$" + Math.abs(v).toFixed(2);
+  const rows = [];
+  if (powerTable[n]) rows.push(`<div class="h">Power · ${n} picks</div>`, ...Object.entries(powerTable[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="win">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Any miss</span><b class="lose">${money(-stake)}</b></div>`);
+  if (T.g && POWER[n]) {
+    const stdWin = POWER[n][n] * stake, gobWin = powerTable[n][n] * stake;
+    rows.unshift(`<div class="h">Goblin cut · ${T.g} Goblin${T.g > 1 ? "s" : ""}${T.exact ? "" : " (estimate)"}</div>`,
+      `<div class="row"><span>Power pays ${powerTable[n][n]}x instead of ${POWER[n][n]}x</span><b class="lose">${money(gobWin - stdWin)}</b></div>`,
+      ...(flexTable[n] ? [`<div class="row"><span>Flex top prize ${flexTable[n][n]}x instead of ${FLEX[n][n]}x</span><b class="lose">${money((flexTable[n][n] - FLEX[n][n]) * stake)}</b></div>`] : []),
+      `<div class="row"><span>${T.exact ? "Using the payout you typed for Power." : "Type the app's payout below the stake for the exact number."}</span><b></b></div>`);
+  }
+  if (flexTable[n]) rows.push(`<div class="h">Flex · ${n} picks</div>`, ...Object.entries(flexTable[n]).sort((a, b) => b[0] - a[0]).map(([k, m]) => `<div class="row"><span>${k} of ${n} hit: you get $${(m * stake).toFixed(2)}</span><b class="${m >= 1 ? "win" : "lose"}">${money(m * stake - stake)}</b></div>`), `<div class="row"><span>Fewer hits</span><b class="lose">${money(-stake)}</b></div>`);
+  pay.hidden = rows.length === 0;
+  pay.innerHTML = rows.join("");
+  document.getElementById("add1").disabled = n >= 6;
+  document.getElementById("drop1").disabled = n === 0;
+  document.getElementById("played-power").hidden = !powerTable[n];
+  document.getElementById("played-flex").hidden = !flexTable[n];
+  const adv = document.getElementById("advice");
+  const options = [["Power", powerTable[n]], ["Flex", flexTable[n]]].filter(o => o[1]).map(([name, row]) => ({ name, row, r: ret(probs, row) }));
+  const top = options.sort((a, b) => b.r - a.r)[0];
+  const bank = Math.max(0, parseFloat(document.getElementById("bankroll").value) || 0);
+  if (!top) adv.hidden = true;
+  else if (top.r < 1) { adv.hidden = false; adv.innerHTML = `Neither way to play these ${n} picks makes money on average. Swap in stronger picks or skip this entry.`; }
+  else {
+    const k = kelly(probs, top.row), size = Math.min(k / 4, 0.02) * bank;
+    adv.hidden = false;
+    adv.innerHTML = `Play these as a <b>${n}-pick ${top.name}</b> (${top.r.toFixed(3)}x). Suggested stake <b>$${size.toFixed(2)}</b>: a quarter of the math-optimal bet, capped at 2% of your bankroll.`;
+  }
+  const warn = [];
+  const games = {};
+  picks.forEach(p => { games[p.game_id || p.game] = (games[p.game_id || p.game] || 0) + 1; });
+  if (Object.values(games).some(c => c > 1)) warn.push("Two or more picks share a game, so PrizePicks may cut the payout (you saw 8x instead of 10x on a 4-pick). Enter the payout the app shows, or swap a pick for one from another game.");
+  if (picks.filter(p => p.tennis).length > 2) warn.push("More than two tennis \"Over games\" picks stack the same risk.");
+  if (picks.length > 6) warn.push("PrizePicks entries max out at 6 picks.");
+  if (picks.some(p => p.goblin && !(edits.goblinLines || {})[p.id])) warn.push("Enter the Goblin line for each Goblin pick so its win prob goes up to match the easier line.");
+  if (picks.some(p => p.goblin && p.side === "Less")) warn.push("A Goblin pick can only be played More.");
+  const w = document.getElementById("warn");
+  w.hidden = warn.length === 0;
+  w.textContent = warn.join(" ");
+}
+const rerender = () => { save(); renderBoard(); renderSlip(); };
+
+/* Goblins: a lower line (More only) that is easier to hit and pays less. PrizePicks doesn't publish the
+   payout formula. The user's app paid 4.5x instead of 6x on a 3-pick Power with one Goblin, so the estimate
+   uses 25% less per Goblin pick until the user types the payout the app shows. */
+const GOBLIN_CUT = 0.75;
+const COUNT_STATS = /rebound|assist|3-pt|three|pass td|reception|games won|shots|ks\b|strikeout|total bases|^hits|goals|blocks|steals/i;
+function goblinize(p) {
+  const std = parseFloat(p.line);
+  const gl = parseFloat((edits.goblinLines || {})[p.id]);
+  const out = { ...p, goblin: true, stdLine: p.line, stdP: p.p };
+  if (!isNaN(std) && !isNaN(gl) && gl < std && p.side === "More") {
+    const per = COUNT_STATS.test(p.stat) ? 0.04 : 0.018;  // win-prob gain per half point, same rule the chat uses
+    out.line = String(gl);
+    out.p = Math.min(0.92, Math.round((p.p + (std - gl) / 0.5 * per) * 1000) / 1000);
+  }
+  return out;
+}
+/* Payout tables for the picks on an entry: standard, scaled down for Goblins, or the app's exact Power payout. */
+function entryTables(picks, useCustom = true) {
+  const n = picks.length, g = picks.filter(p => p.goblin).length;
+  const custom = useCustom ? parseFloat(document.getElementById("payout").value) : NaN;
+  const scale = row => row && Object.fromEntries(Object.entries(row).map(([k, m]) => [k, Math.round(m * GOBLIN_CUT ** g * 100) / 100]));
+  const power = { ...POWER, [n]: custom > 1 ? { [n]: custom } : (g ? scale(POWER[n]) : POWER[n]) };
+  const flex = { ...FLEX, [n]: g ? scale(FLEX[n]) : FLEX[n] };
+  return { power, flex, g, exact: custom > 1 };
+}
+/* Best expected return (per $1) of an entry, taking the better of Power and Flex. */
+function bestReturn(picks, useCustom = true) {
+  const n = picks.length, T = entryTables(picks, useCustom), probs = picks.map(p => p.p);
+  return Math.max(T.power[n] ? ret(probs, T.power[n]) : 0, T.flex[n] ? ret(probs, T.flex[n]) : 0);
+}
+/* Is this Goblin worth it? Compare the entry as is with the same entry using the player's normal line. */
+function goblinCheck(picks, g) {
+  if (picks.length < 2) return null;
+  if (g.line === g.stdLine) return { state: "need" };
+  const alt = picks.map(x => x.id === g.id ? { ...x, goblin: false, line: x.stdLine, p: x.stdP } : x);
+  const withG = bestReturn(picks), without = bestReturn(alt, false);
+  return { state: withG >= without ? "yes" : "no", withG, without };
+}
+function toggleGoblin(id) {
+  const g = new Set(edits.goblins || []);
+  g.has(id) ? g.delete(id) : g.add(id);
+  edits.goblins = [...g];
+  persist(); rerender();
+}
+function toggle(id) { selected.has(id) ? selected.delete(id) : selected.add(id); rerender(); }
+function hide(id) { if (!edits.removed.includes(id)) edits.removed.push(id); selected.delete(id); persist(); rerender(); }
+function restore(id) { edits.removed = edits.removed.filter(x => x !== id); persist(); rerender(); }
+
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".pick-btn, .x");
+  if (btn) return toggle(btn.dataset.id);
+  const gb = e.target.closest("[data-goblin]");
+  if (gb) return toggleGoblin(gb.dataset.goblin);
+  const h = e.target.closest("[data-hide]");
+  if (h) return hide(h.dataset.hide);
+  const r = e.target.closest("[data-restore]");
+  if (r) return restore(r.dataset.restore);
+  const vw = e.target.closest("[data-view]");
+  if (vw) { view = vw.dataset.view; try { localStorage.setItem("pl-view", view); } catch (err) {} renderBoard(); return; }
+  const tab = e.target.closest(".tab");
+  if (tab) {
+    filter = tab.dataset.sport;
+    renderBoard();
+  }
+});
+function entryReturn(ids) {
+  const picks = board().filter(p => ids.has(p.id)), probs = picks.map(p => p.p), n = probs.length, T = entryTables(picks);
+  return Math.max(T.power[n] ? ret(probs, T.power[n]) : 0, T.flex[n] ? ret(probs, T.flex[n]) : 0);
+}
+function stepNote(text) { const el = document.getElementById("step-note"); el.hidden = !text; el.textContent = text || ""; }
+document.getElementById("best").onclick = () => { selected.clear(); bestIds(4).forEach(id => selected.add(id)); stepNote(""); rerender(); };
+document.getElementById("add1").onclick = () => {
+  if (selected.size >= 6) return stepNote("PrizePicks entries max out at 6 picks.");
+  const before = entryReturn(selected);
+  const p = nextBest(selected);
+  if (!p) return stepNote("No other playable pick left to add.");
+  selected.add(p.id);
+  const after = entryReturn(selected);
+  stepNote(`Added ${p.player} ${p.side} ${(p.cond ? p.cond + " " : "") + p.line} ${p.stat} (${pct(p.p)}). ` + (selected.size < 2 ? "" : after >= before ? `Best return went from ${before.toFixed(3)}x to ${after.toFixed(3)}x.` : `Best return dropped from ${before.toFixed(3)}x to ${after.toFixed(3)}x, so the smaller entry was better.`));
+  rerender();
+};
+document.getElementById("drop1").onclick = () => {
+  const cur = board().filter(p => selected.has(p.id));
+  if (!cur.length) return stepNote("");
+  const before = entryReturn(selected);
+  const weakest = cur.sort((a, b) => a.p - b.p)[0];
+  selected.delete(weakest.id);
+  const after = entryReturn(selected);
+  stepNote(`Removed ${weakest.player} (${pct(weakest.p)}), your weakest pick. ` + (selected.size < 2 ? "" : `Best return went from ${before.toFixed(3)}x to ${after.toFixed(3)}x.`));
+  rerender();
+};
+document.getElementById("clear").onclick = () => { selected.clear(); rerender(); };
+document.getElementById("stake").oninput = renderSlip;
+document.getElementById("bankroll").oninput = renderSlip;
+document.getElementById("payout").oninput = renderSlip;
+document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.closest("[data-gline]")) e.target.blur(); });
+document.addEventListener("change", e => {
+  const inp = e.target.closest("[data-gline]");
+  if (!inp) return;
+  const v = parseFloat(inp.value);
+  edits.goblinLines = { ...(edits.goblinLines || {}) };
+  if (isNaN(v)) delete edits.goblinLines[inp.dataset.gline]; else edits.goblinLines[inp.dataset.gline] = v;
+  persist(); rerender();
+});
+const head = document.getElementById("slip-head");
+const flip = () => { const s = document.getElementById("slip"); const open = s.classList.toggle("open"); head.setAttribute("aria-expanded", open); document.getElementById("toggle-hint").textContent = open ? "tap to close" : "tap to open"; };
+head.onclick = flip;
+head.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } };
+
+/* ---------- my entries ---------- */
+let entriesCol = null, entries = [];
+try { entries = JSON.parse(localStorage.getItem("pl-entries") || "[]"); } catch (e) {}
+const money2 = v => (v >= 0 ? "+" : "−") + "$" + Math.abs(v).toFixed(2);
+
+function entryProfit(e) {
+  if (e.status !== "settled") return 0;
+  const m = (e.table || {})[e.hits] || 0;
+  return m * e.stake - e.stake;
+}
+function renderEntries() {
+  const list = entries.slice().sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  const settled = list.filter(e => e.status === "settled");
+  const total = settled.reduce((s, e) => s + entryProfit(e), 0);
+  const open = list.filter(e => e.status !== "settled").reduce((s, e) => s + (Math.max(...Object.values(e.table || { 0: 0 })) * e.stake - e.stake), 0);
+  const wins = settled.filter(e => entryProfit(e) > 0).length;
+  for (const id of ["p-total", "s-profit"]) { const el = document.getElementById(id); el.textContent = money2(total); el.className = total > 0 ? "pos" : total < 0 ? "neg" : ""; }
+  document.getElementById("p-open").textContent = "$" + open.toFixed(2);
+  document.getElementById("p-record").textContent = `${wins}–${settled.length - wins}`;
+  const box = document.getElementById("entries");
+  if (!list.length) { box.innerHTML = `<p class="empty">No entries logged yet.</p>`; return; }
+  box.innerHTML = list.map(e => {
+    const n = (e.picks || []).length;
+    const top = Math.max(...Object.values(e.table || { 0: 0 }));
+    const right = e.status === "settled"
+      ? `<span class="money ${entryProfit(e) >= 0 ? "pos" : "neg"}">${money2(entryProfit(e))}</span><button class="ghost" type="button" data-reopen="${esc(e.id)}">Undo</button>`
+      : `<span class="money">$${e.stake.toFixed(2)} to win $${(top * e.stake).toFixed(2)}</span><div class="settle">${Array.from({ length: n + 1 }, (_, k) => n - k).map(k => `<button type="button" data-settle="${esc(e.id)}" data-hits="${k}">${k}/${n} hit</button>`).join("")}<button type="button" data-delete="${esc(e.id)}" aria-label="Delete entry">✕</button></div>`;
+    return `<div class="entry"><div class="what"><b>${n}-pick ${esc(e.type)} · $${e.stake.toFixed(2)}</b><span>${esc((e.picks || []).map(p => `${p.player} ${p.side} ${p.line} ${p.stat}`).join(" · "))}</span></div>${right}</div>`;
+  }).join("");
+}
+async function saveEntry(e) {
+  const i = entries.findIndex(x => x.id === e.id);
+  if (i >= 0) entries[i] = e; else entries.push(e);
+  renderEntries();
+  try { localStorage.setItem("pl-entries", JSON.stringify(entries)); } catch (err) {}
+  if (entriesCol) { try { const { id, ...data } = e; await entriesCol.doc(id).set(data); } catch (err) { setSync("Couldn't save the entry: " + (err && err.message || "unknown error")); } }
+}
+async function deleteEntry(id) {
+  entries = entries.filter(x => x.id !== id);
+  renderEntries();
+  try { localStorage.setItem("pl-entries", JSON.stringify(entries)); } catch (err) {}
+  if (entriesCol) { try { await entriesCol.doc(id).delete(); } catch (err) {} }
+}
+function logPlayed(type) {
+  const picks = board().filter(p => selected.has(p.id));
+  const n = picks.length;
+  const T = entryTables(picks);
+  const table = type === "Power" ? T.power[n] : T.flex[n];
+  if (!table) return;
+  const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
+  saveEntry({ id: "e" + Date.now().toString(36), type, stake, table, status: "open", hits: null, createdAt: new Date().toISOString(),
+    picks: picks.map(p => ({ id: p.id, player: p.player, side: p.side, line: (p.cond ? p.cond + " " : "") + p.line, stat: p.stat, p: p.p })) });
+  document.getElementById("entries").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+document.getElementById("played-power").onclick = () => logPlayed("Power");
+document.getElementById("played-flex").onclick = () => logPlayed("Flex");
+document.addEventListener("click", e => {
+  const st = e.target.closest("[data-settle]");
+  if (st) { const x = entries.find(v => v.id === st.dataset.settle); if (x) saveEntry({ ...x, status: "settled", hits: Number(st.dataset.hits) }); return; }
+  const ro = e.target.closest("[data-reopen]");
+  if (ro) { const x = entries.find(v => v.id === ro.dataset.reopen); if (x) saveEntry({ ...x, status: "open", hits: null }); return; }
+  const del = e.target.closest("[data-delete]");
+  if (del) deleteEntry(del.dataset.delete);
+});
+
+/* ---------- chat ---------- */
+const chatLog = [];
+const logEl = document.getElementById("log");
+function addMsg(cls, text) {
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.textContent = text;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+  return div;
+}
+const compact = p => ({ id: p.id, sport: p.sport, player: p.player, game: p.game, stat: p.stat, side: p.side,
+  line: (p.cond ? "play if line " + p.cond + " " : "") + p.line, est_prob: p.p, books: p.books, when: p.when,
+  status: p.mine ? "added by user" : p.edited ? "changed by user" : "researched" });
+
+function instructions() {
+  return `You are the assistant inside "Parlay Lab", a PrizePicks More/Less picks board. The user tells you what their PrizePicks app actually shows, and you update the board with the tools.
+
+Board right now (est_prob = estimated chance the pick hits; researched picks came from real sportsbook odds with the margin removed, plus injury news):
+${JSON.stringify(board().map(compact))}
+Hidden picks: ${JSON.stringify(PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id)).map(p => p.id + " (" + p.player + " " + p.stat + ")"))}
+Picks in the user's entry slip: ${JSON.stringify([...selected])}
+Goblin picks in the user's app (lower payout, More only): ${JSON.stringify(edits.goblins || [])}
+Ban list (players hidden from the board; never suggest them): ${JSON.stringify([...bans])}
+
+PrizePicks pays the standard table below when every pick is from a different game with no Goblins or Demons; same-game picks can cut the payout (the user saw 8x on a 4-pick, which needs 59.5% per pick), so build entries from different games. Break-even hit rate per pick: 2 Power 57.7%, 3 Power 55.0% (6x), 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
+
+Rules:
+- If a pick isn't offered in the user's app, hide it with remove_picks.
+- If the user's line differs, use edit_pick with the new line and a new est_prob. Moving the line half a point AGAINST the pick lowers est_prob by about 4 points for low-count stats (rebounds, assists, threes, games won, receptions, TDs) and about 1.5–2 points for points, yards, and total games. Moving it in the pick's favor raises it by the same amount. For tennis "play if line <= X" picks, a line at or below X keeps the estimate; above X, lower it as above. Say plainly that the new number is an estimate, not re-checked against sportsbooks.
+- A whole-number line on a Less pick for a low-count stat can push; mention it.
+- Goblin and demon lines can only be played More.
+- You have no live odds, injury news, or web access. Never invent stats, lines, or injury statuses. If the user asks for something you can't know, say so and suggest re-running the research in the coding session.
+- For a pick the user adds, use their numbers; if they give no probability, use 0.50 and say it needs research.
+- To build an entry, pick the highest est_prob picks, avoid two picks from the same game where possible, and no more than two tennis "Over games" picks. Then call set_entry.
+- Keep replies short: 1–4 plain sentences, no markdown headings or tables.`;
+}
+
+const tools = [
+  { name: "remove_picks", description: "Hide picks from the board (for example, not offered in the user's app). Returns the hidden ids.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } } }, required: ["ids"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => findPick(id));
+      if (!ids.length) throw new Error("No matching pick ids on the board.");
+      ids.forEach(id => { if (!edits.removed.includes(id)) edits.removed.push(id); selected.delete(id); });
+      persist(); rerender(); addMsg("act", "Hid " + ids.join(", "));
+      return { hidden: ids };
+    } },
+  { name: "restore_picks", description: "Bring back hidden picks. Returns the restored ids.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } } }, required: ["ids"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => edits.removed.includes(id));
+      if (!ids.length) throw new Error("None of those ids are hidden.");
+      edits.removed = edits.removed.filter(x => !ids.includes(x));
+      persist(); rerender(); addMsg("act", "Restored " + ids.join(", "));
+      return { restored: ids };
+    } },
+  { name: "edit_pick", description: "Change a pick's line, side (More/Less), estimated hit rate (0-1), or note. Returns the updated pick.",
+    inputSchema: { type: "object", properties: { id: { type: "string" }, line: { type: "string", description: "The number shown in the app, e.g. \"4.5\"" }, side: { type: "string", enum: ["More", "Less"] }, est_prob: { type: "number" }, note: { type: "string" } }, required: ["id"] },
+    execute(input) {
+      const id = String(input.id);
+      if (!findPick(id)) throw new Error("No pick with id " + id);
+      const o = { ...(edits.overrides[id] || {}) };
+      if (input.line != null) { o.line = String(input.line); o.cond = ""; }
+      if (input.side === "More" || input.side === "Less") o.side = input.side;
+      if (input.est_prob != null) { const v = Number(input.est_prob); if (!(v > 0 && v < 1)) throw new Error("est_prob must be between 0 and 1"); o.p = Math.round(v * 1000) / 1000; }
+      if (input.note) o.note = String(input.note).slice(0, 400);
+      edits.overrides[id] = o;
+      persist(); rerender();
+      const p = findPick(id); addMsg("act", `Changed ${p.player} ${p.stat}: ${p.side} ${p.line}, ${pct(p.p)}`);
+      return compact(p);
+    } },
+  { name: "add_pick", description: "Add a pick the user sees in their app that isn't on the board. Returns the new pick with its id.",
+    inputSchema: { type: "object", properties: { sport: { type: "string", enum: ["NBA", "NFL", "Tennis"] }, player: { type: "string" }, game: { type: "string" }, stat: { type: "string" }, side: { type: "string", enum: ["More", "Less"] }, line: { type: "string" }, est_prob: { type: "number" }, note: { type: "string" }, when: { type: "string" } }, required: ["sport", "player", "stat", "side", "line"] },
+    execute(input) {
+      const sport = ["NBA", "NFL", "Tennis"].includes(input.sport) ? input.sport : "NBA";
+      const v = Number(input.est_prob); const p = v > 0 && v < 1 ? Math.round(v * 1000) / 1000 : 0.5;
+      const pick = { id: "u" + Date.now().toString(36), sport, player: String(input.player).slice(0, 60), team: sport === "Tennis" ? "TEN" : "", game: String(input.game || "").slice(0, 60),
+        when: String(input.when || "time not set").slice(0, 40), stat: String(input.stat).slice(0, 40), side: input.side === "Less" ? "Less" : "More", line: String(input.line).slice(0, 12),
+        books: "added from your app", p, note: String(input.note || "Added from chat. Not researched yet.").slice(0, 400), tennis: sport === "Tennis" };
+      edits.added.push(pick);
+      persist(); rerender(); addMsg("act", `Added ${pick.player} ${pick.stat} ${pick.side} ${pick.line}`);
+      return compact({ ...pick, mine: true });
+    } },
+  { name: "set_entry", description: "Replace the user's entry slip with these pick ids (2-6). Returns the slip with Power and Flex expected return per $1.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } } }, required: ["ids"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => findPick(id)).slice(0, 6);
+      if (ids.length < 2) throw new Error("Need at least 2 valid pick ids.");
+      selected.clear(); ids.forEach(id => selected.add(id)); rerender();
+      const probs = ids.map(id => findPick(id).p), n = ids.length;
+      addMsg("act", "Entry set: " + ids.map(id => findPick(id).player).join(", "));
+      return { ids, power_return: POWER[n] ? +ret(probs, POWER[n]).toFixed(3) : null, flex_return: FLEX[n] ? +ret(probs, FLEX[n]).toFixed(3) : null };
+    } },
+  { name: "set_goblin", description: "Mark or unmark picks as Goblins in the user's app (Goblins are More-only and pay less). Returns the current Goblin ids.",
+    inputSchema: { type: "object", properties: { ids: { type: "array", items: { type: "string" } }, on: { type: "boolean" }, line: { type: "number", description: "The Goblin line the app shows, if the user said it" } }, required: ["ids", "on"] },
+    execute(input) {
+      const ids = (Array.isArray(input.ids) ? input.ids : []).map(String).filter(id => findPick(id));
+      if (!ids.length) throw new Error("No matching pick ids on the board.");
+      const g = new Set(edits.goblins || []);
+      ids.forEach(id => input.on === false ? g.delete(id) : g.add(id));
+      if (input.on !== false && input.line != null && !isNaN(Number(input.line))) { edits.goblinLines = { ...(edits.goblinLines || {}) }; ids.forEach(id => { edits.goblinLines[id] = Number(input.line); }); }
+      edits.goblins = [...g]; persist(); rerender(); addMsg("act", (input.on === false ? "Unmarked Goblin: " : "Marked Goblin: ") + ids.join(", "));
+      return { goblins: edits.goblins };
+    } },
+  { name: "reset_board", description: "Undo every change the user made: restore hidden picks, drop edits and added picks.",
+    execute() { edits = { removed: [], overrides: {}, added: [], goblins: [], goblinLines: {} }; persist(); rerender(); addMsg("act", "Board reset to the researched picks"); return "reset"; } }
+];
+
+let sampleFn = null, busy = false;
+const input = document.getElementById("chat-input");
+const sendBtn = document.getElementById("send");
+
+async function send(text) {
+  text = text.trim();
+  if (!text || busy) return;
+  if (!sampleFn) { addMsg("err", "Chat isn't available in this view. Open the board on claude.ai while signed in."); return; }
+  busy = true; sendBtn.disabled = true; input.value = "";
+  addMsg("me", text);
+  chatLog.push({ role: "user", content: text });
+  const bubble = addMsg("bot", "Thinking…");
+  const msgs = [{ role: "user", content: instructions() + "\n\nReply \"Ready.\" to confirm." }, { role: "assistant", content: "Ready." }, ...chatLog.slice(-12)];
+  try {
+    const res = await sampleFn(msgs, { tools, onText: ({ text }) => { bubble.textContent = text || "Thinking…"; logEl.scrollTop = logEl.scrollHeight; } });
+    const reply = (res.text || "").split(/\n\n(?=\S)/).pop().trim() || "Done.";
+    bubble.textContent = res.text?.trim() || "Done.";
+    chatLog.push({ role: "assistant", content: reply });
+  } catch (e) {
+    bubble.remove();
+    chatLog.pop();
+    const code = e && e.code;
+    addMsg("err", code === "not_granted" ? "Chat needs your permission. Allow it from the artifact's Permissions menu, then try again."
+      : code === "rate_limited" ? "Too many messages at once. Wait a minute and try again."
+      : "That didn't go through: " + (e && e.message || "unknown error"));
+  } finally { busy = false; sendBtn.disabled = false; input.focus(); }
+}
+document.getElementById("composer").addEventListener("submit", e => { e.preventDefault(); send(input.value); });
+input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(input.value); } });
+input.addEventListener("input", () => { input.style.height = "auto"; input.style.height = Math.min(140, input.scrollHeight) + "px"; });
+document.getElementById("suggest").addEventListener("click", e => { const b = e.target.closest("button"); if (b) send(b.textContent); });
+
+renderBoard();
+renderSlip();
+renderEntries();
+
+/* Opened outside claude.ai (for example http://localhost:8000/site/): read the latest picks from the repo's files. */
+async function loadLocalFeed() {
+  try {
+    const r = await fetch("../results/live_board.json", { cache: "no-store" });
+    if (!r.ok) return;
+    const d = await r.json();
+    const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
+    bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
+    if (ok.length) PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
+    if (d.updated) document.getElementById("updated").textContent = ("Board update: " + new Date(d.updated).toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT").toUpperCase();
+    renderBoard(); renderSlip();
+  } catch (e) {}
+}
+
+(async () => {
+  const c = window.claude;
+  if (!c || !c.use) { setSync("Changes kept on this device only"); loadLocalFeed(); return; }
+  const [s, db] = await Promise.all([c.use("sample").catch(() => null), c.use("db").catch(() => null)]);
+  sampleFn = s;
+  if (!s) document.getElementById("suggest").hidden = true;
+  if (!db) { setSync("Changes kept on this device only"); return; }
+  db.doc("board/live").onSnapshot(snap => {
+    if (!snap.exists) return;
+    const d = snap.data() || {};
+    const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && typeof p.player === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
+    bans = new Set(Array.isArray(d.bans) ? d.bans.map(b => String(b).toLowerCase()) : []);
+    specialsInfo = Array.isArray(d.specials_info) ? d.specials_info.filter(x => x && typeof x.title === "string").slice(0, 8) : [];
+    if (!ok.length) { renderBoard(); renderSlip(); return; }
+    PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", line: "", side: "More", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
+    if (d.updated) {
+      const t = new Date(d.updated);
+      if (!isNaN(t)) document.getElementById("updated").textContent = ("Board update: " + t.toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT").toUpperCase();
+    }
+    renderBoard(); renderSlip();
+  }, () => {});
+  entriesCol = db.collection("entries");
+  entriesCol.onSnapshot(qs => {
+    entries = qs.docs.map(d => ({ id: d.id, ...(d.data() || {}) })).filter(e => typeof e.stake === "number" && e.table);
+    renderEntries();
+  }, () => {});
+  editsDoc = db.doc("board/edits");
+  editsDoc.onSnapshot(snap => {
+    if (!snap.exists) return;
+    const d = snap.data() || {};
+    edits = { removed: Array.isArray(d.removed) ? d.removed.map(String) : [], overrides: d.overrides && typeof d.overrides === "object" ? d.overrides : {},
+      added: Array.isArray(d.added) ? d.added : [], goblins: Array.isArray(d.goblins) ? d.goblins.map(String) : [],
+      goblinLines: d.goblinLines && typeof d.goblinLines === "object" ? d.goblinLines : {} };
+    renderBoard(); renderSlip();
+  }, () => setSync("Couldn't load saved changes"));
+})();
+</script>

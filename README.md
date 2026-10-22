@@ -13,8 +13,8 @@ Each pick on an entry has to hit about 54–59% just to break even:
 | Picks | Power | Flex |
 |---|---|---|
 | 2 | 57.7% | – |
-| 3 | 58.5% | 59.1% |
-| 4 | 56.2% | 56.9% |
+| 3 | 55.0% (6x) | 59.1% |
+| 4 | 56.2% (59.5% if same-game picks cut it to 8x) | 56.9% |
 | 5 | 54.9% | 54.3% |
 | 6 | 54.7% | 54.2% |
 
@@ -56,9 +56,23 @@ python3 src/prizepicks.py ev 0.60 0.59 0.61 --stake 10   # EV of a 3-pick entry
 python3 src/parlay_calc.py -160 -300 1.38 --true-probs 0.60 0.74 0.70
 
 # Live odds (needs a free key from https://the-odds-api.com in ODDS_API_KEY)
+# Only games that haven't started are shown.
 python3 src/fetch_odds.py basketball_nba
-python3 src/fetch_odds.py americanfootball_nfl
+python3 src/fetch_odds.py events americanfootball_nfl       # upcoming events + ids (free)
+
+# PrizePicks edge scanner: real PrizePicks lines vs. de-vigged sportsbook consensus
+python3 src/fetch_odds.py edges basketball_nba --hours 36 --min 0.56 --json /tmp/nba.json
 ```
+
+`edges` costs (markets x 2 regions) API requests per event, about 10 per NBA/NFL game.
+
+## Viewing the board
+
+- **Full version:** https://claude.ai/artifact/SjmXUoyLEsLor7gpYGActL (sign in to claude.ai). The live feed, chat, Goblin marks,
+  and saved entries all work here.
+- **On your own computer:** from the repo folder run `python3 -m http.server 8000`, then open http://localhost:8000/site/.
+  It shows the picks saved in `results/live_board.json` (run `git pull` for the newest). Chat and cloud saving don't
+  work there, and your slip and entries stay in that browser only.
 
 ## Data sources / connectors
 

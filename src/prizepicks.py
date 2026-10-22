@@ -10,15 +10,18 @@ Examples
 
   # EV of a 3-pick entry, given your win probability for each pick
   python3 src/prizepicks.py ev 0.60 0.61 0.59 --stake 10
+  python3 src/prizepicks.py ev 0.58 0.571 0.63 0.63 --payout 8   # use the payout the app shows
 
 Payout multipliers change. PAYOUTS below mirror PrizePicks' help-center table
 (https://intercom.help/prizepicks/en/articles/9047668-payouts-explained).
 Check the payout shown in the app before entering and update this table if it differs.
+These are the rates for picks from different games with no Goblins or Demons. Same-game picks can pay
+less (a 4-pick Power with picks sharing a game showed 8x instead of 10x); pass --payout for those.
 """
 import argparse
 
 # picks -> {hits: multiplier}
-POWER = {2: {2: 3}, 3: {3: 5}, 4: {4: 10}, 5: {5: 20}, 6: {6: 37.5}}
+POWER = {2: {2: 3}, 3: {3: 6}, 4: {4: 10}, 5: {5: 20}, 6: {6: 37.5}}
 FLEX = {
     3: {3: 2.25, 2: 1.25},
     4: {4: 5, 3: 1.5},
@@ -66,6 +69,7 @@ def main() -> None:
     e = sub.add_parser("ev")
     e.add_argument("probs", nargs="+", type=float)
     e.add_argument("--stake", type=float, default=10.0)
+    e.add_argument("--payout", type=float, help="Power payout the app shows for this entry, e.g. 8 (overrides the table)")
     a = ap.parse_args()
 
     if a.cmd == "breakeven":
@@ -78,7 +82,10 @@ def main() -> None:
         print(f"Raw implied {p:.1%} / {q:.1%} (hold {p + q - 1:.1%}) -> fair {p / (p + q):.1%}")
     else:
         n = len(a.probs)
-        for name, tables in (("Power", POWER), ("Flex", FLEX)):
+        power = dict(POWER)
+        if a.payout:
+            power[n] = {n: a.payout}
+        for name, tables in (("Power", power), ("Flex", FLEX)):
             if n in tables:
                 r = expected_return(a.probs, tables[n])
                 print(f"{name} {n}-pick: expected return {r:.3f}x -> EV {(r - 1) * a.stake:+.2f} "
