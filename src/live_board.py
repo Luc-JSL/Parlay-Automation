@@ -115,7 +115,7 @@ def main() -> None:
                 queue.append((ev["commence_time"], key, label, markets, ev))
     queue.sort(key=lambda q: q[0])
 
-    new, scanned, spent = [], set(), 0
+    new, scanned, scanned_games, spent = [], set(), set(), 0
     for _, key, label, markets, ev in queue:
         cost = len(markets) * 2
         if spent + cost > budget:
@@ -124,10 +124,26 @@ def main() -> None:
         spent += cost
         log_lines(key, label, rows, now)
         scanned.add(slug(f"{ev['away_team']} @ {ev['home_team']}"))
+        scanned_games.add((label, f"{ev['away_team'].split()[-1]} @ {ev['home_team'].split()[-1]}"))
         new += [to_pick(label, r) for r in rows if r["fair_prob"] >= a.min and r["books"] >= 2]
 
-    kept = [p for p in old if p.get("game_id") not in scanned and p.get("start")
-            and datetime.fromisoformat(p["start"].replace("Z", "+00:00")) > now]
+    # Fresh scan rows for the same player and stat replace older picks. A researched pick keeps its
+    # note when its line is unchanged; if the line moved, the fresh row wins. Older picks from a
+    # scanned game with no fresh row no longer clear the bar, so they drop off.
+    fresh = {(p["player"], p["stat"]): p for p in new}
+    kept = []
+    for p in old:
+        if not p.get("start") or datetime.fromisoformat(p["start"].replace("Z", "+00:00")) <= now:
+            continue
+        f = fresh.get((p["player"], p["stat"]))
+        if f:
+            if not p.get("auto") and f["line"] == p["line"] and f["side"] == p["side"]:
+                new.remove(f)
+                kept.append({**p, "p": f["p"], "books": f["books"]})
+            continue
+        if p.get("game_id") in scanned or (p.get("sport"), p.get("game")) in scanned_games:
+            continue
+        kept.append(p)
     bans = load_bans()
     merged = {p["id"]: p for p in kept + new}.values()
     banned = [p for p in merged if p["player"].strip().lower() in bans]
