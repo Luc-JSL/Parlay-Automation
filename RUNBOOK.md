@@ -18,7 +18,7 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
 | Database doc (collection/doc) | Field | Repo file |
 |---|---|---|
 | `board/staged` | whole document | `results/live_board.json` (staged picks, not yet on the board) |
-| `board/live` | whole document | what the board shows; write it only when the user asks |
+| `board/live` | whole document | what the board shows; each run publishes its picks here |
 | `state/bans` | whole document | `results/ban_list.json` |
 | `state/tracker` | `csv` | `results/tracker.csv` |
 | `state/linelog` | `jsonl` | `results/line_log.jsonl` (drop lines older than 14 days before saving) |
@@ -47,11 +47,10 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
 5. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
    and research as "play if line ≤ X" (`"cond": "≤"`, `"tennis": true`, `"team": "ATP"` or `"WTA"`), each with
    a `start` time. Skip tennis if you can't find match odds.
-6. **Stage, don't publish.** Save the final JSON to `results/live_board.json`. **Do not write to `board/live`.**
-   The user asks for board updates themselves. When they do, the session they ask copies `board/staged` to `board/live`
-   with ArtifactData: `get` `board/live` to read its `version`, then `set` it with `if_version`.
-   Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
-   `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`.
+6. **Publish to the board.** Save the final JSON to `results/live_board.json`. Then put it on the board: `get` `board/live`
+   to read its `version`, and `set` it from the file with `if_version`. Also `set` `board/staged` to the same file so the
+   two match. Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
+   `stat`, `side` (More/Less), `line`, `books`, `p` (0–1), and `note`. Only picks at 54% or better go on the board.
 7. **Grade.** For rows in `results/tracker.csv` with an empty `result` whose game is final, fill in `actual`
    and `result` (W/L/P/void) from box scores. Append every pick that is new to the board this run, without duplicating rows.
    Update `results/SUMMARY.md` with the record and the hit rate by sport, then run `python3 src/clv.py`. It rewrites the
@@ -61,7 +60,7 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
    (for example `{"csv": "<tracker text>"}`), each with the `if_version` you loaded. Then commit
    `Board update <date> <time CT>` and try `git push -u origin claude/cool-edison-x9a8gv`. If the push is refused (403),
    that's expected: say so in one line and stop. Don't retry, and don't look for a way around it.
-9. Finish with 5 lines: the top 4 staged picks, picks graded, ban-list changes, average CLV so far, and API quota left.
+9. Finish with 5 lines: the top 4 picks now on the board, picks graded, ban-list changes, average CLV so far, and API quota left.
 
 ## Rules
 - A PLAY needs ≥ 58%. 54–58% is a LEAN for 5–6 pick Flex only.
