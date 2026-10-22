@@ -166,7 +166,7 @@ h1 em { font-style: normal; color: var(--violet-hi); }
 .slip-actions { display: flex; gap: 8px; }
 .ghost { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
 .ghost.primary { border-color: var(--violet); color: var(--violet-hi); }
-.stake { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.stake { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
 .stake input { width: 80px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 6px 8px; font-family: var(--f-mono); }
 
 /* how it works */
@@ -254,7 +254,8 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     <div>2 Power<b>57.7%</b></div>
     <div>3 Power<b>58.5%</b></div>
     <div>3 Flex<b>59.1%</b></div>
-    <div>4 Power<b>56.2%</b></div>
+    <div>4 Power 10x<b>56.2%</b></div>
+    <div>4 Power 8x<b>59.5%</b></div>
     <div>4 Flex<b>56.9%</b></div>
     <div>5 Power<b>54.9%</b></div>
     <div>5 Flex<b>54.3%</b></div>
@@ -303,7 +304,8 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
       <div class="slip-body">
         <ul class="slip-list" id="slip-list"></ul>
         <p class="empty" id="slip-empty">Tap More or Less on 2–6 picks. The slip shows the expected return for Power and Flex entries.</p>
-        <div class="stake"><label for="stake">Stake $</label><input id="stake" type="number" min="1" step="1" value="10"></div>
+        <div class="stake"><label for="stake">Stake $</label><input id="stake" type="number" min="1" step="1" value="10">
+          <label for="payout">Power payout in app</label><input id="payout" type="number" min="1" step="0.25" placeholder="auto"></div>
         <div class="modes">
           <div class="mode" id="m-power"><div class="k">Power</div><b>–</b><span>expected return</span></div>
           <div class="mode" id="m-flex"><div class="k">Flex</div><b>–</b><span>expected return</span></div>
@@ -470,7 +472,9 @@ function renderSlip() {
       <button class="x" type="button" aria-label="Remove ${esc(p.player)}" data-id="${esc(p.id)}">×</button></li>`).join("");
   const stake = Math.max(0, parseFloat(document.getElementById("stake").value) || 0);
   const probs = picks.map(p => p.p), n = probs.length;
-  for (const [key, table] of [["power", POWER], ["flex", FLEX]]) {
+  const custom = parseFloat(document.getElementById("payout").value);
+  const powerTable = custom > 1 && n >= 2 ? { ...POWER, [n]: { [n]: custom } } : POWER;
+  for (const [key, table] of [["power", powerTable], ["flex", FLEX]]) {
     const el = document.getElementById("m-" + key);
     const b = el.querySelector("b"), s = el.querySelector("span");
     el.classList.remove("good", "bad");
@@ -513,6 +517,7 @@ document.addEventListener("click", e => {
 document.getElementById("best").onclick = () => { selected.clear(); BEST.filter(id => findPick(id)).forEach(id => selected.add(id)); rerender(); };
 document.getElementById("clear").onclick = () => { selected.clear(); rerender(); };
 document.getElementById("stake").oninput = renderSlip;
+document.getElementById("payout").oninput = renderSlip;
 const head = document.getElementById("slip-head");
 const flip = () => { const s = document.getElementById("slip"); const open = s.classList.toggle("open"); head.setAttribute("aria-expanded", open); document.getElementById("toggle-hint").textContent = open ? "tap to close" : "tap to open"; };
 head.onclick = flip;
@@ -541,7 +546,7 @@ ${JSON.stringify(board().map(compact))}
 Hidden picks: ${JSON.stringify(PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id)).map(p => p.id + " (" + p.player + " " + p.stat + ")"))}
 Picks in the user's entry slip: ${JSON.stringify([...selected])}
 
-Break-even hit rate per pick: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
+The user's PrizePicks app currently pays 8x on a 4-pick Power (not 10x), so a 4-pick Power needs 59.5% per pick; prefer Flex or 5-6 pick entries unless picks clear that. Break-even hit rate per pick at the default table: 2 Power 57.7%, 3 Power 58.5%, 3 Flex 59.1%, 4 Power 56.2%, 4 Flex 56.9%, 5 Power 54.9%, 5 Flex 54.3%, 6 Power 54.7%, 6 Flex 54.2%.
 
 Rules:
 - If a pick isn't offered in the user's app, hide it with remove_picks.
