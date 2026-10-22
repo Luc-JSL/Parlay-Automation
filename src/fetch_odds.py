@@ -43,6 +43,8 @@ SD = {
 # curve is too narrow for these and overstates the chance of landing exactly on a whole line.
 COUNT_MARKETS = {"player_rebounds", "player_assists", "player_threes", "player_pass_tds",
                  "player_receptions"}
+# In these sports every prop is a low count (shots, points, strikeouts, total bases).
+COUNT_SPORTS = ("icehockey", "baseball", "soccer")
 DISPERSION = 1.4
 quota = {}
 
@@ -86,10 +88,11 @@ def nb_pmf(mean: float, upto: int) -> list[float]:
     return pmf
 
 
-def over_prob_at(p_over: float, book_line: float, line: float, market: str) -> tuple[float, float]:
+def over_prob_at(p_over: float, book_line: float, line: float, market: str,
+                 count: bool = False) -> tuple[float, float]:
     """Fair P(over), P(under) at `line`, given fair P(over) at `book_line`."""
     p_over = min(max(p_over, 0.01), 0.99)
-    if market in COUNT_MARKETS:
+    if count or market in COUNT_MARKETS:
         def p_above(mean: float, x: float) -> float:  # P(X > x)
             return 1 - sum(nb_pmf(mean, int(x // 1))[: int(x // 1) + 1])
         lo, hi = 0.01, 4 * max(book_line, line) + 10
@@ -134,7 +137,8 @@ def scan_event(sport: str, ev: dict, markets: list[str], apps: set[str]) -> list
         quotes = books.get((player, market))
         if not quotes:
             continue
-        overs, unders = zip(*(over_prob_at(p, pt, line, market) for _, pt, p in quotes))
+        count = sport.startswith(COUNT_SPORTS)
+        overs, unders = zip(*(over_prob_at(p, pt, line, market, count) for _, pt, p in quotes))
         o, u = median(overs), median(unders)
         side, prob = ("More", o / (o + u)) if o >= u else ("Less", u / (o + u))
         rows.append({

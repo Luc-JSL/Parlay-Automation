@@ -230,8 +230,8 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
   <div class="wrap">
     <div class="brand"><span class="brand-mark" aria-hidden="true">PL</span>Parlay Lab</div>
     <div class="bar-meta">
-      <span class="chip">Board · Thu Oct 22 – Fri Oct 23</span>
-      <span class="chip">Updated 1:00 AM ET</span>
+      <span class="chip">Auto-updating board</span>
+      <span class="chip" id="updated">Updated Thu 12:00 AM CT</span>
     </div>
   </div>
 </header>
@@ -254,7 +254,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     <div>2 Power<b>57.7%</b></div>
     <div>3 Power<b>58.5%</b></div>
     <div>3 Flex<b>59.1%</b></div>
-    <div>4 Power 10x<b>56.2%</b></div>
+    
     <div>4 Power 8x<b>59.5%</b></div>
     <div>4 Flex<b>56.9%</b></div>
     <div>5 Power<b>54.9%</b></div>
@@ -283,12 +283,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
           <button class="send" id="send" type="submit">Send</button>
         </form>
       </section>
-      <div class="tabs" role="tablist" aria-label="Sport">
-        <button class="tab" role="tab" id="tab-all" data-sport="all" aria-selected="true">All <span class="n" id="n-all"></span></button>
-        <button class="tab" role="tab" id="tab-nba" data-sport="NBA" aria-selected="false">NBA <span class="n" id="n-NBA"></span></button>
-        <button class="tab" role="tab" id="tab-nfl" data-sport="NFL" aria-selected="false">NFL <span class="n" id="n-NFL"></span></button>
-        <button class="tab" role="tab" id="tab-tennis" data-sport="Tennis" aria-selected="false">Tennis <span class="n" id="n-Tennis"></span></button>
-      </div>
+      <div class="tabs" role="tablist" aria-label="Sport" id="tabs"></div>
       <div id="board"></div>
       <div class="hidden-row" id="hidden-row" hidden></div>
 
@@ -328,7 +323,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 </footer>
 
 <script>
-const PICKS = [
+let PICKS = [
   { id: "hart", sport: "NBA", player: "Isaiah Hartenstein", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Points", side: "More", line: "7.5", books: "Books 7.5–8.5 (3)", p: 0.58, game_id: "denokc",
     note: "PrizePicks matches the low end of the books. Not yet checked against news: a blowout would cut his minutes, which hurts More." },
   { id: "jbrown", sport: "NBA", player: "Jaylen Brown", team: "PHI", game: "CLE @ PHI", when: "Thu 7:10 PM ET", stat: "Assists", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.57, game_id: "cleph",
@@ -355,9 +350,20 @@ const PICKS = [
     note: "The books have 21.5 as a coin flip, so it's only 55% at 20.5. Alternate: Krueger v Gibson (Osaka) More at 19.5 or lower." }
 ];
 
-const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
+const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 8 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
 const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
-const BEST = ["hart", "jbrown", "alexfer", "chidekh"];
+function bestIds(k = 4) {
+  const out = [], games = new Set();
+  let tennis = 0;
+  for (const p of board().slice().sort((a, b) => b.p - a.p)) {
+    const g = p.game_id || p.game;
+    if (games.has(g) || (p.tennis && tennis >= 2)) continue;
+    if (p.tennis) tennis++;
+    out.push(p.id); games.add(g);
+    if (out.length === k) break;
+  }
+  return out;
+}
 
 function dist(probs) {
   let d = [1];
@@ -374,7 +380,7 @@ function breakeven(n, table) {
   for (let i = 0; i < 50; i++) { const mid = (lo + hi) / 2; if (ret(Array(n).fill(mid), table) < 1) lo = mid; else hi = mid; }
   return hi;
 }
-const BE4 = breakeven(4, POWER[4]);
+const BE4 = breakeven(4, { 4: 8 });
 
 const tier = p => p >= 0.58 ? ["play", "PLAY"] : p >= 0.54 ? ["lean", "LEAN"] : ["below", "BELOW B/E"];
 const pct = p => (p * 100).toFixed(1).replace(/\.0$/, "") + "%";
@@ -416,11 +422,11 @@ function cardHTML(p) {
   const [cls, label] = tier(p.p);
   const color = p.side === "More" ? "var(--more)" : "var(--less)";
   const sel = selected.has(p.id);
-  const flag = p.mine ? `<span class="mine">Added by you · not checked vs books</span>` : p.edited ? `<span class="mine">Changed by you · not re-checked vs books</span>` : "";
+  const flag = p.auto ? `<span class="mine">Auto scan · not news-checked</span>` : p.mine ? `<span class="mine">Added by you · not checked vs books</span>` : p.edited ? `<span class="mine">Changed by you · not re-checked vs books</span>` : "";
   return `<article class="card${sel ? " sel" : ""}" data-id="${esc(p.id)}">
     <div class="card-top">
-      <div class="avatar" aria-hidden="true">${esc(p.tennis ? p.team : initials(p.player))}</div>
-      <div class="who"><b>${esc(p.player)}</b><span>${esc(p.tennis ? p.game : p.team + " · " + p.game)}</span></div>
+      <div class="avatar" aria-hidden="true">${esc(p.tennis ? (p.team || "TEN") : initials(p.player))}</div>
+      <div class="who"><b>${esc(p.player)}</b><span>${esc(p.tennis || !p.team ? p.game : p.team + " · " + p.game)}</span></div>
       <span class="tag ${cls}">${label}</span>
     </div>
     <div class="line-row">
@@ -438,20 +444,31 @@ function cardHTML(p) {
   </article>`;
 }
 
+const ORDER = ["NBA", "NFL", "NHL", "MLB", "Soccer", "Tennis"];
+function renderTabs(sports, all) {
+  const tabs = ["all", ...sports];
+  if (filter !== "all" && !sports.includes(filter)) filter = "all";
+  document.getElementById("tabs").innerHTML = tabs.map(s => `<button class="tab" role="tab" data-sport="${esc(s)}" aria-selected="${s === filter}">${s === "all" ? "All" : esc(s)} <span class="n">${s === "all" ? all.length : all.filter(p => p.sport === s).length}</span></button>`).join("");
+}
 function renderBoard() {
   const all = board();
-  const groups = filter === "all" ? ["NBA", "NFL", "Tennis"] : [filter];
+  const sports = [...new Set(all.map(p => p.sport))].sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b));
+  const groups = filter === "all" ? sports : [filter];
   const heads = {
-    NBA: ["NBA", "Real PrizePicks lines vs. 2–3 books. Thursday tips at 7:10 and 9:40 PM ET."],
-    NFL: ["NFL · Patriots @ Bears", "No pick clears break-even. Use one at most, as the 5th or 6th pick of a Flex."],
+    NHL: ["NHL", "Real PrizePicks lines vs. the books, refreshed automatically."],
+    MLB: ["MLB", "Real PrizePicks lines vs. the books, refreshed automatically."],
+    Soccer: ["Soccer", "Real PrizePicks lines vs. the books."],
+    NBA: ["NBA", "Real PrizePicks lines vs. the books. Times are Central."],
+    NFL: ["NFL", "Real PrizePicks lines vs. the books. Use 54–57% picks only to fill a 5–6 pick Flex."],
     Tennis: ["Tennis", "No PrizePicks lines found. Play only when the app's line is at or under the number shown."]
   };
   document.getElementById("board").innerHTML = groups.map(g => {
     const list = all.filter(p => p.sport === g).sort((a, b) => b.p - a.p);
-    if (!list.length) return `<div class="section-head"><h2>${heads[g][0]}</h2><p>No picks left in this sport.</p></div>`;
-    return `<div class="section-head"><h2>${heads[g][0]}</h2><p>${heads[g][1]}</p></div><div class="cards">${list.map(cardHTML).join("")}</div>`;
+    if (!list.length) return `<div class="section-head"><h2>${(heads[g] || [g])[0]}</h2><p>No picks left in this sport.</p></div>`;
+    const h = heads[g] || [g, ""];
+    return `<div class="section-head"><h2>${h[0]}</h2><p>${h[1]}</p></div><div class="cards">${list.map(cardHTML).join("")}</div>`;
   }).join("");
-  ["all", "NBA", "NFL", "Tennis"].forEach(s => { document.getElementById("n-" + s).textContent = s === "all" ? all.length : all.filter(p => p.sport === s).length; });
+  renderTabs(sports, all);
   document.getElementById("s-total").textContent = all.length;
   document.getElementById("s-play").textContent = all.filter(p => p.p >= 0.58).length;
   const hidden = PICKS.concat(edits.added).filter(p => edits.removed.includes(p.id));
@@ -479,9 +496,9 @@ function renderSlip() {
     const b = el.querySelector("b"), s = el.querySelector("span");
     el.classList.remove("good", "bad");
     if (!table[n]) { b.textContent = "–"; s.textContent = key === "flex" ? "needs 3–6 picks" : "needs 2–6 picks"; continue; }
-    const r = ret(probs, table), ev = (r - 1) * stake;
+    const r = ret(probs, table[n]), ev = (r - 1) * stake;
     b.textContent = (ev >= 0 ? "+" : "−") + "$" + Math.abs(ev).toFixed(2);
-    s.textContent = `${r.toFixed(3)}x · break-even ${pct(breakeven(n, table))}/pick`;
+    s.textContent = `${r.toFixed(3)}x · break-even ${pct(breakeven(n, table[n]))}/pick`;
     el.classList.add(r >= 1 ? "good" : "bad");
   }
   const warn = [];
@@ -510,11 +527,10 @@ document.addEventListener("click", e => {
   const tab = e.target.closest(".tab");
   if (tab) {
     filter = tab.dataset.sport;
-    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t === tab));
     renderBoard();
   }
 });
-document.getElementById("best").onclick = () => { selected.clear(); BEST.filter(id => findPick(id)).forEach(id => selected.add(id)); rerender(); };
+document.getElementById("best").onclick = () => { selected.clear(); bestIds(4).forEach(id => selected.add(id)); rerender(); };
 document.getElementById("clear").onclick = () => { selected.clear(); rerender(); };
 document.getElementById("stake").oninput = renderSlip;
 document.getElementById("payout").oninput = renderSlip;
@@ -661,6 +677,18 @@ renderSlip();
   sampleFn = s;
   if (!s) document.getElementById("suggest").hidden = true;
   if (!db) { setSync("Changes kept on this device only"); return; }
+  db.doc("board/live").onSnapshot(snap => {
+    if (!snap.exists) return;
+    const d = snap.data() || {};
+    const ok = Array.isArray(d.picks) ? d.picks.filter(p => p && typeof p.id === "string" && typeof p.player === "string" && Number(p.p) > 0 && Number(p.p) < 1) : [];
+    if (!ok.length) return;
+    PICKS = ok.map(p => ({ team: "", books: "", note: "", when: "", game: "", stat: "", line: "", side: "More", ...p, p: Number(p.p), line: String(p.line ?? ""), side: p.side === "Less" ? "Less" : "More" }));
+    if (d.updated) {
+      const t = new Date(d.updated);
+      if (!isNaN(t)) document.getElementById("updated").textContent = "Updated " + t.toLocaleString("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "2-digit" }) + " CT";
+    }
+    renderBoard(); renderSlip();
+  }, () => {});
   editsDoc = db.doc("board/edits");
   editsDoc.onSnapshot(snap => {
     if (!snap.exists) return;
