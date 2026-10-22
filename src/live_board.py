@@ -36,6 +36,9 @@ def load_bans() -> set[str]:
     return {n.strip().lower() for p in players for n in [p["name"], *p.get("aliases", [])]}
 CENTRAL = ZoneInfo("America/Chicago")
 RUNS_PER_DAY = 3
+# A Goblin cuts the payout by about 25% (the user's app: 3-pick Power 4.5x instead of 6x), so it has to be
+# about 1/0.75 = 1.33 times as likely to hit as the normal pick it replaces: roughly 75% next to 56% picks.
+GOBLIN_BAR = 0.75
 
 # Priority order and a compact set of markets per sport (each market costs 2 requests per game).
 SPORTS = [
@@ -88,7 +91,10 @@ def to_pick(sport_label: str, r: dict) -> dict:
         "side": r["pick"], "line": f"{r['pp_line']:g}", "books": f"Books {books} ({r['books']})",
         "p": r["fair_prob"], "auto": True,
         "note": f"Auto scan: PrizePicks line vs. {r['books']} sportsbooks with the margin removed. Not news-checked yet.",
-    }
+    } | ({"goblin": True, "goblin_scan": True, "stdLine": f"{r['pp_line']:g}", "stdP": r["fair_prob"],
+          "note": f"Likely a Goblin in your app: the books are at {books}. Kept because {r['fair_prob']:.0%} still clears "
+                  f"the {GOBLIN_BAR:.0%} a Goblin needs to make up for its lower payout. Not news-checked yet."}
+         if r.get("goblin_likely") else {})
 
 
 def main() -> None:
@@ -127,7 +133,8 @@ def main() -> None:
         log_lines(key, label, rows, now)
         scanned.add(slug(f"{ev['away_team']} @ {ev['home_team']}"))
         scanned_games.add((label, f"{ev['away_team'].split()[-1]} @ {ev['home_team'].split()[-1]}"))
-        new += [to_pick(label, r) for r in rows if r["fair_prob"] >= a.min and r["books"] >= 2]
+        new += [to_pick(label, r) for r in rows if r["books"] >= 2
+                and r["fair_prob"] >= (max(a.min, GOBLIN_BAR) if r.get("goblin_likely") else a.min)]
 
     # Fresh scan rows for the same player and stat replace older picks. A researched pick keeps its
     # note when its line is unchanged; if the line moved, the fresh row wins. Older picks from a

@@ -16,14 +16,14 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NFL,NE@CHI,Efton Chism III,Rec Yds,Less,19.5,16.5-18.5,0.55,,,lean; 0 catches with A.J. Brown back
 2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,Less,19.5,19.5-21.5,0.53,,,"below break-even; hamstring, 4 carries/3 yds W6"
 2026-10-22,NFL,NE@CHI,Colston Loveland,Rec Yds,More,41.5,41.5-45.5,0.52,,,below break-even; filler only
-2026-10-23,Tennis,WTA Ningbo QF,Alexandrova v Fernandez,Total Games,More,<=20.5 (21.5 lean),not found,0.63,,,Fri 12:00 AM ET; Fernandez fatigue risk
+2026-10-23,Tennis,WTA Ningbo QF,Alexandrova v Fernandez,Total Games,More,21.5 (20.5 is a Goblin),not found,0.57,,,Fri 12:00 AM ET; Fernandez fatigue risk
 2026-10-23,Tennis,ATP Brussels QF,Clement Chidekh,Total Games Won,More,<=8.5 (7.5 ~0.70),not found,0.63,,,time not found
 2026-10-22,Tennis,ATP Almaty R16,Machac v Khachanov,Total Games,More,<=21.5,Polymarket O21.5 ~61%,0.60,,,Thu 4:00 AM ET; Machac fitness risk
-2026-10-23,Tennis,WTA Ningbo QF,Bouzkova v Bejlek,Total Games,More,<=19.5 (20.5 lean ~0.55),O/U 21.5 -113/-118,0.60,,,Fri 1:00 AM ET
+2026-10-23,Tennis,WTA Ningbo QF,Bouzkova v Bejlek,Total Games,More,<=19.5 (20.5 lean ~0.55),O/U 21.5 -113/-118,0.60,,void,Fri 1:00 AM ET
 2026-10-22,Tennis,WTA Osaka QF,Krueger v Gibson,Total Games,More,<=19.5,not found,0.60,,,alt for Bouzkova; Thu ~9 PM ET
 2026-10-23,Tennis,ATP Almaty QF,Mannarino v Basilashvili,Total Games,More,<=20.5,DK ML -151/+124,0.51,,void,dropped: ~51% at 22.5
 2026-10-22,NBA,DEN@OKC,Isaiah Hartenstein,Points,More,7.5,7.5/8.5 (3 books),0.58,,,scanner only; news not checked
-2026-10-22,NBA,DEN@OKC,Ajay Mitchell,Rebounds,More,2.5,3.5 (2),0.611,,,board scan; news-checked on X
+2026-10-22,NBA,DEN@OKC,Ajay Mitchell,Rebounds,More,2.5,3.5 (2),0.611,,void,pulled: likely Goblin (line 1 under every book) and below the 75% Goblin bar
 2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Rebounds,Less,4.5,4.5 (4),0.542,,,board scan; Allen status
 2026-10-22,NBA,CLE@PHI,Evan Mobley,Points,More,17.5,17.5/18.5 (4),0.542,,,board scan; Allen status
 2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebounds,Less,4,3.5/4.5 (3),0.54,,,board scan; news-checked on X

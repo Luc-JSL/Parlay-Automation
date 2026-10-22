@@ -72,8 +72,10 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
      "items": [{"title": "<player stat side line>", "handles": "@a, @b", "ok": true/false, "verdict": "<one sentence with the %>", "url": "<x.com post>"}]}`.
      List every capper pick you checked for today's games, added or not (up to 8). Replace `x_feed` on each run.
 6. **Tennis (optional).** No PrizePicks tennis lines come through the API. Add at most 4 tennis picks from match odds
-   and research as "play if line ≤ X" (`"cond": "≤"`, `"tennis": true`, `"team": "ATP"` or `"WTA"`), each with
-   a `start` time. Skip tennis if you can't find match odds. Tennis picks from cappers (step 5) count toward the 4.
+   and research, each at the **books' line** for that stat (the line PrizePicks most likely shows as its normal line), with
+   `"tennis": true`, `"team": "ATP"` or `"WTA"`, and a `start` time. Don't post "play if line ≤ X" picks below the books'
+   line: in the app those lower lines are usually Goblins, which pay less. Skip tennis if you can't find match odds.
+   Tennis picks from cappers (step 5) count toward the 4.
 7. **Publish to the board.** Save the final JSON to `results/live_board.json`. Then put it on the board: `get` `board/live`
    to read its `version`, and `set` it from the file with `if_version`. Also `set` `board/staged` to the same file so the
    two match. Every pick needs `id`, `sport`, `player`, `game`, `game_id`, `start` (ISO UTC), `when` (Central time),
@@ -91,6 +93,10 @@ working state lives in the board's artifact database (ArtifactData tool, artifac
    average CLV so far, and API quota left.
 
 ## Rules
+- **Goblins.** Goblins and Demons are More only, so Less picks are always normal lines. A More pick whose PrizePicks line is
+  a full point (or 10%) under every book's line is likely a Goblin even when the feed lists both sides. `live_board.py`
+  flags it and keeps it only at 75%+, because a Goblin's payout cut (about 25%) means it must be about 1.33 times as likely
+  to hit as the normal pick it replaces. Apply the same bar to picks you add by hand, from cappers, or for tennis.
 - A PLAY needs ≥ 58%. 54–58% is a LEAN for 5–6 pick Flex only.
 - Avoid stacking negatively correlated picks. Don't put more than 2 tennis "Over games" picks on one entry.
 - Sites blocked by network policy: note them in the summary and move on.

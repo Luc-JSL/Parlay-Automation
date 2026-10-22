@@ -112,6 +112,13 @@ def over_prob_at(p_over: float, book_line: float, line: float, market: str,
     return 1 - dist.cdf(line), dist.cdf(line)
 
 
+def likely_goblin(side: str, pp_line: float, book_low: float) -> bool:
+    """A More pick whose PrizePicks line sits well under every book's line is usually a Goblin in the app
+    (a lower line with a reduced payout), even when the odds feed lists both sides. Less picks never are:
+    Goblins and Demons are More only."""
+    return side == "More" and book_low - pp_line >= max(1.0, 0.1 * book_low)
+
+
 def scan_event(sport: str, ev: dict, markets: list[str], apps: set[str]) -> list[dict]:
     data = get(f"sports/{sport}/events/{ev['id']}/odds", regions="us,us_dfs",
                markets=",".join(markets), oddsFormat="american")
@@ -141,12 +148,14 @@ def scan_event(sport: str, ev: dict, markets: list[str], apps: set[str]) -> list
         overs, unders = zip(*(over_prob_at(p, pt, line, market, count) for _, pt, p in quotes))
         o, u = median(overs), median(unders)
         side, prob = ("More", o / (o + u)) if o >= u else ("Less", u / (o + u))
+        book_low = min(pt for _, pt, _ in quotes)
         rows.append({
             "app": app, "event": f"{ev['away_team']} @ {ev['home_team']}", "start": ev["commence_time"],
             "player": player, "market": market.removeprefix("player_"), "pp_line": line,
             "book_lines": sorted({pt for _, pt, _ in quotes}), "books": len(quotes),
             "pick": side, "fair_prob": round(prob, 3), "push_prob": round(max(0.0, 1 - o - u), 3),
             "quotes": [[pt, round(p, 4)] for _, pt, p in quotes],
+            "goblin_likely": likely_goblin(side, line, book_low),
         })
     return rows
 

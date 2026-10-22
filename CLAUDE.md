@@ -64,7 +64,8 @@ The repo's working branch is **`claude/loving-heisenberg-pfretk`**.
    It covers NBA, NFL, NHL and MLB, keeps picks at 54% or better, drops banned players, and merges with older picks.
 2. News check: injuries, minutes, lineups. X via `src/twitter.py` (`TWITTERAPI_IO_KEY`) plus web search. Official
    reports beat X.
-3. Tennis has no PrizePicks lines in the API. Tennis picks are "play if line ≤ X" estimates from match odds and research.
+3. Tennis has no PrizePicks lines in the API. Tennis picks are estimates at the books' line from match odds and research
+   (not "play if ≤ X": lower lines are usually Goblins in the app).
 4. Capper picks from `results/cappers.json` go on the board **only if our check agrees** (54% or better at the posted
    line), labeled `"source": "@handle"`. Never add a pick just because a capper posted it.
 5. PrizePicks specials (Taco Tuesday and the like) from @PrizePicks on X go on the board as picks with `"special"`, or as
@@ -97,6 +98,9 @@ A PLAY is 58% or better. A LEAN is 54–58% (5–6 pick Flex only). Avoid stacki
 
 ## Lessons learned (don't repeat)
 - One-sided PrizePicks lines are Goblins/Demons. They looked like 70%+ edges, and the scanner now skips them.
+- Goblins also show up as two-sided lines in the feed. A More pick a full point (or 10%) under every book's line is
+  treated as a likely Goblin and kept only at 75%+ (the payout cut needs about 1.33x the hit rate). The user saw most
+  "best" picks turn out to be Goblins before this rule. Less picks are never Goblins, so favor them.
 - A normal curve overstated pushes on whole-number lines for count stats. That's fixed with a negative binomial.
 - "Parlay progressions" and ladders don't change EV, and they raise the risk of going broke. Don't recommend them.
 - Many cappers sell picks and have unverified records. Use X for news; our math decides.

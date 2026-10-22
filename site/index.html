@@ -369,7 +369,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     <div>
       <div class="eyebrow">PrizePicks More / Less board</div>
       <h1>Only take picks that beat the <em>break-even line</em>.</h1>
-      <p class="lede">Each NBA and NFL card is a real PrizePicks line checked against 2–6 sportsbooks, with the books' margin removed, then checked against injury news. Tennis cards show the line a pick needs, because no PrizePicks tennis lines were found. Tap picks to build an entry and see its expected return.</p>
+      <p class="lede">Each NBA and NFL card is a real PrizePicks line checked against 2–6 sportsbooks, with the books' margin removed, then checked against injury news. Tennis cards are estimated at the books' line, because no PrizePicks tennis lines were found. Likely Goblins are dropped unless they hit 75%+. Tap picks to build an entry and see its expected return.</p>
     </div>
     <div class="stats" aria-label="Board summary">
       <div class="stat" data-n="01"><b id="s-total">12</b><span>Picks found</span></div>
@@ -672,7 +672,7 @@ function renderBoard() {
     Soccer: ["Soccer", "Real PrizePicks lines vs. the books."],
     NBA: ["NBA", "Real PrizePicks lines vs. the books. Times are Central."],
     NFL: ["NFL", "Real PrizePicks lines vs. the books. Use 54–57% picks only to fill a 5–6 pick Flex."],
-    Tennis: ["Tennis", "No PrizePicks lines found. Play only when the app's line is at or under the number shown."]
+    Tennis: ["Tennis", "Estimated at the books' line. If your app only shows that line as a Goblin, skip it."]
   };
   if (view === "list") {
     const list = all.filter(p => filter === "all" || p.sport === filter).sort((a, b) => b.p - a.p);
@@ -706,6 +706,7 @@ function renderSlip() {
   document.getElementById("slip-empty").hidden = picks.length > 0;
   const verdict = p => {
     if (!p.goblin) return "";
+    if (p.goblin_scan && !(edits.goblins || []).includes(p.id)) return `<span class="gv ok">Goblin already counted: ${pct(p.p)} clears the 75% a Goblin needs.</span>`;
     const c = goblinCheck(picks, p);
     if (!c) return "";
     const box = `<label class="gl">Goblin line in app <input type="number" step="0.5" inputmode="decimal" data-gline="${esc(p.id)}" value="${esc((edits.goblinLines || {})[p.id] ?? "")}" placeholder="${esc(p.stdLine)}"></label>`;
