@@ -40,3 +40,7 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NHL,NSH@BOS,Pavel Zacha,Shots on Goal,Less,2,1.5 (4),0.558,,,afternoon check; under 6/9 season
 2026-10-22,NHL,VGK@STL,Ivan Barbashev,Shots on Goal,Less,1.5,1.5 (4),0.54,,,afternoon check; under 7/11 season
 2026-10-22,NHL,ANA@NJ,Evan Rodrigues,Shots on Goal,Less,2,1.5 (4),0.578,,,scheduled scan; under 6/9 season
+2026-10-22,NHL,DET@VAN,Brock Boeser,Shots on Goal,Less,2,1.5 (4),0.547,,,sharp check; under 8/11 season
+2026-10-22,NBA,DEN@OKC,Jalen Williams,Points,Less,19,15.5-19.5 (12),0.534,,,stats pick; 24/38 under
+2026-10-22,NBA,DEN@OKC,Nikola Jokic,Assists,More,9,7.5-10.5 (9),0.534,,,stats pick; 45/72
+2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebs+Asts,More,10,8.5-10.5 (5),0.539,,,stats pick; 3/3 vs OKC
