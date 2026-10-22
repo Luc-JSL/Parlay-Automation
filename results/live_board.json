@@ -1,8 +1,29 @@
 {
- "updated": "2026-10-22T05:11:26Z",
+ "updated": "2026-10-22T05:17:14Z",
  "quota_remaining": "304",
  "scanned_games": 0,
- "bans": [],
+ "bans": [
+  "anthony davis",
+  "breece hall",
+  "cole kmet",
+  "domantas sabonis",
+  "harold fannin jr.",
+  "ja morant",
+  "joel embiid",
+  "kawhi leonard",
+  "kyle pitts",
+  "kyle pitts sr.",
+  "lamar jackson",
+  "lebron james",
+  "luther burden",
+  "luther burden iii",
+  "mackenzie blackwood",
+  "marta kostyuk",
+  "matteo berrettini",
+  "paula badosa",
+  "saquon barkley",
+  "scott wedgewood"
+ ],
  "picks": [
   {
    "id": "alexfer",

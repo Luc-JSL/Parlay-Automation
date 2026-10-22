@@ -32,7 +32,8 @@ def load_bans() -> set[str]:
     if not os.path.exists(BANS):
         return set()
     with open(BANS) as f:
-        return {p["name"].strip().lower() for p in json.load(f).get("players", [])}
+        players = json.load(f).get("players", [])
+    return {n.strip().lower() for p in players for n in [p["name"], *p.get("aliases", [])]}
 CENTRAL = ZoneInfo("America/Chicago")
 RUNS_PER_DAY = 3
 
