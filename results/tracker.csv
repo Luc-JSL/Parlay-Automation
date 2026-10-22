@@ -8,10 +8,10 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,CLE@PHI,Evan Mobley,Rebounds,More,<=9.5 if Allen OUT else <=8.5,9.5 (preview; no price),0.59,,void,superseded 10/22 00:45 ET: real PP line checked via Odds API
 2026-10-22,NBA,CLE@PHI,Joel Embiid,Points,Less,>=22.5,not found,0.58,,void,superseded 10/22 00:45 ET: real PP line checked via Odds API
 2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Points,More,<=25.5,27.5 (preview; no price),0.58,,void,superseded 10/22 00:45 ET: real PP line checked via Odds API
-2026-10-22,NBA,DEN@OKC,Ajay Mitchell,Rebounds,More,2.5,O3.5 (2 books),0.60,,,PP 1 full point under books; confirm active/rotation
+2026-10-22,NBA,DEN@OKC,Ajay Mitchell,Rebounds,More,2.5,O3.5 (2 books),0.60,,void,dropped: 2.5 was a More-only discounted line (Goblin)
 2026-10-22,NBA,CLE@PHI,Jaylen Brown,Assists,Less,4,3.5 (3 books),0.57,,,drop if LeBron/Maxey/Embiid out
 2026-10-22,NBA,DEN@OKC,Cameron Johnson,Rebounds,Less,4,3.5 (3 books),0.565,,,blowout risk helps
-2026-10-22,NBA,DEN@OKC,Jalen Williams,Rebounds,Less,5,4.5 (3 books),0.555,,,drop if Holmgren/Hartenstein out
+2026-10-22,NBA,DEN@OKC,Jalen Williams,Rebounds,Less,5,4.5 (3 books),0.546,,,drop if Holmgren/Hartenstein out
 2026-10-22,NFL,NE@CHI,Rhamondre Stevenson,Rush Yds,Less,42.5,41.5-44.5,0.55,,,lean; Henderson back to full practice
 2026-10-22,NFL,NE@CHI,Efton Chism III,Rec Yds,Less,19.5,16.5-18.5,0.55,,,lean; 0 catches with A.J. Brown back
 2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,Less,19.5,19.5-21.5,0.53,,,"below break-even; hamstring, 4 carries/3 yds W6"
@@ -22,3 +22,4 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-23,Tennis,WTA Ningbo QF,Bouzkova v Bejlek,Total Games,More,<=19.5 (20.5 lean ~0.55),O/U 21.5 -113/-118,0.60,,,Fri 1:00 AM ET
 2026-10-22,Tennis,WTA Osaka QF,Krueger v Gibson,Total Games,More,<=19.5,not found,0.60,,,alt for Bouzkova; Thu ~9 PM ET
 2026-10-23,Tennis,ATP Almaty QF,Mannarino v Basilashvili,Total Games,More,<=20.5,DK ML -151/+124,0.51,,void,dropped: ~51% at 22.5
+2026-10-22,NBA,DEN@OKC,Isaiah Hartenstein,Points,More,7.5,7.5/8.5 (3 books),0.58,,,scanner only; news not checked

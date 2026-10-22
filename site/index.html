@@ -231,7 +231,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
     <div class="brand"><span class="brand-mark" aria-hidden="true">PL</span>Parlay Lab</div>
     <div class="bar-meta">
       <span class="chip">Board · Thu Oct 22 – Fri Oct 23</span>
-      <span class="chip">Updated 00:45 ET</span>
+      <span class="chip">Updated 1:00 AM ET</span>
     </div>
   </div>
 </header>
@@ -327,13 +327,13 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: s
 
 <script>
 const PICKS = [
-  { id: "amitch", sport: "NBA", player: "Ajay Mitchell", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "More", line: "2.5", books: "Books 3.5 (2)", p: 0.60, game_id: "denokc",
-    note: "PrizePicks is a full point under the books. He averaged 4.0 rebounds in 30+ minutes in last spring's playoffs. Confirm he's active and in the rotation." },
+  { id: "hart", sport: "NBA", player: "Isaiah Hartenstein", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Points", side: "More", line: "7.5", books: "Books 7.5–8.5 (3)", p: 0.58, game_id: "denokc",
+    note: "PrizePicks matches the low end of the books. Not yet checked against news: a blowout would cut his minutes, which hurts More." },
   { id: "jbrown", sport: "NBA", player: "Jaylen Brown", team: "PHI", game: "CLE @ PHI", when: "Thu 7:10 PM ET", stat: "Assists", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.57, game_id: "cleph",
     note: "Scoring-first role next to LeBron, Maxey and Embiid. Drop it if one of them sits. He had 6 assists in the opener." },
   { id: "cjohn", sport: "NBA", player: "Cameron Johnson", team: "DEN", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "4", books: "Books 3.5 (3)", p: 0.565, game_id: "denokc",
     note: "3.8 rebounds per game last season, next to Jokic and Gordon. OKC is an 8-point favorite, so a blowout could cut his minutes." },
-  { id: "jwill", sport: "NBA", player: "Jalen Williams", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "5", books: "Books 4.5 (3)", p: 0.555, game_id: "denokc",
+  { id: "jwill", sport: "NBA", player: "Jalen Williams", team: "OKC", game: "DEN @ OKC", when: "Thu 9:40 PM ET", stat: "Rebounds", side: "Less", line: "5", books: "Books 4.5 (3)", p: 0.546, game_id: "denokc",
     note: "4.6 rebounds per game last season, but 7 in the opener. Drop it if Holmgren or Hartenstein is out." },
   { id: "stev", sport: "NFL", player: "Rhamondre Stevenson", team: "NE", game: "NE @ CHI", when: "Thu 8:15 PM ET", stat: "Rush Yds", side: "Less", line: "42.5", books: "Books 41.5–44.5 (6)", p: 0.55, game_id: "nechi",
     note: "Henderson is back at full practice and Kiner has the hot hand. Both starting guards are out. He ran 14 times for 36 yards last week." },
@@ -355,7 +355,7 @@ const PICKS = [
 
 const POWER = { 2: { 2: 3 }, 3: { 3: 5 }, 4: { 4: 10 }, 5: { 5: 20 }, 6: { 6: 37.5 } };
 const FLEX = { 3: { 3: 2.25, 2: 1.25 }, 4: { 4: 5, 3: 1.5 }, 5: { 5: 10, 4: 2, 3: 0.4 }, 6: { 6: 25, 5: 2, 4: 0.4 } };
-const BEST = ["amitch", "jbrown", "alexfer", "chidekh"];
+const BEST = ["hart", "jbrown", "alexfer", "chidekh"];
 
 function dist(probs) {
   let d = [1];

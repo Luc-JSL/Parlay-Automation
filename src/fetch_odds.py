@@ -6,6 +6,7 @@ Usage (needs ODDS_API_KEY; free key at https://the-odds-api.com):
   python3 src/fetch_odds.py events <sport>            # upcoming events + ids (free)
   python3 src/fetch_odds.py <sport> [region]          # h2h / spread / total, games not started yet
   python3 src/fetch_odds.py edges <sport> [--hours 36] [--markets m1,m2] [--min 0.56] [--json out.json]
+                                            [--apps prizepicks|all|underdog,pick6]
 
 Sport keys: basketball_nba, americanfootball_nfl, tennis_atp_*, tennis_wta_*
 
@@ -108,7 +109,7 @@ def over_prob_at(p_over: float, book_line: float, line: float, market: str) -> t
     return 1 - dist.cdf(line), dist.cdf(line)
 
 
-def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
+def scan_event(sport: str, ev: dict, markets: list[str], apps: set[str]) -> list[dict]:
     data = get(f"sports/{sport}/events/{ev['id']}/odds", regions="us,us_dfs",
                markets=",".join(markets), oddsFormat="american")
     pp, books = {}, {}
@@ -120,13 +121,16 @@ def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
                     pairs.setdefault((o["description"], o["point"]), {})[o["name"]] = o["price"]
             for (player, point), sides in pairs.items():
                 k = (player, m["key"])
-                if bk["key"] == "prizepicks":
-                    pp[k] = point
+                if bk["key"] in apps:
+                    # Only standard lines offer both sides. One-sided lines are discounted
+                    # alternates (Goblins/Demons and the like) with reduced payouts.
+                    if len(sides) == 2:
+                        pp[(bk["key"],) + k] = point
                 elif bk["key"] not in DFS_BOOKS and len(sides) == 2:
                     po, pu = to_prob(sides["Over"]), to_prob(sides["Under"])
                     books.setdefault(k, []).append((bk["key"], point, po / (po + pu)))
     rows = []
-    for (player, market), line in pp.items():
+    for (app, player, market), line in pp.items():
         quotes = books.get((player, market))
         if not quotes:
             continue
@@ -134,7 +138,7 @@ def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
         o, u = median(overs), median(unders)
         side, prob = ("More", o / (o + u)) if o >= u else ("Less", u / (o + u))
         rows.append({
-            "event": f"{ev['away_team']} @ {ev['home_team']}", "start": ev["commence_time"],
+            "app": app, "event": f"{ev['away_team']} @ {ev['home_team']}", "start": ev["commence_time"],
             "player": player, "market": market.removeprefix("player_"), "pp_line": line,
             "book_lines": sorted({pt for _, pt, _ in quotes}), "books": len(quotes),
             "pick": side, "fair_prob": round(prob, 3), "push_prob": round(max(0.0, 1 - o - u), 3),
@@ -150,18 +154,19 @@ def edges(a) -> None:
     if not events:
         print(f"No {a.sport} events starting in the next {a.hours}h.")
         return
+    apps = DFS_BOOKS if a.apps == "all" else set(a.apps.split(","))
     rows = []
     for ev in events:
-        rows += scan_event(a.sport, ev, markets)
+        rows += scan_event(a.sport, ev, markets, apps)
     rows.sort(key=lambda r: -r["fair_prob"])
-    print(f"{len(events)} events, {len(rows)} PrizePicks props matched to sportsbooks "
+    print(f"{len(events)} events, {len(rows)} pick'em props matched to sportsbooks "
           f"(quota left: {quota.get('remaining')})\n")
-    print(f"{'fair':>6} {'pick':5} {'PP':>6}  {'books@':12} {'n':>2}  player / stat / game")
+    print(f"{'fair':>6} {'app':10} {'pick':5} {'line':>6}  {'books@':12} {'n':>2}  player / stat / game")
     for r in rows:
         if r["fair_prob"] < a.min:
             break
         bl = "/".join(f"{x:g}" for x in r["book_lines"])
-        print(f"{r['fair_prob']:6.1%} {r['pick']:5} {r['pp_line']:6g}  {bl:12} {r['books']:2}  "
+        print(f"{r['fair_prob']:6.1%} {r['app']:10} {r['pick']:5} {r['pp_line']:6g}  {bl:12} {r['books']:2}  "
               f"{r['player']} {r['market']} ({r['event']}, {r['start'][5:16]}Z)")
     if a.json:
         with open(a.json, "w") as f:
@@ -186,6 +191,7 @@ def main() -> None:
         ap.add_argument("--markets")
         ap.add_argument("--min", type=float, default=0.56)
         ap.add_argument("--json")
+        ap.add_argument("--apps", default="prizepicks", help="comma list of pick'em apps, or 'all'")
         edges(ap.parse_args(sys.argv[2:]))
     else:
         region = sys.argv[2] if len(sys.argv) > 2 else "us"
