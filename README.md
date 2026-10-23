@@ -55,6 +55,10 @@ python3 src/prizepicks.py ev 0.60 0.59 0.61 --stake 10   # EV of a 3-pick entry
 # Combined odds, implied probability, and EV for a parlay
 python3 src/parlay_calc.py -160 -300 1.38 --true-probs 0.60 0.74 0.70
 
+# PrizePicks lines vs. de-vigged sportsbook lines, ranked by fair win% (needs ODDS_API_KEY)
+python3 src/edge_scan.py basketball_nba --hours 12 --min 0.56
+python3 src/edge_scan.py americanfootball_nfl --hours 12
+
 # Live odds (needs a free key from https://the-odds-api.com in ODDS_API_KEY)
 python3 src/fetch_odds.py basketball_nba
 python3 src/fetch_odds.py americanfootball_nfl

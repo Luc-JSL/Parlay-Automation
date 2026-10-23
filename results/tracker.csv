@@ -13,3 +13,8 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-23,Tennis,WTA Ningbo QF,Bouzkova v Bejlek,Total Games,More,<=20.5,not found,0.59,,,
 2026-10-23,Tennis,WTA Osaka QF,Krueger v Gibson,Total Games,More,<=20.5,not found,0.58,,,date unconfirmed
 2026-10-23,Tennis,ATP Almaty QF,Mannarino v Basilashvili,Total Games,More,<=22.5,not found,0.58,,,weakest
+2026-10-23,NBA,NYK@BOS,Karl-Anthony Towns,Assists,More,<=3.5,4.5 (5 books),0.62,,,edge_scan
+2026-10-23,NBA,LAC@LAL,Darius Garland,Pts+Asts,More,<=31,33.5 DK/FD,0.59,,,edge_scan; drop if minutes limit
+2026-10-23,NBA,NYK@BOS,Mikal Bridges,Rebounds,More,<=2.5,3.5 (5 books),0.59,,,edge_scan
+2026-10-23,NBA,LAC@LAL,Rui Hachimura,Pts+Rebs,More,<=21,22.5-23.5,0.575,,,edge_scan
+2026-10-23,NBA,DET@MIA,John Collins,Rebounds,More,<=5,5.5 (5 books),0.555,,,edge_scan
