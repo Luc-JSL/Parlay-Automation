@@ -88,8 +88,9 @@ A PLAY is 58% or better. A LEAN is 54–58% (5–6 pick Flex only). Avoid stacki
   1. Pull, run `live_board.py` with a modest budget, and news-check the top picks.
   2. `set` `board/live` (pinned), then commit and push.
 - **The user says "stop the board"**: disable the trigger with `update_trigger` (`enabled: false`).
-- **Odds API free tier:** 500 requests a month, about 10 per game scanned. A paid plan (about $30 a month) is needed
-  for full coverage. Quota left at last check (Oct 22): 240.
+- **Odds API:** the user upgraded to the paid plan on Oct 22 (about $30 a month, 20,000 requests), so full-slate scans are fine.
+  About 2 requests per stat per game. Check `fo.quota` before big scans; a session started before an `ODDS_API_KEY` change
+  still has the old key.
 
 ## Tools
 - `python3 src/fetch_odds.py sports | events <sport> | <sport> | edges <sport> --apps prizepicks`
