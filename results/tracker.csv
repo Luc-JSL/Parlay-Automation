@@ -12,10 +12,10 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,CLE@PHI,Jaylen Brown,Assists,Less,4,3.5 (3 books),0.57,,void,pulled before lock: PrizePicks moved the line to 3.5
 2026-10-22,NBA,DEN@OKC,Cameron Johnson,Rebounds,Less,4,3.5 (3 books),0.565,,void,pulled: PrizePicks moved to 3.5 (Less 47%)
 2026-10-22,NBA,DEN@OKC,Jalen Williams,Rebounds,Less,5,4.5 (3 books),0.546,,void,pulled before lock: repriced to 52.7%
-2026-10-22,NFL,NE@CHI,Rhamondre Stevenson,Rush Yds,Less,42.5,41.5-44.5,0.55,,,lean; Henderson back to full practice
-2026-10-22,NFL,NE@CHI,Efton Chism III,Rec Yds,Less,19.5,16.5-18.5,0.55,,,lean; 0 catches with A.J. Brown back
-2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,Less,19.5,19.5-21.5,0.53,,,"below break-even; hamstring, 4 carries/3 yds W6"
-2026-10-22,NFL,NE@CHI,Colston Loveland,Rec Yds,More,41.5,41.5-45.5,0.52,,,below break-even; filler only
+2026-10-22,NFL,NE@CHI,Rhamondre Stevenson,Rush Yds,Less,42.5,41.5-44.5,0.55,22,W,lean; Henderson back to full practice
+2026-10-22,NFL,NE@CHI,Efton Chism III,Rec Yds,Less,19.5,16.5-18.5,0.55,16,W,lean; 0 catches with A.J. Brown back
+2026-10-22,NFL,NE@CHI,Caleb Williams,Rush Yds,Less,19.5,19.5-21.5,0.53,18,W,"below break-even; hamstring, 4 carries/3 yds W6"
+2026-10-22,NFL,NE@CHI,Colston Loveland,Rec Yds,More,41.5,41.5-45.5,0.52,69,W,below break-even; filler only
 2026-10-23,Tennis,WTA Ningbo QF,Alexandrova v Fernandez,Total Games,More,21.5 (20.5 is a Goblin),O/U 21.5-22.5,0.57,,void,pulled: app has 20.5 Goblin and 22.5; books ~49% at 22.5
 2026-10-23,Tennis,ATP Brussels QF,Clement Chidekh,Total Games Won,More,<=8.5 (7.5 ~0.70),not found,0.63,,,time not found
 2026-10-22,Tennis,ATP Almaty R16,Machac v Khachanov,Total Games,More,<=21.5,Polymarket O21.5 ~61%,0.60,,,Thu 4:00 AM ET; Machac fitness risk
@@ -27,7 +27,7 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NBA,CLE@PHI,Donovan Mitchell,Rebounds,Less,4.5,4.5 (4),0.542,10,L,board scan; Allen status
 2026-10-22,NBA,CLE@PHI,Evan Mobley,Points,More,17.5,17.5/18.5 (4),0.542,18,void,pulled: 4 of last 10 and 1 of 4 vs PHI (ESPN logs)
 2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebounds,Less,4,3.5/4.5 (3),0.54,,void,pulled before lock: books moved to 4.5 (50%)
-2026-10-22,NFL,NE@CHI,Caleb Williams,Pass Yds,More,215.5,Books' alt line 214.5 at 67% (normal line 244.5),0.665,,,via @ZRob4444
+2026-10-22,NFL,NE@CHI,Caleb Williams,Pass Yds,More,215.5,Books' alt line 214.5 at 67% (normal line 244.5),0.665,308,W,via @ZRob4444
 2026-10-22,NFL,NE@CHI,TreVeyon Henderson,Rush+Rec Yds,More,30.5,Books 30.5–32.5 (4),0.57,,void,pulled at lock: line moved to 32.5; via @KANEPROPS
 2026-10-22,NBA,DEN@OKC,Aaron Gordon,Pts+Rebs+Asts,More,22,Books 22.5/23.5 (4),0.558,,void,pulled: PrizePicks moved to 23.5 (More 47%); via @ClipSetNBA
 2026-10-22,NBA,CLE@PHI,Jaylen Brown,Assists,More,3.5,Books 3.5 (4),0.533,,void,pulled for Jaylen Brown pts+asts; stats pick; via @SalvoBets
@@ -40,7 +40,32 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-22,NHL,NSH@BOS,Pavel Zacha,Shots on Goal,Less,2,1.5 (4),0.558,1,W,afternoon check; under 6/9 season
 2026-10-22,NHL,VGK@STL,Ivan Barbashev,Shots on Goal,Less,1.5,1.5 (4),0.54,0,W,afternoon check; under 7/11 season
 2026-10-22,NHL,ANA@NJ,Evan Rodrigues,Shots on Goal,Less,2,1.5 (4),0.578,1,W,scheduled scan; under 6/9 season
-2026-10-22,NHL,DET@VAN,Brock Boeser,Shots on Goal,Less,2,1.5 (4),0.547,,,sharp check; under 8/11 season
-2026-10-22,NBA,DEN@OKC,Jalen Williams,Points,Less,19,15.5-19.5 (12),0.534,,,stats pick; 24/38 under
-2026-10-22,NBA,DEN@OKC,Nikola Jokic,Assists,More,9,7.5-10.5 (9),0.534,,,stats pick; 45/72
-2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebs+Asts,More,10,8.5-10.5 (5),0.539,,,stats pick; 3/3 vs OKC
+2026-10-22,NHL,DET@VAN,Brock Boeser,Shots on Goal,Less,2,1.5 (4),0.547,1,W,sharp check; under 8/11 season
+2026-10-22,NBA,DEN@OKC,Jalen Williams,Points,Less,19,15.5-19.5 (12),0.534,21,L,stats pick; 24/38 under
+2026-10-22,NBA,DEN@OKC,Nikola Jokic,Assists,More,9,7.5-10.5 (9),0.534,5,L,stats pick; 45/72
+2026-10-22,NBA,DEN@OKC,Jamal Murray,Rebs+Asts,More,10,8.5-10.5 (5),0.539,13,W,stats pick; 3/3 vs OKC
+2026-10-23,NBA,Pistons @ Heat,John Collins,Rebounds,More,5,Books 5.5 (5),0.567,,,"auto scan, stats checked"
+2026-10-23,NBA,Pistons @ Heat,Duncan Robinson,Points,More,10.5,Books 10.5/11.5 (5),0.56,,,"auto scan, stats checked"
+2026-10-23,NBA,Timberwolves @ Magic,Jonathan Kuminga,Points,More,11.5,Books 11.5/12.5 (5),0.557,,,"auto scan, stats checked"
+2026-10-23,NBA,Pelicans @ Jazz,Jaxson Hayes,Points,Less,7.5,Books 6.5 (2),0.553,,,"auto scan, stats checked"
+2026-10-23,NBA,Raptors @ Wizards,Immanuel Quickley,Assists,More,5.5,Books 5.5 (2),0.55,,,"auto scan, stats checked"
+2026-10-23,NBA,Pelicans @ Jazz,Jaren Jackson Jr,Rebounds,More,5.5,Books 5.5/6.5 (2),0.547,,,"auto scan, stats checked"
+2026-10-23,NBA,Clippers @ Lakers,Walker Kessler,Points,More,14.5,Books 14.5/15.5 (3),0.545,,,"auto scan, stats checked"
+2026-10-23,NBA,Bulls @ Bucks,Caleb Wilson,Points,More,16.5,Books 16.5/17.5 (5),0.542,,,"auto scan, stats checked"
+2026-10-23,NBA,Knicks @ Celtics,Andre Drummond,Points,Less,6,Books 5.5/6.5 (5),0.542,,,"auto scan, stats checked"
+2026-10-23,MLB,Rays @ Brewers,Liam Hicks,Hits,More,0.5,Books 0.5 (3),0.54,,,auto
+2026-10-23,NBA,Mavericks @ Pacers,Naji Marshall,Points,More,12.5,Books 11.5-17.5 (14),0.574,,void,"pulled 11:30 AM: 52%; scan; 7/10 L10, 46/74 last season"
+2026-10-23,NBA,Pistons @ Heat,Pelle Larsson,Rebounds,More,2.5,scan,0.554,,,"scan; 9/10 L10, 45/70 last season"
+2026-10-23,NBA,Raptors @ Wizards,Tre Johnson,Points,More,8.5,scan,0.554,,void,"pulled 11:30 AM: line moved to 9.5; scan; 6/10 L10, 46/60 last season"
+2026-10-23,NBA,Timberwolves @ Magic,Paolo Banchero,Assists,More,5,scan,0.546,,,scan; 7/10 L10
+2026-10-23,NBA,Rockets @ Spurs,Amen Thompson,Assists,More,4,scan,0.545,,void,"pulled 11:30 AM: 52%; scan; 5/10 L10, 49/85 last season"
+2026-10-23,NBA,Clippers @ Lakers,Isaiah Jackson,Points,More,8.5,scan,0.55,,void,"pulled 11:30 AM: 52%; scan; 6/10 L10, 20/55 last season"
+2026-10-23,NBA,Mavericks @ Pacers,Tyrese Haliburton,Pts+Rebs+Asts,More,32.5,scan,0.547,,void,pulled 11:30 AM: 53%; scan; 1 game back from Achilles (37)
+2026-10-23,NBA,Blazers @ Kings,Keegan Murray,Pts+Rebs+Asts,Less,19.5,scan,0.544,,void,pulled 11:30 AM: line moved to 18.5; scan; 7/10 L10
+2026-10-23,NBA,Grizzlies @ Warriors,Stephen Curry,Rebounds,Less,3.5,scan,0.541,,void,pulled 11:30 AM: line pulled; scan; 7/10 L10
+2026-10-23,NHL,Canadiens @ Blackhawks,Roman Kantserov,Shots on Goal,Less,2,scan,0.571,,,scan; no game logs found
+2026-10-23,NHL,Canadiens @ Blackhawks,Anton Frondell,Shots on Goal,Less,2,scan,0.541,,,scan; 7/10 L10
+2026-10-23,NBA,Bulls @ Bucks,Kyle Kuzma,Points,More,10.5,8.5/9.5/10.5/11.5/12.5/13.5/14.5 (14),0.558,,,11:30 AM full scan
+2026-10-23,NBA,Blazers @ Kings,Keegan Murray,Points Rebounds,Less,17.5,15.5/16.5/17.5 (5),0.554,,,11:30 AM full scan
+2026-10-23,NBA,Rockets @ Spurs,De'Aaron Fox,Rebounds Assists,More,8.5,7.5/8.5/9.5 (5),0.554,,,11:30 AM full scan
+2026-10-23,NBA,Pelicans @ Jazz,Jeremiah Fears,Rebounds Assists,More,6,5.5/6.5/7.5 (5),0.552,,,11:30 AM full scan
