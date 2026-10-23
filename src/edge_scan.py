@@ -98,7 +98,7 @@ def fit_mean(line: float, p_over: float, disp: float) -> float:
 
 
 def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
-    data = get(f"sports/{sport}/events/{ev['id']}/odds", regions="us,us_dfs",
+    data = get(f"sports/{sport}/events/{ev['id']}/odds", regions="us,us2,eu,us_dfs",
                markets=",".join(markets), oddsFormat="decimal")
     alts = get(f"sports/{sport}/events/{ev['id']}/odds", regions="us_dfs", bookmakers="prizepicks",
                markets=",".join(m + "_alternate" for m in markets), oddsFormat="decimal")
