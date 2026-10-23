@@ -21,7 +21,7 @@ disagree (history under 45%), or an analyst note.
 
 A slip qualifies when its expected return is at least 1.05x under the LOWER of the two
 payout tables below (PrizePicks payouts could not be verified) and every leg clears the
-entry's per-pick break-even by at least 1.5 points. The best slip is the top qualifying 2-3 pick entry; a 4-6 pick
+entry's per-pick break-even by at least 1.5 points (2.5 points on 4-6 pick entries). The best slip is the top qualifying 2-3 pick entry; a 4-6 pick
 entry is offered only when no 2-3 pick qualifies and it returns at least 1.15x.
 """
 import argparse
@@ -46,6 +46,7 @@ PAYOUTS = {
     },
 }
 MARGIN = 0.015  # every leg must clear the per-pick break-even by 1.5 points
+MARGIN_BIG = 0.025  # 4-6 pick entries: errors compound across legs, so each leg needs 2.5 points
 STAT_KEYS = {
     "points": ("pts",), "rebounds": ("reb",), "assists": ("ast",), "threes": ("fg3",),
     "points_rebounds_assists": ("pts", "reb", "ast"), "points_rebounds": ("pts", "reb"),
@@ -166,7 +167,7 @@ def build_slips(legs: list[dict]) -> list[dict]:
             "leg_ids": ";".join(c["id"] for c in combo),
             "est_all_pct": round(100 * dist[n], 1), "exp_return": round(ev, 2),
             "breakeven_pct": round(100 * be, 1),
-            "qualifies": "yes" if ev >= 1.05 and min(probs) >= be + MARGIN else "no", "is_best": "no",
+            "qualifies": "yes" if ev >= 1.05 and min(probs) >= be + (MARGIN if n <= 3 else MARGIN_BIG) else "no", "is_best": "no",
         })
     small = [s for s in slips if s["qualifies"] == "yes" and s["picks"] <= 3]
     big = [s for s in slips if s["qualifies"] == "yes" and s["picks"] > 3 and s["exp_return"] >= 1.15]

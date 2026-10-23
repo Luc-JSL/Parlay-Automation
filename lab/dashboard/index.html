@@ -170,7 +170,7 @@
       <li>History: how often the player beat this exact line in his last 20 games and last season, each pulled toward 50% so small samples don't dominate.</li>
       <li>Estimate: 75% market, 25% history, plus any adjustment from injury, role or matchup research. Play is 58% or higher, lean is 55.5% or higher.</li>
       <li>Rejected: the line sits outside PrizePicks' own goblin and demon ladder (usually a mislabeled line), the game logs disagree with the market, or research found a role or injury problem.</li>
-      <li>A slip clears the bar when its expected return is at least 1.05x and every pick beats the entry's break-even by 1.5 points. Add best only unlocks for a 2- or 3-pick slip that clears it, or a bigger one returning at least 1.15x.</li>
+      <li>A slip clears the bar when its expected return is at least 1.05x and every pick beats the entry's break-even by 1.5 points, or 2.5 points on a 4- to 6-pick entry, where small errors stack up. Add best only unlocks for a 2- or 3-pick slip that clears it, or a bigger one returning at least 1.15x.</li>
       <li>Before you enter: confirm each line in the app is a standard line (More and Less both offered) at the same number or better, and check the payout shown there.</li>
     </ul>
     <p class="pl-note">Risk 1–3% of your bankroll per entry, never chase losses, and treat this as entertainment, not income. A well-reasoned pick still loses often; only long-run results matter.</p>
@@ -220,7 +220,7 @@
         ' returns ', mark(span(times(best.exp_return)), 'slips', 'exp_return', 'slip_id', best.slip_id),
         ' on average and clears the bar. Confirm the lines in the app, then enter it.');
     } else if (top) {
-      take.append(mark(span(s0.verdict || 'No strong plays'), 'status', 'verdict', null), '. Nothing clears break-even by 1.5 points on every pick. The closest is the ',
+      take.append(mark(span(s0.verdict || 'No strong plays'), 'status', 'verdict', null), '. No slip clears break-even with room to spare on every pick. The closest is the ',
         mark(span(top.label), 'slips', 'label', 'slip_id', top.slip_id), ' at ',
         mark(span(times(top.exp_return)), 'slips', 'exp_return', 'slip_id', top.slip_id), ', and passing is the right call.');
       take.querySelector('[data-field="verdict"]').dataset.row = '0';
@@ -263,7 +263,7 @@
     btn.dataset.slip = best ? best.slip_id : '';
     note.textContent = best
       ? (chosen === best.slip_id ? 'In your slip.' : 'Loads this slip into Your slip.')
-      : 'Locked until a slip clears break-even by 1.5 points on every pick.';
+      : 'Locked until a slip clears break-even with room to spare on every pick.';
   }
 
   function slipText(slip, legsById) {

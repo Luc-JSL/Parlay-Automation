@@ -1,13 +1,13 @@
 [
  {
-  "scanned_at": "2026-10-23T03:47:21Z",
+  "scanned_at": "2026-10-23T21:48:50Z",
   "sport": "basketball_nba",
-  "games": 12,
-  "props_scanned": 613,
-  "plays": 1,
+  "games": 11,
+  "props_scanned": 842,
+  "plays": 0,
   "verdict": "No strong plays",
   "best_slip_id": "",
   "payouts_note": "PrizePicks payouts unverified: slips are rated on the lower of two published tables.",
-  "next_check": "about 6 pm ET, after injury reports"
+  "next_check": "Sunday 11:30 am ET (NFL)"
  }
 ]

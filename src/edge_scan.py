@@ -51,6 +51,10 @@ DISPERSION = {
 
 DFS = {"prizepicks", "underdog", "betr_us_dfs", "pick6", "dabble_au"}
 
+# books that resell one odds feed count once (Kambi; BetOnline/LowVig)
+FEED = {"betrivers": "kambi", "betparx": "kambi", "ballybet": "kambi", "unibet": "kambi", "unibet_us": "kambi",
+        "lowvig": "betonlineag"}
+
 
 def get(path: str, **params):
     key = os.environ.get("ODDS_API_KEY") or sys.exit("Set ODDS_API_KEY")
@@ -122,7 +126,9 @@ def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
                     pp[key] = point
                     two_sided[key] = "Under" in s  # standard lines offer More and Less; goblins/demons only More
                 elif b["key"] not in DFS and "Over" in s and "Under" in s:
-                    books.setdefault(key, []).append((b["key"], point, s["Over"], s["Under"]))
+                    feed = FEED.get(b["key"], b["key"])
+                    if not any(q[0] == feed and q[1] == point for q in books.get(key, [])):
+                        books.setdefault(key, []).append((feed, point, s["Over"], s["Under"]))
     rows = []
     for (player, market), line in pp.items():
         quotes = books.get((player, market), [])

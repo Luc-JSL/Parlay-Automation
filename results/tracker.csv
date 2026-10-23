@@ -24,3 +24,7 @@ date,sport,event,player,stat,pick,pp_line_threshold,book_line,est_prob,actual,re
 2026-10-23,NBA,NYK@BOS,Jalen Brunson,Pts+Ast,More,<=31.5,31.5-32.5,0.56,,,researched
 2026-10-23,NBA,LAC@LAL,Walker Kessler,Reb+Ast,More,<=12.5,12.5-13.5,0.56,,,researched
 2026-10-23,NBA,DET@MIA,John Collins,Rebounds,More,<=5,5.5 (5 books),0.55,,,researched
+2026-10-23,NBA,DET@MIA,Davion Mitchell,Points,More,<=8.5,9.5 (most books),0.577,,,pre-lock lean; not played (no strong slip)
+2026-10-23,NBA,LAC@LAL,Darius Garland,Pts+Ast,Less,>=32.5,31.5 consensus,0.574,,,pre-lock lean; not played
+2026-10-23,NBA,TOR@WAS,Tre Johnson,Points,More,<=8.5,8.5-9.5,0.572,,,pre-lock lean; not played
+2026-10-23,NBA,NYK@BOS,Karl-Anthony Towns,Assists,Less,>=4,3.5 (14 books),0.563,,,pre-lock lean; not played
