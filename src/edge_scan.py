@@ -110,7 +110,7 @@ def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
                 tier = "demon" if o["price"] >= 1.9 else "goblin"
                 ladder.setdefault((o["description"], m["key"].removesuffix("_alternate")), {}) \
                       .setdefault(tier, []).append(o["point"])
-    pp, books = {}, {}
+    pp, books, two_sided = {}, {}, {}
     for b in data.get("bookmakers", []):
         for m in b["markets"]:
             sides = {}
@@ -120,6 +120,7 @@ def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
                 key = (player, m["key"])
                 if b["key"] == "prizepicks":
                     pp[key] = point
+                    two_sided[key] = "Under" in s  # standard lines offer More and Less; goblins/demons only More
                 elif b["key"] not in DFS and "Over" in s and "Under" in s:
                     books.setdefault(key, []).append((b["key"], point, s["Over"], s["Under"]))
     rows = []
@@ -143,7 +144,8 @@ def scan_event(sport: str, ev: dict, markets: list[str]) -> list[dict]:
         side, p = ("More", p_over) if p_over >= 0.5 else ("Less", 1 - p_over)
         tiers = ladder.get((player, market), {})
         # a "standard" line at or below a goblin, or at or above a demon, is probably mislabeled
-        suspect = (line <= max(tiers.get("goblin", [-1])) or line >= min(tiers.get("demon", [1e9])))
+        suspect = (line <= max(tiers.get("goblin", [-1])) or line >= min(tiers.get("demon", [1e9]))
+                   or not two_sided.get((player, market), True))
         rows.append({
             "game": f"{ev['away_team']} @ {ev['home_team']}", "start": ev["commence_time"],
             "player": player, "market": market.replace("player_", ""), "pp_line": line,

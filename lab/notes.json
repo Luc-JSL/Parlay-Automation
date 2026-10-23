@@ -1,0 +1,14 @@
+{
+ "De'Aaron Fox|assists": {"reject": true, "reason": "Questionable (right wrist sprain). Re-check the injury report before lock."},
+ "Jeremiah Fears|points_rebounds_assists": {"reject": true, "reason": "Role shrank: Dejounte Murray is back starting (34 min) and Fears played 21 min in the opener. His big late-season numbers came while Murray was out."},
+ "Kris Dunn|rebounds_assists": {"reject": true, "reason": "12 Reb+Ast as a starter in the opener, and Clippers injuries (Ingram, Strus, Beal GTD) add to his role."},
+ "Kris Dunn|points_rebounds_assists": {"reject": true, "reason": "Same role concern as his Reb+Ast: more minutes with Ingram/Strus out."},
+ "Tim Hardaway Jr.|points_rebounds_assists": {"reject": true, "reason": "Bench role in Miami now: 18 min, 8 PRA in the opener."},
+ "R.J. Barrett|rebounds": {"reject": true, "reason": "Only 3 books post it, and game logs are mixed (under 44% last season)."},
+ "R.J. Barrett|points": {"reject": true, "reason": "Only 3 books post it; under 19.5 in just 6 of his last 20."},
+ "Darius Garland|rebounds": {"reject": true, "reason": "Over 2.5 only 37% last season; 1 rebound in the opener."},
+ "John Collins|rebounds": {"reason": "10 books; books moved from Over 5.5 +124/+128 to about -114 (money on the Over). Starts at PF, 25 min. Game total 238.", "risk": "Miami front line now has Giannis and Adebayo; exactly 5 is a push."},
+ "Quentin Grimes|rebounds_assists": {"reason": "Bench role behind Doncic/Reaves/Williams; under 6 in 13 of his last 16 (avg 4.8). Opener: exactly 6 in 27 min.", "risk": "Lakers -9.5: a blowout can give bench players more minutes. Exactly 6 is a push."},
+ "Walker Kessler|rebounds_assists": {"risk": "Lakers -9.5 blowout risk; opener was 9 reb, 1 ast in 30 min."},
+ "Dylan Harper|points": {"risk": "Depends on Fox (questionable): if Fox sits, Harper's usage rises."}
+}

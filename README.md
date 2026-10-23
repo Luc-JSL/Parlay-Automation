@@ -59,6 +59,10 @@ python3 src/parlay_calc.py -160 -300 1.38 --true-probs 0.60 0.74 0.70
 python3 src/edge_scan.py basketball_nba --hours 12 --min 0.56
 python3 src/edge_scan.py americanfootball_nfl --hours 12
 
+# Parlay Labs board: scan + game logs + research notes (lab/notes.json) -> rated legs and best slip
+python3 src/lab_board.py basketball_nba --hours 12 --out lab/out
+# The dashboard page lives in lab/dashboard/index.html; lab/out/*.json are its data files.
+
 # Live odds (needs a free key from https://the-odds-api.com in ODDS_API_KEY)
 python3 src/fetch_odds.py basketball_nba
 python3 src/fetch_odds.py americanfootball_nfl

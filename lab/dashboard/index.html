@@ -1,0 +1,417 @@
+<style>
+  .pl { display: grid; gap: var(--cds-gap-lg); font-family: var(--font-anthropic-sans); max-width: 72rem; margin-inline: auto; }
+  .pl-head { display: grid; gap: var(--cds-gap-xs); }
+  .pl-title { margin: 0; font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); text-wrap: balance; }
+  .pl-take { margin: 0; font-size: var(--cds-font-size-heading); max-width: 62ch; text-wrap: pretty; }
+  .pl-meta { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .pl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
+  .pl-card { min-width: 0; display: grid; align-content: start; gap: var(--cds-gap-md); background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); container-type: inline-size; }
+  .pl-card h2 { margin: 0; font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); }
+  .pl-note { margin: 0; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); max-width: 70ch; }
+  .pl-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cds-gap-sm); }
+  .pl-pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; font-size: var(--cds-font-size-caption); font-weight: var(--cds-font-weight-medium); background: color-mix(in srgb, currentColor 12%, transparent); }
+  .pl-pill::before { content: ""; width: 0.45rem; height: 0.45rem; border-radius: 50%; background: currentColor; }
+  .pl-good { color: var(--color-ok); }
+  .pl-warn { color: var(--color-warn); }
+  .pl-bad { color: var(--color-bad); }
+  .pl-muted { color: var(--color-fg-muted); }
+  .pl-legs-text { margin: 0; line-height: 1.5; }
+  .pl-figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: var(--cds-gap-md); }
+  .pl-fig { display: grid; gap: 2px; align-content: start; }
+  .pl-fig-label { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+  .pl-fig-val { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
+  .pl-actions { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+  .pl-btn { font: inherit; font-weight: var(--cds-font-weight-medium); padding: var(--cds-pad-sm) var(--cds-pad-md); border-radius: var(--cds-radius); border: 1px solid var(--color-fg); background: var(--color-fg); color: var(--color-bg); cursor: pointer; }
+  .pl-btn:hover:not(:disabled) { opacity: 0.88; }
+  .pl-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pl-btn-quiet { background: transparent; color: var(--color-fg); border-color: var(--color-border-line); }
+  .pl-btn:focus-visible, .pl-chip:focus-visible, .pl-search:focus-visible, .pl-click tbody tr:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+  .pl-legs { list-style: none; margin: 0; padding: 0; display: grid; }
+  .pl-leg { display: grid; gap: 2px; padding-block: var(--cds-pad-sm); border-top: 1px solid var(--color-border-line); }
+  .pl-leg:first-child { border-top: 0; }
+  .pl-leg-main { font-weight: var(--cds-font-weight-medium); }
+  .pl-leg-sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); font-variant-numeric: tabular-nums; }
+  .pl-copybox { width: 100%; min-height: 7rem; font: inherit; font-size: var(--cds-font-size-caption); color: var(--color-fg); background: var(--color-bg); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-sm); box-sizing: border-box; }
+  .pl-tools { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; }
+  .pl-search { font: inherit; font-size: var(--cds-font-size-caption); padding: var(--cds-pad-xs) var(--cds-pad-sm); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); background: var(--color-bg); color: var(--color-fg); min-width: 0; flex: 1 1 12rem; }
+  .pl-chip { font: inherit; font-size: var(--cds-font-size-caption); padding: 2px 10px; border-radius: 999px; border: 1px solid var(--color-border-line); background: transparent; color: var(--color-fg); cursor: pointer; }
+  .pl-chip[aria-pressed="true"] { background: var(--color-fg); color: var(--color-bg); border-color: var(--color-fg); }
+  .pl-tablewrap { overflow: auto; max-height: 32rem; border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); }
+  .pl-table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+  .pl-table th { position: sticky; top: 0; z-index: 1; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+  .pl-table td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); vertical-align: top; }
+  .pl-table tbody tr:last-child td { border-bottom: 0; }
+  .pl-table .pl-num { text-align: right; white-space: nowrap; }
+  .pl-table .pl-name { font-weight: var(--cds-font-weight-medium); white-space: nowrap; }
+  .pl-table .pl-why { min-width: 16rem; color: var(--color-fg-muted); }
+  .pl-click tbody tr { cursor: pointer; }
+  .pl-click tbody tr:hover, .pl-click tbody tr[aria-selected="true"] { background: color-mix(in srgb, var(--color-fg) 6%, transparent); }
+  .pl-tier { text-transform: capitalize; font-weight: var(--cds-font-weight-medium); }
+  .pl-tier-play { color: var(--color-ok); }
+  .pl-tier-lean { color: var(--color-warn); }
+  .pl-tier-pass { color: var(--color-fg-muted); }
+  .pl-tier-rejected { color: var(--color-bad); }
+  .pl-fail { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 6rem; color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+  .pl-fail::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-bad); }
+  .pl-method { margin: 0; padding-left: 1.1rem; display: grid; gap: var(--cds-gap-xs); max-width: 70ch; line-height: 1.5; }
+  [data-dash-source-state=empty] { color: transparent; }
+  [data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+  @container (max-width: 640px) { .pl-wide { display: none; } }
+</style>
+
+<div class="pl">
+  <header class="pl-head" id="summary">
+    <h1 class="pl-title">Parlay Labs</h1>
+    <p class="pl-take dash-skeleton" id="pl-take" data-source="status slips">—</p>
+    <p class="pl-meta" id="pl-meta">
+      Scanned <span class="dash-skeleton" data-source="status" data-field="scanned_at" data-row="0">—</span>
+      · <span data-source="status" data-field="props_scanned" data-row="0">—</span> props matched to the books across
+      <span data-source="status" data-field="games" data-row="0">—</span> games
+      · Next check: <span data-source="status" data-field="next_check" data-row="0">—</span>
+    </p>
+  </header>
+
+  <div class="pl-grid">
+    <section class="pl-card" id="best-slip" data-source="slips">
+      <div class="pl-row">
+        <h2>Best slip</h2>
+        <span class="pl-pill pl-muted" id="pl-best-pill">Loading</span>
+      </div>
+      <p class="pl-legs-text dash-skeleton" id="pl-best-legs">—</p>
+      <div class="pl-figs">
+        <div class="pl-fig"><span class="pl-fig-label">Entry</span><span class="pl-fig-val" id="pl-best-label">—</span></div>
+        <div class="pl-fig"><span class="pl-fig-label">Expected return</span><span class="pl-fig-val" id="pl-best-ev">—</span></div>
+        <div class="pl-fig"><span class="pl-fig-label">Every pick hits</span><span class="pl-fig-val" id="pl-best-hit">—</span></div>
+        <div class="pl-fig"><span class="pl-fig-label">Break-even per pick</span><span class="pl-fig-val" id="pl-best-be">—</span></div>
+      </div>
+      <div class="pl-actions">
+        <button class="pl-btn" id="pl-add-best" type="button" disabled>Add best</button>
+        <span class="pl-note" id="pl-add-note"></span>
+      </div>
+    </section>
+
+    <section class="pl-card" id="your-slip" data-source="slips board">
+      <div class="pl-row">
+        <h2>Your slip</h2>
+        <span class="pl-pill pl-muted" id="pl-slip-pill" hidden></span>
+      </div>
+      <p class="pl-note" id="pl-slip-empty">Nothing here yet. Tap Add best when a slip clears the bar, or tap any row under All slips to look at it here.</p>
+      <div id="pl-slip-body" hidden>
+        <ol class="pl-legs" id="pl-slip-legs"></ol>
+        <div class="pl-figs">
+          <div class="pl-fig"><span class="pl-fig-label">Entry</span><span class="pl-fig-val" id="pl-slip-label">—</span></div>
+          <div class="pl-fig"><span class="pl-fig-label">Expected return</span><span class="pl-fig-val" id="pl-slip-ev">—</span></div>
+          <div class="pl-fig"><span class="pl-fig-label">Every pick hits</span><span class="pl-fig-val" id="pl-slip-hit">—</span></div>
+        </div>
+      </div>
+      <div class="pl-actions" id="pl-slip-actions" hidden>
+        <button class="pl-btn" id="pl-copy" type="button">Copy slip</button>
+        <button class="pl-btn pl-btn-quiet" id="pl-clear" type="button">Clear</button>
+        <span class="pl-note" id="pl-copy-note" aria-live="polite"></span>
+      </div>
+      <textarea class="pl-copybox" id="pl-copybox" readonly hidden aria-label="Slip text to copy"></textarea>
+    </section>
+  </div>
+
+  <section class="pl-card" id="all-slips">
+    <h2>All slips</h2>
+    <p class="pl-note">The strongest entry the scan found for each size and type, rated on the lower of the two published payout tables. Tap a row to load it into Your slip.</p>
+    <div class="pl-tablewrap">
+      <table class="pl-table pl-click" id="pl-slips" data-source="slips" data-row-key="slip_id">
+        <thead><tr>
+          <th data-field="label">Entry</th>
+          <th class="pl-num" data-field="exp_return">Expected return</th>
+          <th class="pl-num" data-field="est_all_pct">Every pick hits</th>
+          <th class="pl-num pl-wide" data-field="breakeven_pct">Break-even per pick</th>
+          <th data-field="qualifies">Clears the bar</th>
+          <th data-field="legs">Picks</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="pl-card" id="board">
+    <h2>The board</h2>
+    <p class="pl-note">Every PrizePicks prop the scan matched to at least two sportsbooks, best estimate first. Market is the books' fair chance at the PrizePicks line with ties removed; Last 20 counts games that beat this exact line.</p>
+    <div class="pl-tools">
+      <input class="pl-search" id="pl-search" type="search" placeholder="Search player, team or stat" aria-label="Search the board">
+      <button class="pl-chip" type="button" data-tier="all" aria-pressed="true">All</button>
+      <button class="pl-chip" type="button" data-tier="play" aria-pressed="false">Play</button>
+      <button class="pl-chip" type="button" data-tier="lean" aria-pressed="false">Lean</button>
+      <button class="pl-chip" type="button" data-tier="pass" aria-pressed="false">Pass</button>
+      <button class="pl-chip" type="button" data-tier="rejected" aria-pressed="false">Rejected</button>
+    </div>
+    <div class="pl-tablewrap" id="pl-board-wrap">
+      <table class="pl-table" id="pl-board" data-source="board" data-row-key="id">
+        <thead><tr>
+          <th data-field="player">Player</th>
+          <th data-field="side">Pick</th>
+          <th class="pl-num" data-field="line">Line</th>
+          <th data-field="stat">Stat</th>
+          <th class="pl-num" data-field="est_pct">Estimate</th>
+          <th data-field="tier">Tier</th>
+          <th class="pl-num pl-wide" data-field="market_pct">Market</th>
+          <th class="pl-num pl-wide" data-field="l20">Last 20</th>
+          <th class="pl-num pl-wide" data-field="books">Books</th>
+          <th class="pl-wide" data-field="book_lines">Book lines</th>
+          <th class="pl-wide" data-field="game">Game</th>
+          <th class="pl-wide" data-field="reason">Research note</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="pl-card" id="method">
+    <h2>How picks are rated</h2>
+    <ul class="pl-method">
+      <li>Market: each sportsbook's price is de-vigged, then moved to the PrizePicks line with a fitted stat distribution. The median across books is used. One point is taken off when the books sit at a different line, and half a point more when only two books post it.</li>
+      <li>History: how often the player beat this exact line in his last 20 games and last season, each pulled toward 50% so small samples don't dominate.</li>
+      <li>Estimate: 75% market, 25% history, plus any adjustment from injury, role or matchup research. Play is 58% or higher, lean is 55.5% or higher.</li>
+      <li>Rejected: the line sits outside PrizePicks' own goblin and demon ladder (usually a mislabeled line), the game logs disagree with the market, or research found a role or injury problem.</li>
+      <li>A slip clears the bar when its expected return is at least 1.05x and every pick beats the entry's break-even by 1.5 points. Add best only unlocks for a 2- or 3-pick slip that clears it, or a bigger one returning at least 1.15x.</li>
+      <li>Before you enter: confirm each line in the app is a standard line (More and Less both offered) at the same number or better, and check the payout shown there.</li>
+    </ul>
+    <p class="pl-note">Risk 1–3% of your bankroll per entry, never chase losses, and treat this as entertainment, not income. A well-reasoned pick still loses often; only long-run results matter.</p>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = (sel) => document.querySelector(sel);
+  const enc = (v) => String(v).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
+  const mark = (node, source, field, key, value) => {
+    node.dataset.source = source;
+    node.dataset.field = field;
+    if (key) node.dataset.where = `${key}=${enc(value)}`;
+    else delete node.dataset.where;
+    return node;
+  };
+  const span = (text, cls) => { const s = document.createElement('span'); s.textContent = text; if (cls) s.className = cls; return s; };
+  const pct = (v) => (v === null || v === undefined || v === '' ? '—' : `${Number(v).toFixed(1)}%`);
+  const times = (v) => `${Number(v).toFixed(2)}x`;
+  const num = (v) => String(Number(v));
+  const et = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  const when = (iso) => `${et.format(new Date(iso))} ET`;
+
+  let chosen = null;
+  let tier = 'all';
+  let query = '';
+
+  const rowsOf = (id) => { const d = dash.data(id); return d.status === 'ok' && Array.isArray(d.data) ? d.data : null; };
+
+  function fillFig(node, slip, field, fmt) {
+    if (!slip) { node.textContent = '—'; delete node.dataset.source; return; }
+    mark(node, 'slips', field, 'slip_id', slip.slip_id);
+    node.textContent = fmt(slip[field]);
+  }
+
+  function drawSummary(status, slips) {
+    const take = $('#pl-take');
+    take.replaceChildren();
+    if (!status || !slips) { take.textContent = '—'; take.classList.add('dash-skeleton'); return; }
+    take.classList.remove('dash-skeleton');
+    const s0 = status[0] || {};
+    const best = slips.find((s) => s.is_best === 'yes');
+    const top = best || slips[0];
+    if (best) {
+      take.append('Best slip ready: the ', mark(span(best.label), 'slips', 'label', 'slip_id', best.slip_id),
+        ' returns ', mark(span(times(best.exp_return)), 'slips', 'exp_return', 'slip_id', best.slip_id),
+        ' on average and clears the bar. Confirm the lines in the app, then enter it.');
+    } else if (top) {
+      take.append(mark(span(s0.verdict || 'No strong plays'), 'status', 'verdict', null), '. Nothing clears break-even by 1.5 points on every pick. The closest is the ',
+        mark(span(top.label), 'slips', 'label', 'slip_id', top.slip_id), ' at ',
+        mark(span(times(top.exp_return)), 'slips', 'exp_return', 'slip_id', top.slip_id), ', and passing is the right call.');
+      take.querySelector('[data-field="verdict"]').dataset.row = '0';
+    } else {
+      take.append('No slips yet.');
+    }
+    $('#pl-meta').querySelector('[data-field="scanned_at"]').textContent = s0.scanned_at ? when(s0.scanned_at) : '—';
+    $('#pl-meta').querySelector('[data-field="scanned_at"]').classList.remove('dash-skeleton');
+    $('#pl-meta').querySelector('[data-field="props_scanned"]').textContent = s0.props_scanned ?? '—';
+    $('#pl-meta').querySelector('[data-field="games"]').textContent = s0.games ?? '—';
+    $('#pl-meta').querySelector('[data-field="next_check"]').textContent = s0.next_check || '—';
+  }
+
+  function drawBest(slips) {
+    const pill = $('#pl-best-pill');
+    const legs = $('#pl-best-legs');
+    const btn = $('#pl-add-best');
+    const note = $('#pl-add-note');
+    const best = slips ? slips.find((s) => s.is_best === 'yes') : null;
+    const shown = best || (slips ? slips[0] : null);
+    if (!shown) {
+      pill.textContent = slips ? 'No slips' : 'Loading';
+      pill.className = 'pl-pill pl-muted';
+      legs.textContent = '—';
+      ['#pl-best-label', '#pl-best-ev', '#pl-best-hit', '#pl-best-be'].forEach((s) => fillFig($(s), null));
+      btn.disabled = true;
+      note.textContent = '';
+      return;
+    }
+    legs.classList.remove('dash-skeleton');
+    pill.textContent = best ? 'Clears the bar' : 'Closest slip, below the bar';
+    pill.className = `pl-pill ${best ? 'pl-good' : 'pl-warn'}`;
+    mark(legs, 'slips', 'legs', 'slip_id', shown.slip_id);
+    legs.textContent = shown.legs;
+    fillFig($('#pl-best-label'), shown, 'label', (v) => v);
+    fillFig($('#pl-best-ev'), shown, 'exp_return', times);
+    fillFig($('#pl-best-hit'), shown, 'est_all_pct', pct);
+    fillFig($('#pl-best-be'), shown, 'breakeven_pct', pct);
+    btn.disabled = !best;
+    btn.dataset.slip = best ? best.slip_id : '';
+    note.textContent = best
+      ? (chosen === best.slip_id ? 'In your slip.' : 'Loads this slip into Your slip.')
+      : 'Locked until a slip clears break-even by 1.5 points on every pick.';
+  }
+
+  function slipText(slip, legsById) {
+    const lines = [`Parlay Labs · ${slip.label}`];
+    slip.leg_ids.split(';').forEach((id, i) => {
+      const l = legsById.get(id);
+      lines.push(l ? `${i + 1}. ${l.player} ${l.side} ${num(l.line)} ${l.stat} (${l.game})` : `${i + 1}. ${id}`);
+    });
+    lines.push(`Expected return ${times(slip.exp_return)} · every pick hits ${pct(slip.est_all_pct)}`);
+    lines.push('Standard lines only: confirm each number in the app before entering.');
+    return lines.join('\n');
+  }
+
+  function drawYourSlip(slips, board) {
+    const slip = chosen && slips ? slips.find((s) => s.slip_id === chosen) : null;
+    $('#pl-slip-empty').hidden = !!slip;
+    $('#pl-slip-body').hidden = !slip;
+    $('#pl-slip-actions').hidden = !slip;
+    const pill = $('#pl-slip-pill');
+    pill.hidden = !slip;
+    if (!slip) { $('#pl-copybox').hidden = true; return; }
+    pill.textContent = slip.qualifies === 'yes' ? 'Clears the bar' : 'Below the bar';
+    pill.className = `pl-pill ${slip.qualifies === 'yes' ? 'pl-good' : 'pl-warn'}`;
+    const byId = new Map((board || []).map((r) => [r.id, r]));
+    const list = $('#pl-slip-legs');
+    list.replaceChildren();
+    slip.leg_ids.split(';').forEach((id) => {
+      const l = byId.get(id);
+      const li = document.createElement('li');
+      li.className = 'pl-leg';
+      if (!l) { li.textContent = id; list.append(li); return; }
+      const main = document.createElement('div');
+      main.className = 'pl-leg-main';
+      main.append(mark(span(l.player), 'board', 'player', 'id', id), ' ',
+        mark(span(l.side), 'board', 'side', 'id', id), ' ',
+        mark(span(num(l.line)), 'board', 'line', 'id', id), ' ',
+        mark(span(l.stat), 'board', 'stat', 'id', id));
+      const sub = document.createElement('div');
+      sub.className = 'pl-leg-sub';
+      sub.append(mark(span(l.game), 'board', 'game', 'id', id), ' · estimate ',
+        mark(span(pct(l.est_pct)), 'board', 'est_pct', 'id', id), ' · confirm a standard ',
+        mark(span(num(l.line)), 'board', 'line', 'id', id), l.side === 'More' ? ' or lower in the app' : ' or higher in the app');
+      li.append(main, sub);
+      if (l.risk) {
+        const risk = document.createElement('div');
+        risk.className = 'pl-leg-sub';
+        risk.append('Risk: ', mark(span(l.risk), 'board', 'risk', 'id', id));
+        li.append(risk);
+      }
+      list.append(li);
+    });
+    fillFig($('#pl-slip-label'), slip, 'label', (v) => v);
+    fillFig($('#pl-slip-ev'), slip, 'exp_return', times);
+    fillFig($('#pl-slip-hit'), slip, 'est_all_pct', pct);
+    $('#pl-copybox').value = slipText(slip, byId);
+  }
+
+  function drawSlipsTable(slips) {
+    const body = $('#pl-slips tbody');
+    body.replaceChildren();
+    if (!slips) { failOrWait('slips', body, 6); return; }
+    slips.forEach((s) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = s.slip_id;
+      tr.tabIndex = 0;
+      tr.setAttribute('aria-selected', String(s.slip_id === chosen));
+      const cells = [[s.label, 'pl-name'], [times(s.exp_return), 'pl-num'], [pct(s.est_all_pct), 'pl-num'],
+        [pct(s.breakeven_pct), 'pl-num pl-wide'], [s.qualifies, s.qualifies === 'yes' ? 'pl-good' : 'pl-muted'], [s.legs, '']];
+      cells.forEach(([text, cls]) => { const td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; tr.append(td); });
+      body.append(tr);
+    });
+  }
+
+  function failOrWait(id, body, cols) {
+    const d = dash.data(id);
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = cols;
+    if (d.status === 'error') { td.className = 'pl-fail'; td.textContent = 'Failed to load'; }
+    else { td.className = 'dash-skeleton'; td.textContent = '—'; }
+    tr.append(td);
+    body.append(tr);
+  }
+
+  function drawBoard(board) {
+    const body = $('#pl-board tbody');
+    body.replaceChildren();
+    if (!board) { failOrWait('board', body, 12); return; }
+    const q = query.trim().toLowerCase();
+    const rows = board.filter((r) => (tier === 'all' || r.tier === tier)
+      && (!q || `${r.player} ${r.stat} ${r.game}`.toLowerCase().includes(q)));
+    rows.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.id;
+      const cells = [[r.player, 'pl-name'], [r.side, ''], [num(r.line), 'pl-num'], [r.stat, ''],
+        [pct(r.est_pct), 'pl-num'], [r.tier, `pl-tier pl-tier-${r.tier}`], [pct(r.market_pct), 'pl-num pl-wide'],
+        [r.l20 || '—', 'pl-num pl-wide'], [String(r.books), 'pl-num pl-wide'], [r.book_lines, 'pl-wide'],
+        [r.game, 'pl-wide'], [r.reason || '', 'pl-wide pl-why']];
+      cells.forEach(([text, cls]) => { const td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; tr.append(td); });
+      body.append(tr);
+    });
+    if (!rows.length) {
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 12;
+      td.className = 'pl-muted';
+      td.textContent = 'No props match this filter.';
+      tr.append(td);
+      body.append(tr);
+    }
+  }
+
+  function render() {
+    const status = rowsOf('status');
+    const slips = rowsOf('slips');
+    const board = rowsOf('board');
+    drawSummary(status, slips);
+    drawBest(slips);
+    drawYourSlip(slips, board);
+    drawSlipsTable(slips);
+    drawBoard(board);
+  }
+
+  $('#pl-add-best').addEventListener('click', (e) => {
+    const id = e.currentTarget.dataset.slip;
+    if (!id) return;
+    chosen = id;
+    render();
+    $('#your-slip').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  const pickRow = (tr) => { if (!tr) return; chosen = tr.dataset.key; render(); $('#your-slip').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); };
+  $('#pl-slips').addEventListener('click', (e) => pickRow(e.target.closest('tr[data-key]')));
+  $('#pl-slips').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickRow(e.target.closest('tr[data-key]')); } });
+  $('#pl-clear').addEventListener('click', () => { chosen = null; $('#pl-copy-note').textContent = ''; render(); });
+  $('#pl-copy').addEventListener('click', () => {
+    const box = $('#pl-copybox');
+    const showBox = () => { box.hidden = false; box.focus(); box.select(); $('#pl-copy-note').textContent = 'Select and copy the text below.'; };
+    try {
+      navigator.clipboard.writeText(box.value).then(() => { $('#pl-copy-note').textContent = 'Copied.'; }, showBox);
+    } catch (err) { showBox(); }
+  });
+  $('#pl-search').addEventListener('input', (e) => { query = e.target.value; drawBoard(rowsOf('board')); });
+  document.querySelectorAll('.pl-chip').forEach((chip) => chip.addEventListener('click', () => {
+    tier = chip.dataset.tier;
+    document.querySelectorAll('.pl-chip').forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+    drawBoard(rowsOf('board'));
+  }));
+
+  dash.onData(render);
+})();
+</script>
