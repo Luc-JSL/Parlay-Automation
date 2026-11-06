@@ -1,3 +1,9 @@
 __pycache__/
 .env
 *.pyc
+
+# Research notes and reports for the income/career plan contain personal budget
+# figures. Held out of git while the repo is public; remove these two lines once
+# the repo is private or the owner OKs committing them.
+research_notes/
+reports/
