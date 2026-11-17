@@ -1,102 +1,91 @@
-// Animal Search: linear search vs. binary search on a list of animal names.
-#include <algorithm>
-#include <fstream>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
-
+#include <algorithm>
 using namespace std;
 
-// Removes whitespace (spaces, tabs, Windows '\r') from both ends of a string.
-string trim(const string& s) {
-    const string ws = " \t\r\n";
-    size_t start = s.find_first_not_of(ws);
-    if (start == string::npos) return "";
-    size_t end = s.find_last_not_of(ws);
-    return s.substr(start, end - start + 1);
-}
-
-// 1. Reads the file and stores each animal name in a vector.
-vector<string> readAnimals(const string& fileName) {
+// Read the animal names from the file into a vector
+vector<string> readFile(string fileName) {
     vector<string> animals;
-    ifstream inFile(fileName);
-    if (!inFile) {
-        cout << "Error: could not open " << fileName << endl;
-        return animals;
-    }
+    ifstream file(fileName);
     string line;
-    while (getline(inFile, line)) {
-        line = trim(line);
-        if (!line.empty()) animals.push_back(line);
+
+    while (getline(file, line)) {
+        // Remove the hidden '\r' at the end of each line
+        if (!line.empty() && line.back() == '\r') {
+            line.pop_back();
+        }
+        if (line != "") {
+            animals.push_back(line);
+        }
     }
-    inFile.close();
     return animals;
 }
 
-// 2. Prompts the user for an animal name and returns it.
-string getAnimalName() {
+// Ask the user for an animal name
+string getAnimal() {
     string name;
     cout << "Enter an animal name: ";
     getline(cin, name);
-    return trim(name);
+    return name;
 }
 
-// 3. Linear search: checks each element in order, counting comparisons.
-int linearSearch(const vector<string>& animals, const string& target) {
+// Check every animal one at a time
+void linearSearch(vector<string> animals, string name) {
     int tries = 0;
-    for (size_t i = 0; i < animals.size(); i++) {
+
+    for (int i = 0; i < animals.size(); i++) {
         tries++;
-        if (animals[i] == target) {
-            cout << "I found " << target << " with a linear search at position "
+        if (animals[i] == name) {
+            cout << "I found " << name << " with a linear search at position "
                  << i << " after " << tries << " tries." << endl;
-            return static_cast<int>(i);
+            return;
         }
     }
-    cout << "I could not find " << target << ".  I tried " << tries
-         << " animals." << endl;
-    return -1;
+    cout << "I could not find " << name << ".  I tried " << tries << " animals." << endl;
 }
 
-// 4. Binary search: the vector must be sorted. Each loop halves the range,
-//    and each check of the middle element counts as one comparison.
-int binarySearch(const vector<string>& animals, const string& target) {
+// Check the middle animal and cut the list in half each time
+void binarySearch(vector<string> animals, string name) {
     int tries = 0;
     int low = 0;
-    int high = static_cast<int>(animals.size()) - 1;
+    int high = animals.size() - 1;
+
     while (low <= high) {
-        int mid = low + (high - low) / 2;
+        int mid = (low + high) / 2;
         tries++;
-        if (animals[mid] == target) {
-            cout << "I found " << target << " with a binary search at position "
+
+        if (animals[mid] == name) {
+            cout << "I found " << name << " with a binary search at position "
                  << mid << " after " << tries << " tries." << endl;
-            return mid;
-        } else if (animals[mid] < target) {
-            low = mid + 1;
-        } else {
-            high = mid - 1;
+            return;
+        }
+        else if (animals[mid] < name) {
+            low = mid + 1;   // look in the right half
+        }
+        else {
+            high = mid - 1;  // look in the left half
         }
     }
-    cout << "I could not find " << target << ".  I tried " << tries
-         << " animals." << endl;
-    return -1;
+    cout << "I could not find " << name << ".  I tried " << tries << " animals." << endl;
 }
 
 int main() {
-    vector<string> animals = readAnimals("animals.txt");
-    if (animals.empty()) return 1;
-    cout << "Loaded " << animals.size() << " animals." << endl;
+    vector<string> animals = readFile("animals.txt");
 
-    // Binary search only works on sorted data, and the file is not in perfect
-    // order, so make a sorted copy for it.
-    vector<string> sortedAnimals = animals;
-    sort(sortedAnimals.begin(), sortedAnimals.end());
+    if (animals.size() == 0) {
+        cout << "Could not read animals.txt" << endl;
+        return 1;
+    }
 
-    string name = getAnimalName();
+    string name = getAnimal();
+
     linearSearch(animals, name);
-    binarySearch(sortedAnimals, name);
 
-    // Keeps the console window open when run from VS Code's debugger.
-    cout << "\nPress Enter to exit...";
-    cin.get();
+    // Binary search needs the list sorted
+    sort(animals.begin(), animals.end());
+    binarySearch(animals, name);
+
     return 0;
 }
