@@ -2,8 +2,15 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <algorithm>
 using namespace std;
+
+// Make a lowercase copy of a word so capital letters don't matter
+string toLower(string word) {
+    for (int i = 0; i < word.length(); i++) {
+        word[i] = tolower(word[i]);
+    }
+    return word;
+}
 
 // Read the animal names from the file into a vector
 vector<string> readFile(string fileName) {
@@ -37,8 +44,8 @@ void linearSearch(vector<string> animals, string name) {
 
     for (int i = 0; i < animals.size(); i++) {
         tries++;
-        if (animals[i] == name) {
-            cout << "I found " << name << " with a linear search at position "
+        if (toLower(animals[i]) == toLower(name)) {
+            cout << "I found " << animals[i] << " with a linear search at position "
                  << i << " after " << tries << " tries." << endl;
             return;
         }
@@ -56,12 +63,12 @@ void binarySearch(vector<string> animals, string name) {
         int mid = (low + high) / 2;
         tries++;
 
-        if (animals[mid] == name) {
-            cout << "I found " << name << " with a binary search at position "
+        if (toLower(animals[mid]) == toLower(name)) {
+            cout << "I found " << animals[mid] << " with a binary search at position "
                  << mid << " after " << tries << " tries." << endl;
             return;
         }
-        else if (animals[mid] < name) {
+        else if (toLower(animals[mid]) < toLower(name)) {
             low = mid + 1;   // look in the right half
         }
         else {
@@ -82,9 +89,6 @@ int main() {
     string name = getAnimal();
 
     linearSearch(animals, name);
-
-    // Binary search needs the list sorted
-    sort(animals.begin(), animals.end());
     binarySearch(animals, name);
 
     return 0;
