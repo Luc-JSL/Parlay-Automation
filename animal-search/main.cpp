@@ -94,5 +94,9 @@ int main() {
     string name = getAnimalName();
     linearSearch(animals, name);
     binarySearch(sortedAnimals, name);
+
+    // Keeps the console window open when run from VS Code's debugger.
+    cout << "\nPress Enter to exit...";
+    cin.get();
     return 0;
 }

@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Animal Search",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-g",
+                "-Wall",
+                "${workspaceFolder}/main.cpp",
+                "-o",
+                "${workspaceFolder}/animal_search"
+            ],
+            "windows": {
+                "args": [
+                    "-std=c++17",
+                    "-g",
+                    "-Wall",
+                    "${workspaceFolder}\\main.cpp",
+                    "-o",
+                    "${workspaceFolder}\\animal_search.exe"
+                ]
+            },
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$gcc"],
+            "group": { "kind": "build", "isDefault": true }
+        },
+        {
+            "label": "Run Animal Search",
+            "type": "shell",
+            "command": "./animal_search",
+            "windows": { "command": ".\\animal_search.exe" },
+            "options": { "cwd": "${workspaceFolder}" },
+            "dependsOn": "Build Animal Search",
+            "presentation": { "focus": true, "panel": "dedicated" },
+            "problemMatcher": []
+        }
+    ]
+}
